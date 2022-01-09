@@ -1,0 +1,37 @@
+<aside
+  class="left-sidebar"
+  [ngClass]="{
+    'left-sidebar-compact': isSidebarCompact,
+    'left-sidebar-closed': isSidebarCollapse
+  }"
+>
+  <section class="menu">
+    <ul>
+      <li>
+        <a [routerLink]="['/page/dashboard']" routerLinkActive="router-link-active">
+          <i class="fas fa-tachometer-alt"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      
+      <li>
+        <a [routerLink]="['/category']" routerLinkActive="router-link-active"  href="javascript:void(0)">
+          <i class="fas fa-user"></i>
+          <span>Category</span>
+        </a>
+      </li>
+      <li>
+        <a href="javascript:void(0)">
+          <i class="fas fa-user"></i>
+          <span>User <i class="bg-primary"> 3 </i></span>
+        </a>
+      </li>
+      <li>
+        <a href="javascript:void(0)">
+          <i class="fas fa-user"></i>
+          <span>Product</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+</aside>
