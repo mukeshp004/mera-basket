@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { IUser } from '../../shared/models/user';
+import { AuthService } from '../../shared/services/auth.service';
 import { MessageBusConstant } from './../../shared/constants/message-bus.constant';
 import { MessageBusService } from './../../shared/services/message-bus.service';
 
@@ -9,11 +11,15 @@ import { MessageBusService } from './../../shared/services/message-bus.service';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
+  currentUser?: IUser;
   isSidebarCollapsed = false;
 
-  constructor(private messageBus: MessageBusService, private router: Router) {}
+  constructor(private messageBus: MessageBusService, private auth: AuthService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    
+    this.currentUser = this.auth.currentUserValue;
+  }
 
   onSidebarToggle() {
     this.isSidebarCollapsed = !this.isSidebarCollapsed;
@@ -24,7 +30,6 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
-    
-    this.router.navigate(['/login']);
+    this.auth.logout();
   }
 }
