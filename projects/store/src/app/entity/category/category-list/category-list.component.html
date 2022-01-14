@@ -42,11 +42,25 @@
       </div>
     </div>
     <div class="card-body">
-        <div class="row">
-            <div class="col">
-                <button [routerLink]="['/category/add']" class="btn btn-primary">Add Category</button>
-            </div>
+      <div class="row mb-2">
+        <div class="col">
+          <button [routerLink]="['/category/add']" class="btn btn-primary float-end">
+            Add Category
+          </button>
         </div>
-        This is some text within a card body.</div> <!-- end of card body-->
+      </div>
+      <div class="row">
+        <div class="col" style="height: 500px;">
+          <ag-grid-angular
+            #agGrid
+            style="width: 100%; height: 100%"
+            id="myGrid"
+            class="ag-theme-alpine"
+            [gridOptions]="gridOptions"
+            (gridReady)="onGridReady($event)"
+          ></ag-grid-angular>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

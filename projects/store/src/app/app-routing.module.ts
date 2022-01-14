@@ -8,13 +8,7 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    // component: LoginComponent,
   },
-  // {
-  //   path: 'page',
-
-  //   component: DemoComponent,
-  // },
   {
     path: '',
     component: LayoutComponent,

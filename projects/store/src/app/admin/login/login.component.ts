@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { GlobalConfigService } from '../../shared/configs/global-config.service';
 import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
@@ -20,12 +21,13 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
+    private globalConfig: GlobalConfigService,
     private auth: AuthService
   ) {}
 
   ngOnInit(): void {
     
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/category';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || this.globalConfig.dashboardRoute;
   }
 
   login() {

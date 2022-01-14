@@ -12,6 +12,10 @@ import { ErrorInterceptorService } from './shared/interceptors/error-interceptor
 import { JwtInterceptorService } from './shared/interceptors/jwt-interceptor.service';
 import { SharedModule } from './shared/shared.module';
 
+// for HttpClient import:
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
+
 @NgModule({
   declarations: [AppComponent, DemoComponent],
   imports: [
@@ -22,11 +26,20 @@ import { SharedModule } from './shared/shared.module';
     AdminModule,
     PagesModule,
     BrowserAnimationsModule,
+    LoadingBarHttpClientModule,
+    LoadingBarModule
   ],
   providers: [
-    
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptorService, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptorService, multi: true },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: JwtInterceptorService,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptorService,
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent],
 })

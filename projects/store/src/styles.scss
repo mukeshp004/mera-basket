@@ -1,4 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
+
 @import "~bootstrap/scss/bootstrap";
+
+// Ag-grid Styles import
+@import "ag-grid-community/dist/styles/ag-grid.css";
+@import "ag-grid-community/dist/styles/ag-theme-alpine.css";
+
+@import "ngx-toastr/toastr.css";
 
 @import "./scss/index.scss";
