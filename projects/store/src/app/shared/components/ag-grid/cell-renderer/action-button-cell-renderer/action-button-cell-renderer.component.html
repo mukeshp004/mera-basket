@@ -1,0 +1,5 @@
+<ul class="action-button-list">
+    <li *ngFor="let button of buttons;">
+        <button [class]="button.class" (click)="button.onClick(params)" [innerHTML]="button.icon" >{{button.label}}</button>
+    </li>
+</ul>

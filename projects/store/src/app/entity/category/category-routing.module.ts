@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CategoryAddComponent } from './category-add/category-add.component';
 import { CategoryListComponent } from './category-list/category-list.component';
+import { CategoryResolveService } from './category-resolve.service';
 
 const routes: Routes = [
   {
@@ -10,7 +11,13 @@ const routes: Routes = [
   },
   {
     path: 'add',
-    component: CategoryAddComponent
+    component: CategoryAddComponent,
+    resolve: { category: CategoryResolveService }
+  },
+  {
+    path: 'edit/:id',
+    component: CategoryAddComponent,
+    resolve: { category: CategoryResolveService }
   }
 ];
 

@@ -16,7 +16,7 @@
     </div>
   </div>
 
-  <form [formGroup]="categoryForm" (ngSubmit)="submit()">
+  <form  name="categoryForm" role="form" [formGroup]="categoryForm" (ngSubmit)="submit()">
     <div class="card">
       <div class="card-header">
         <h3 class="card-title">Create Category</h3>
@@ -123,6 +123,24 @@
         <!-- end of row -->
 
         <div class="mb-3 row">
+          <label for="display_mode" class="col-sm-2 col-form-label"
+            >Display mode</label
+          >
+          <div class="col-sm-10">
+            <div class="form-check form-switch">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="display_mode"
+                formControlName="display_mode"
+              />
+            </div>
+          </div>
+        </div>
+        <!-- end of row -->
+
+        <div class="mb-3 row">
           <label for="status" class="col-sm-2 col-form-label"
             >Status</label
           >
@@ -140,9 +158,12 @@
           </div>
         </div>
         <!-- end of row -->
+        <pre>{{ categoryForm.invalid | json }}</pre>
       </div>
       <div class="card-footer">
-        <button class="btn btn-primary float-end" type="submit">Submit</button>
+
+        <button class="btn btn-primary float-end" type="submit" [disabled]="categoryForm.invalid || isSaving">Submit</button>
+        <button class="btn btn-secondary float-end me-2" type="button" (click)="goBack()">Back</button>
       </div>
       <!-- card footer-->
     </div>

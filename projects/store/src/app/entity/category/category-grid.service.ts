@@ -14,6 +14,12 @@ export class CategoryGridService {
 
   getColumns(): ColDef[] {
     const columns: ColDef[] = [
+      {
+        headerName: 'Action',
+        cellRenderer: 'actionButton',
+        cellRendererParams: {
+        },
+      },
       { headerName: CategoryColumnLabel.NAME, field: CategoryColumn.NAME },
       { headerName: CategoryColumnLabel.SLUG, field: CategoryColumn.SLUG },
       {
