@@ -7,22 +7,22 @@ import { CategoryResolveService } from './category-resolve.service';
 const routes: Routes = [
   {
     path: '',
-    component: CategoryListComponent
+    component: CategoryListComponent,
   },
   {
     path: 'add',
     component: CategoryAddComponent,
-    resolve: { category: CategoryResolveService }
+    resolve: { entity: CategoryResolveService },
   },
   {
     path: 'edit/:id',
     component: CategoryAddComponent,
-    resolve: { category: CategoryResolveService }
-  }
+    resolve: { entity: CategoryResolveService },
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class CategoryRoutingModule { }
+export class CategoryRoutingModule {}

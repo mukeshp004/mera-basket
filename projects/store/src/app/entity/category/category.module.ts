@@ -1,23 +1,12 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { CategoryRoutingModule } from './category-routing.module';
-import { CategoryListComponent } from './category-list/category-list.component';
-import { CategoryAddComponent } from './category-add/category-add.component';
-import { AgGridModule } from 'ag-grid-angular';
+import { NgModule } from '@angular/core';
 import { SharedModule } from '../../shared/shared.module';
-
+import { CategoryAddComponent } from './category-add/category-add.component';
+import { CategoryListComponent } from './category-list/category-list.component';
+import { CategoryRoutingModule } from './category-routing.module';
 
 @NgModule({
-  declarations: [
-    CategoryListComponent,
-    CategoryAddComponent
-  ],
-  imports: [
-    CommonModule,
-    SharedModule,
-    CategoryRoutingModule,
-    AgGridModule.withComponents([])
-  ]
+  declarations: [CategoryListComponent, CategoryAddComponent],
+  imports: [CommonModule, SharedModule, CategoryRoutingModule],
 })
-export class CategoryModule { }
+export class CategoryModule {}

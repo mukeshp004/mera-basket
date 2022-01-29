@@ -22,9 +22,17 @@ const routes: Routes = [
       {
         path: 'category',
         loadChildren: () =>
-          import('./entity/category/category.module').then((m) => m.CategoryModule),
+          import('./entity/category/category.module').then(
+            (m) => m.CategoryModule
+          ),
       },
-      
+      {
+        path: 'attribute',
+        loadChildren: () =>
+          import('./entity/attribute/attribute.module').then(
+            (m) => m.AttributeModule
+          ),
+      },
     ],
   },
   { path: '**', redirectTo: 'dashboard' },

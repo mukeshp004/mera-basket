@@ -1,27 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import {
-  ColDef,
-  ColumnApi,
-  GridApi,
-  GridOptions,
-  GridParams,
-} from 'ag-grid-community';
+import { ColDef, ColumnApi, GridApi, GridOptions } from 'ag-grid-community';
 import { ToastrService } from 'ngx-toastr';
 import { ActionButtonCellRendererComponent } from '../../../shared/components/ag-grid/cell-renderer/action-button-cell-renderer/action-button-cell-renderer.component';
 import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
-import { ApiUrlService } from '../../../shared/configs/api-url.service';
-import { Category } from '../../../shared/models/category';
-import { CategoryGridService } from '../category-grid.service';
-import { CategoryService } from '../category.service';
+import { Attribute } from '../../../shared/models/attributes/attribute';
+import { AttributeGridService } from '../attribute-grid.service';
+import { AttributeService } from '../attribute.service';
 
 @Component({
-  selector: 'app-category-list',
-  templateUrl: './category-list.component.html',
-  styleUrls: ['./category-list.component.scss'],
+  selector: 'app-attribute-list',
+  templateUrl: './attribute-list.component.html',
+  styleUrls: ['./attribute-list.component.scss'],
 })
-export class CategoryListComponent implements OnInit {
+export class AttributeListComponent implements OnInit {
   gridApi!: GridApi;
   gridColumnApi!: ColumnApi;
   gridOptions!: GridOptions;
@@ -29,9 +22,8 @@ export class CategoryListComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private categoryGridService: CategoryGridService,
-    private categoryService: CategoryService,
-    private apiUrl: ApiUrlService,
+    private attributeGridService: AttributeGridService,
+    private attributeService: AttributeService,
     private toastr: ToastrService,
     private modalService: NgbModal
   ) {}
@@ -49,7 +41,7 @@ export class CategoryListComponent implements OnInit {
       floatingFilter: true,
     };
 
-    const columns = this.categoryGridService.getColumns();
+    const columns = this.attributeGridService.getColumns();
 
     columns
       .filter((col) => col.headerName === 'Action')
@@ -63,13 +55,13 @@ export class CategoryListComponent implements OnInit {
               label: '',
               icon: '<i class="fas fa-edit"></i>',
               class: 'btn btn-sm btn-primary',
-              onClick: this.editCategory,
+              onClick: this.edit,
             },
             {
               label: 'X',
               icon: '<i class="fas fa-trash"></i>',
               class: 'btn btn-sm btn-danger',
-              onClick: this.deleteCategory,
+              onClick: this.delete,
             },
           ],
         };
@@ -84,18 +76,17 @@ export class CategoryListComponent implements OnInit {
     };
   }
 
-  editCategory = (params: any) => {
-    this.router.navigate([`category/edit/${params.data.id}`]);
+  edit = (params: any) => {
+    this.router.navigate([`attribute/edit/${params.data.id}`]);
   };
 
-  deleteCategory = (params: any) => {
-    console.log('removeCategory', params.data);
+  delete = (params: any) => {
     const modalRef = this.modalService.open(ConfirmModalComponent);
-    modalRef.componentInstance.msg = 'Do you want to delete category';
+    modalRef.componentInstance.msg = 'Do you want to delete Attribute';
     modalRef.closed.subscribe((response) => {
       console.log(response);
-      this.categoryService.delete(params.data.id).subscribe(() => {
-        this.toastr.success('Category Deleted!', 'Success');
+      this.attributeService.delete(params.data.id).subscribe(() => {
+        this.toastr.success('Attribute Deleted!', 'Success');
       });
     });
   };
@@ -105,7 +96,7 @@ export class CategoryListComponent implements OnInit {
     this.gridColumnApi = params.columnApi;
 
     this.gridColumnApi.autoSizeAllColumns();
-    this.categoryService.get().subscribe((categories: Category[]) => {
+    this.attributeService.get().subscribe((categories: Attribute[]) => {
       this.gridApi.setRowData(categories);
     });
   }

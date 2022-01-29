@@ -1,0 +1,10 @@
+<input
+  [(colorPicker)]="value"
+  [style.background]="value"
+  [cpOKButton]="true"
+  [cpOKButtonClass]="'btn btn-sm btn-primary'"
+  [cpCancelButton]="true"
+  [cpCancelButtonClass]="'btn btn-sm btn-primary'"
+  [cpDisabled]="disabled"
+  (colorPickerChange)="onColorChange($event)"
+/>

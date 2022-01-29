@@ -1,0 +1,6 @@
+export enum ATTRIBUTE_VALIDATION {
+  NUMERIC = 1,
+  EMAIL,
+  DECIMAL,
+  URL,
+}

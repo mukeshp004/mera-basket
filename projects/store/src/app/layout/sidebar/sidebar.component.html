@@ -8,16 +8,33 @@
   <section class="menu">
     <ul>
       <li>
-        <a [routerLink]="['/page/dashboard']" routerLinkActive="router-link-active">
+        <a
+          [routerLink]="['/page/dashboard']"
+          routerLinkActive="router-link-active"
+        >
           <i class="fas fa-tachometer-alt"></i>
           <span>Dashboard</span>
         </a>
       </li>
-      
+
       <li>
-        <a [routerLink]="['/category']" routerLinkActive="router-link-active"  href="javascript:void(0)">
+        <a
+          [routerLink]="['/category']"
+          routerLinkActive="router-link-active"
+          href="javascript:void(0)"
+        >
           <i class="fas fa-user"></i>
           <span>Category</span>
+        </a>
+      </li>
+      <li>
+        <a
+          [routerLink]="['/attribute']"
+          routerLinkActive="router-link-active"
+          href="javascript:void(0)"
+        >
+          <i class="fas fa-user"></i>
+          <span>Attribute</span>
         </a>
       </li>
       <li>
