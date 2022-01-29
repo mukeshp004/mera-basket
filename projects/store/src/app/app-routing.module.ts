@@ -33,6 +33,13 @@ const routes: Routes = [
             (m) => m.AttributeModule
           ),
       },
+      {
+        path: 'attribute/family',
+        loadChildren: () =>
+          import('./entity/attribute-family/attribute-family.module').then(
+            (m) => m.AttributeFamilyModule
+          ),
+      },
     ],
   },
   { path: '**', redirectTo: 'dashboard' },

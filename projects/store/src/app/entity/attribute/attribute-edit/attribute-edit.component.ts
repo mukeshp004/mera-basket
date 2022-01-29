@@ -46,8 +46,8 @@ export class AttributeEditComponent implements OnInit {
       description: [''],
       code: [''],
       type: [],
-      swatch_type: [],
-      options: this.fb.array([this.getOptionForm()]),
+      swatch_type: [SWATCH_TYPE.TEXT],
+      options: this.fb.array([]),
       validation: [''],
       is_required: [0],
       is_unique: [0],
@@ -79,6 +79,7 @@ export class AttributeEditComponent implements OnInit {
 
   getOptionForm(): FormGroup {
     return this.fb.group({
+      id: [],
       swatch_value: [],
       value: [],
       name: [],
@@ -102,10 +103,10 @@ export class AttributeEditComponent implements OnInit {
   }
 
   updateForm(attribute: IAttribute) {
-    this.form.patchValue({
-      id: attribute.id,
-      name: attribute.name,
+    attribute.options?.forEach((element) => {
+      this.addOption();
     });
+    this.form.patchValue(attribute);
   }
 
   goBack() {

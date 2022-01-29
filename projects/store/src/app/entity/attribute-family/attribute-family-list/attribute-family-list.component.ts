@@ -1,20 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ColDef, ColumnApi, GridApi, GridOptions } from 'ag-grid-community';
+import { GridApi, ColumnApi, GridOptions, ColDef } from 'ag-grid-community';
 import { ToastrService } from 'ngx-toastr';
 import { ActionButtonCellRendererComponent } from '../../../shared/components/ag-grid/cell-renderer/action-button-cell-renderer/action-button-cell-renderer.component';
 import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
-import { Attribute } from '../../../shared/models/attributes/attribute';
-import { AttributeGridService } from '../attribute-grid.service';
-import { AttributeService } from '../attribute.service';
+import { AttributeFamily } from '../../../shared/models/attributes/attribute-family';
+import { AttributeFamilyGridService } from '../services/attribute-family-grid.service';
+import { AttributeFamilyService } from '../services/attribute-family.service';
 
 @Component({
-  selector: 'app-attribute-list',
-  templateUrl: './attribute-list.component.html',
-  styleUrls: ['./attribute-list.component.scss'],
+  selector: 'app-attribute-family-list',
+  templateUrl: './attribute-family-list.component.html',
+  styleUrls: ['./attribute-family-list.component.scss'],
 })
-export class AttributeListComponent implements OnInit {
+export class AttributeFamilyListComponent implements OnInit {
   gridApi!: GridApi;
   gridColumnApi!: ColumnApi;
   gridOptions!: GridOptions;
@@ -22,10 +22,10 @@ export class AttributeListComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private attributeGridService: AttributeGridService,
-    private attributeService: AttributeService,
     private toastr: ToastrService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private attributeFamilyService: AttributeFamilyService,
+    private attributeFamilyGridService: AttributeFamilyGridService
   ) {}
 
   ngOnInit(): void {
@@ -41,7 +41,7 @@ export class AttributeListComponent implements OnInit {
       floatingFilter: true,
     };
 
-    const columns = this.attributeGridService.getColumns();
+    const columns = this.attributeFamilyGridService.getColumns();
 
     columns
       .filter((col) => col.headerName === 'Action')
@@ -77,7 +77,7 @@ export class AttributeListComponent implements OnInit {
   }
 
   edit = (params: any) => {
-    this.router.navigate([`attribute/edit/${params.data.id}`]);
+    this.router.navigate([`attribute/family/edit/${params.data.id}`]);
   };
 
   delete = (params: any) => {
@@ -85,7 +85,7 @@ export class AttributeListComponent implements OnInit {
     modalRef.componentInstance.msg = 'Do you want to delete Attribute';
     modalRef.closed.subscribe((response) => {
       console.log(response);
-      this.attributeService.delete(params.data.id).subscribe(() => {
+      this.attributeFamilyService.delete(params.data.id).subscribe(() => {
         this.toastr.success('Attribute Deleted!', 'Success');
       });
     });
@@ -96,8 +96,10 @@ export class AttributeListComponent implements OnInit {
     this.gridColumnApi = params.columnApi;
 
     this.gridColumnApi.autoSizeAllColumns();
-    this.attributeService.get().subscribe((attributes: Attribute[]) => {
-      this.gridApi.setRowData(attributes);
-    });
+    this.attributeFamilyService
+      .get()
+      .subscribe((attributeFamilies: AttributeFamily[]) => {
+        this.gridApi.setRowData(attributeFamilies);
+      });
   }
 }

@@ -24,9 +24,7 @@ export class ColorPickerComponent implements OnInit, ControlValueAccessor {
 
   constructor() {}
 
-  ngOnInit(): void {
-    console.log(this.disabled);
-  }
+  ngOnInit(): void {}
 
   /**
    * Called when color is changed in color picker

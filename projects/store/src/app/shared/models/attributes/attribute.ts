@@ -1,3 +1,5 @@
+import { IAttributeOption } from './attribute-option';
+
 export interface IAttribute {
   id?: number;
   code?: string;
@@ -5,6 +7,7 @@ export interface IAttribute {
   description?: string;
   type?: string;
   swatch_type?: number;
+  options?: IAttributeOption[];
   validation?: number;
   is_required?: number;
   is_unique?: number;
@@ -26,6 +29,7 @@ export class Attribute implements IAttribute {
     description?: string,
     type?: string,
     swatch_type?: number,
+    options?: IAttributeOption,
     validation?: number,
     is_required?: number,
     is_unique?: number,
