@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiService<T> {
   /**
@@ -16,11 +16,10 @@ export class ApiService<T> {
    */
   protected relativeUrl!: string;
 
-  constructor(protected http: HttpClient) { 
+  constructor(protected http: HttpClient) {
     this.baseUrl = 'http://localhost:8000/api';
   }
 
-  
   getRelativeUrl(): string {
     return this.relativeUrl;
   }
@@ -28,14 +27,19 @@ export class ApiService<T> {
   setRelativeUrl(url: string) {
     this.relativeUrl = url;
     return this;
-  }  
+  }
 
   get(params?: any): Observable<T[]> {
-    return this.http.get<T[]>(`${this.baseUrl}/${this.getRelativeUrl()}`);
+    return this.http.get<T[]>(`${this.baseUrl}/${this.getRelativeUrl()}`, {
+      params: params,
+    });
   }
 
   post(params: any): Observable<T> {
-    return this.http.post<T>(`${this.baseUrl}/${this.getRelativeUrl()}`, params);
+    return this.http.post<T>(
+      `${this.baseUrl}/${this.getRelativeUrl()}`,
+      params
+    );
   }
 
   find(id: number): Observable<T> {
@@ -43,7 +47,10 @@ export class ApiService<T> {
   }
 
   put(id: number, params: any): Observable<T> {
-    return this.http.put<T>(`${this.baseUrl}/${this.getRelativeUrl()}/${id}`, params);
+    return this.http.put<T>(
+      `${this.baseUrl}/${this.getRelativeUrl()}/${id}`,
+      params
+    );
   }
 
   delete(id: number) {

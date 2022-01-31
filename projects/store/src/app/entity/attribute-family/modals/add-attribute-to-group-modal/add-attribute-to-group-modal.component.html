@@ -1,0 +1,31 @@
+<div class="modal-header">
+  <h4 class="modal-title">Add Group</h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="modal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <ul>
+    <li
+      *ngFor="let attribute of attributes; let i = index"
+      (click)="addAttribute(attribute)"
+    >
+      {{ attribute.name }}
+    </li>
+  </ul>
+</div>
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-outline-secondary"
+    (click)="modal.dismiss('cancel click')"
+  >
+    Cancel
+  </button>
+  <button type="button" class="btn btn-danger" (click)="confirm()">Ok</button>
+</div>

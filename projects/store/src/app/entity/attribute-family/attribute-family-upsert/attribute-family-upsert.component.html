@@ -102,4 +102,86 @@
       <!-- card footer-->
     </div>
   </form>
+
+  <div class="row">
+    <div class="col">
+      <button class="btn btn-primary" (click)="openAddGroupModal()">
+        Add Group
+      </button>
+    </div>
+
+    <div class="col text-end">
+      <button class="btn btn-primary me-1" (click)="accordion.expandAll()">
+        Expand All
+      </button>
+      <button class="btn btn-primary" (click)="accordion.collapseAll()">
+        Collapse All
+      </button>
+    </div>
+
+    <ngb-accordion #accordion="ngbAccordion" activeIds="['panel-1']">
+      <ng-container *ngFor="let group of attributeFamily.groups; let i = index">
+        <ngb-panel [id]="'panel-' + (i + 1)">
+          <ng-template ngbPanelHeader let-opened="opened">
+            <div class="d-flex align-items-center justify-content-between">
+              <button
+                ngbPanelToggle
+                class="btn container-fluid text-start pl-0"
+              >
+                <i
+                  class="fas"
+                  [ngClass]="{
+                    'fa-chevron-down': opened,
+                    'fa-chevron-right': !opened
+                  }"
+                ></i>
+                {{ group.name }}
+              </button>
+            </div>
+          </ng-template>
+          <ng-template ngbPanelContent>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let attribute of group.attributes">
+                  <td>{{ attribute.code }}</td>
+                  <td>{{ attribute.name }}</td>
+                  <td>{{ attribute.type }}</td>
+                  <td>
+                    <button
+                      type="button"
+                      class="btn btn-danger"
+                      *ngIf="attribute.is_user_defined"
+                      (click)="deleteAttributeFromGroup(group, attribute)"
+                    >
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="4">
+                    <button
+                      class="btn btn-primary"
+                      (click)="addAttributeToGroup(group)"
+                    >
+                      Add Attribute
+                    </button>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </ng-template>
+        </ngb-panel>
+      </ng-container>
+    </ngb-accordion>
+  </div>
 </div>

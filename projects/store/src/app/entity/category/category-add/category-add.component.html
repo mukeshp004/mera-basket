@@ -16,7 +16,12 @@
     </div>
   </div>
 
-  <form  name="categoryForm" role="form" [formGroup]="categoryForm" (ngSubmit)="submit()">
+  <form
+    name="categoryForm"
+    role="form"
+    [formGroup]="categoryForm"
+    (ngSubmit)="submit()"
+  >
     <div class="card">
       <div class="card-header">
         <h3 class="card-title">Create Category</h3>
@@ -33,6 +38,7 @@
             />
           </div>
         </div>
+        <!-- end of row -->
 
         <div class="mb-3 row">
           <label for="slug" class="col-sm-2 col-form-label">Slug</label>
@@ -45,6 +51,7 @@
             />
           </div>
         </div>
+        <!-- end of row -->
 
         <div class="mb-3 row">
           <label for="description" class="col-sm-2 col-form-label"
@@ -59,6 +66,7 @@
             />
           </div>
         </div>
+        <!-- end of row -->
 
         <div class="mb-3 row">
           <label for="meta_title" class="col-sm-2 col-form-label"
@@ -73,6 +81,7 @@
             />
           </div>
         </div>
+        <!-- end of row -->
 
         <div class="mb-3 row">
           <label for="meta_keywords" class="col-sm-2 col-form-label"
@@ -87,6 +96,7 @@
             />
           </div>
         </div>
+        <!-- end of row -->
 
         <div class="mb-3 row">
           <label for="meta_description" class="col-sm-2 col-form-label"
@@ -101,8 +111,7 @@
             />
           </div>
         </div>
-
-
+        <!-- end of row -->
 
         <div class="mb-3 row">
           <label for="show_in_menu" class="col-sm-2 col-form-label"
@@ -141,9 +150,7 @@
         <!-- end of row -->
 
         <div class="mb-3 row">
-          <label for="status" class="col-sm-2 col-form-label"
-            >Status</label
-          >
+          <label for="status" class="col-sm-2 col-form-label">Status</label>
           <div class="col-sm-10">
             <select
               id="status"
@@ -161,9 +168,20 @@
         <pre>{{ categoryForm.invalid | json }}</pre>
       </div>
       <div class="card-footer">
-
-        <button class="btn btn-primary float-end" type="submit" [disabled]="categoryForm.invalid || isSaving">Submit</button>
-        <button class="btn btn-secondary float-end me-2" type="button" (click)="goBack()">Back</button>
+        <button
+          class="btn btn-primary float-end"
+          type="submit"
+          [disabled]="categoryForm.invalid || isSaving"
+        >
+          Submit
+        </button>
+        <button
+          class="btn btn-secondary float-end me-2"
+          type="button"
+          (click)="goBack()"
+        >
+          Back
+        </button>
       </div>
       <!-- card footer-->
     </div>

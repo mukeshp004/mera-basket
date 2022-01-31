@@ -3,6 +3,7 @@ body,
 .wrapper {
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 .wrapper {
   background: none repeat scroll 0 0 #e6e9ee;
@@ -24,6 +25,7 @@ a {
 
   #main-wrapper {
     flex: 1 1 auto;
+    overflow-y: auto;
 
     .breadcrumbs {
       background: none repeat scroll 0 0 #fafafa;
