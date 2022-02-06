@@ -22,6 +22,7 @@ export class AttributeFamilyUpsertComponent implements OnInit {
   form = this.getForm();
   isSaving = false;
   attributes: IAttribute[] = [];
+  unUsedAttributes: IAttribute[] = [];
   attributeFamily!: IAttributeFamily;
 
   constructor(
@@ -46,11 +47,23 @@ export class AttributeFamilyUpsertComponent implements OnInit {
   getAttributes() {
     this.attributeService.get().subscribe((attributes: IAttribute[]) => {
       this.attributes = attributes;
-      this.removeUsedAttributes;
+      this.unUsedAttributes = [...attributes];
+      this.removeUsedAttributes();
     });
   }
 
-  removeUsedAttributes() {}
+  removeUsedAttributes() {
+    if (!this.attributeFamily.groups) return;
+    this.attributeFamily.groups.forEach((group) => {
+      const attributeIds = group.attributes
+        ? group.attributes.map((a) => a.id)
+        : [];
+
+      this.unUsedAttributes = this.unUsedAttributes.filter((attribute) => {
+        return !attributeIds.includes(attribute.id);
+      });
+    });
+  }
 
   getForm() {
     return this.fb.group({
@@ -77,7 +90,8 @@ export class AttributeFamilyUpsertComponent implements OnInit {
   submit() {
     this.isSaving = true;
     const params = this.form.value;
-    console.log(params);
+    params['groups'] = this.attributeFamily.groups;
+
     if (params.id) {
       this.subscribeToSaveResponse(
         this.attributeFamilyService.put(params.id, params)
@@ -131,7 +145,7 @@ export class AttributeFamilyUpsertComponent implements OnInit {
   addAttributeToGroup(group: IAttributeGroup) {
     const modalRef = this.modalService.open(AddAttributeToGroupModalComponent);
     modalRef.componentInstance.group = group;
-    modalRef.componentInstance.attributes = this.attributes;
+    modalRef.componentInstance.attributes = this.unUsedAttributes;
   }
 
   deleteAttributeFromGroup(
@@ -141,6 +155,10 @@ export class AttributeFamilyUpsertComponent implements OnInit {
     if (!group.attributes) return;
     const index = group.attributes.findIndex((a) => a.id === attribute.id);
 
-    group.attributes?.splice(index, 1);
+    const deletedAttr = group.attributes?.splice(index, 1);
+    console.log(deletedAttr);
+    if (deletedAttr) {
+      this.unUsedAttributes.push(deletedAttr[0]);
+    }
   }
 }

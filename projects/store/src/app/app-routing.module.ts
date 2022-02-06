@@ -40,6 +40,14 @@ const routes: Routes = [
             (m) => m.AttributeFamilyModule
           ),
       },
+
+      {
+        path: 'product',
+        loadChildren: () =>
+          import('./entity/product/product.module').then(
+            (m) => m.ProductModule
+          ),
+      },
     ],
   },
   { path: '**', redirectTo: 'dashboard' },
