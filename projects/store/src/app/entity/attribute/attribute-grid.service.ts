@@ -21,6 +21,8 @@ export class AttributeGridService {
       },
       { headerName: AttributeColumnLabel.NAME, field: AttributeColumn.NAME },
       { headerName: AttributeColumnLabel.CODE, field: AttributeColumn.CODE },
+      { headerName: AttributeColumnLabel.TYPE, field: AttributeColumn.TYPE },
+      { headerName: AttributeColumnLabel.SWATCH_TYPE, field: AttributeColumn.SWATCH_TYPE },
       {
         headerName: AttributeColumnLabel.STATUS,
         field: AttributeColumn.CODE,

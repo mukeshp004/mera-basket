@@ -5,9 +5,11 @@ import { ProductRoutingModule } from './product-routing.module';
 import { ProductListComponent } from './product-list/product-list.component';
 import { ProductUpsertComponent } from './product-upsert/product-upsert.component';
 import { SharedModule } from '../../shared/shared.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { DynamicModule } from '../../shared/component/dynamic/dynamic.module';
 
 @NgModule({
   declarations: [ProductListComponent, ProductUpsertComponent],
-  imports: [CommonModule, SharedModule, ProductRoutingModule],
+  imports: [CommonModule, SharedModule, ProductRoutingModule, NgbModule, DynamicModule],
 })
 export class ProductModule {}

@@ -24,6 +24,8 @@ import { ColorPickerModule } from 'ngx-color-picker';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    // FormlyModule.forRoot(),
+    // FormlyBootstrapModule,
     AgGridModule.withComponents([]),
     LoggerModule.forRoot({
       serverLoggingUrl: '/api/logs',

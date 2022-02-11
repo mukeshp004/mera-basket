@@ -6,4 +6,5 @@ export enum PRODUCT_TYPE {
   Downloadable = 5,
   Booking = 6,
   Bundle = 7,
+  "Gift Card" = 8
 }

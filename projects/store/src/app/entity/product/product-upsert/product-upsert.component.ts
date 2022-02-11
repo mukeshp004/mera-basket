@@ -1,12 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, Observable } from 'rxjs';
 import { PRODUCT_TYPE } from '../../../shared/enums/product-type.enum';
+import { IAttribute } from '../../../shared/models/attributes/attribute';
 import { IAttributeFamily } from '../../../shared/models/attributes/attribute-family';
+import { IAttributeGroup } from '../../../shared/models/attributes/attribute-group';
 import { IProduct } from '../../../shared/models/product';
 import { AttributeFamilyService } from '../../attribute-family/services/attribute-family.service';
+import { AttributeService } from '../../attribute/attribute.service';
 import { CategoryService } from '../../category/category.service';
 import { ProductService } from '../services/product.service';
 
@@ -19,16 +27,20 @@ export class ProductUpsertComponent implements OnInit {
   form = this.getForm();
   isSaving = false;
   product!: IProduct;
-  attributeFamilies: IAttributeFamily[] = [];
   productTypes = PRODUCT_TYPE;
+
+  attributes: IAttribute[] = [];
+  attributeFamilies: IAttributeFamily[] = [];
+  selectedAttributeFamily: any;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
+    private toastr: ToastrService,
     private productService: ProductService,
-    private attributeFamilyService: AttributeFamilyService,
-    private toastr: ToastrService
+    private attributeService: AttributeService,
+    private attributeFamilyService: AttributeFamilyService
   ) {}
 
   ngOnInit(): void {
@@ -37,8 +49,48 @@ export class ProductUpsertComponent implements OnInit {
       // this.updateForm(this.product);
     });
 
-    this.attributeFamilyService.get().subscribe((attributeFamilies) => {
-      this.attributeFamilies = attributeFamilies;
+    this.getAttributeFamilies();
+  }
+
+  getAttributeFamilies() {
+    this.attributeFamilyService
+      .get()
+      .subscribe((attributeFamilies: IAttributeFamily[]) => {
+        this.attributeFamilies = attributeFamilies;
+
+        this.onAttributeFamilyChange();
+      });
+  }
+
+  onAttributeFamilyChange() {
+    this.form.get('attribute_family_id')?.valueChanges.subscribe((value) => {
+      console.log('Attribute Family change', value);
+
+      console.log(this.attributeFamilies);
+      this.selectedAttributeFamily = this.attributeFamilies.find(
+        (attributeFamily: IAttributeFamily) => {
+          return attributeFamily.id === value;
+        }
+      );
+
+      this.buildDynamicForm();
+    });
+  }
+
+  buildDynamicForm() {
+    this.selectedAttributeFamily.groups.forEach((group: IAttributeGroup) => {
+      if (group && group.name) {
+        const g = {} as any;
+
+        group.attributes?.forEach((attribute: IAttribute) => {
+          const index = attribute.code || '';
+          g[index] = attribute.is_required
+            ? new FormControl('', Validators.required)
+            : new FormControl('');
+        });
+        this.form.addControl(group.name, this.fb.group(g));
+        // console.log(this.form.controls);
+      }
     });
   }
 
