@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './admin/login/login.component';
+import { JsonFromComponent } from './json-from/json-from.component';
 import { LayoutComponent } from './layout/layout.component';
 import { AuthGuard } from './shared/guards/auth-guard.service';
 
@@ -14,6 +15,10 @@ const routes: Routes = [
     component: LayoutComponent,
     canActivate: [AuthGuard],
     children: [
+      {
+        path: 'jsonform',
+        component: JsonFromComponent,
+      },
       {
         path: 'page',
         loadChildren: () =>

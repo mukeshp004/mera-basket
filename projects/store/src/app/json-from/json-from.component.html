@@ -1,0 +1,21 @@
+<div class="main-content">
+  <form name="form" role="form" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="card">
+      <div class="card-body">
+        <formly-form
+          [form]="form"
+          [fields]="formFields"
+          [model]="model"
+        ></formly-form>
+
+        <pre>
+          {{ form.value | json }}
+        </pre>
+      </div>
+
+      <div class="card-body">
+        <button type="submit" [disabled]="!form.valid">Submit</button>
+      </div>
+    </div>
+  </form>
+</div>

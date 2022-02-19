@@ -2,22 +2,22 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
+// for HttpClient import:
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { AdminModule } from './admin/admin.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DemoComponent } from './demo/demo.component';
+import { JsonFromComponent } from './json-from/json-from.component';
 import { LayoutModule } from './layout/layout.module';
 import { PagesModule } from './pages/pages.module';
 import { ErrorInterceptorService } from './shared/interceptors/error-interceptor.service';
 import { JwtInterceptorService } from './shared/interceptors/jwt-interceptor.service';
 import { SharedModule } from './shared/shared.module';
 
-// for HttpClient import:
-import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
-import { LoadingBarModule } from '@ngx-loading-bar/core';
-
 @NgModule({
-  declarations: [AppComponent, DemoComponent],
+  declarations: [AppComponent, DemoComponent, JsonFromComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -27,7 +27,7 @@ import { LoadingBarModule } from '@ngx-loading-bar/core';
     PagesModule,
     BrowserAnimationsModule,
     LoadingBarHttpClientModule,
-    LoadingBarModule
+    LoadingBarModule,
   ],
   providers: [
     {

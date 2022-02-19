@@ -1,0 +1,15 @@
+<!-- [class.is-invalid]="showError" -->
+<select
+  class="form-control"
+  [formControl]="formControl"
+  [formlyAttributes]="field"
+>
+  <option *ngIf="to.placeholder" [ngValue]="undefined">
+    {{ to.placeholder }}
+  </option>
+  <ng-container *ngFor="let opt of items">
+    <option [ngValue]="opt.value" [disabled]="opt.disabled">
+      {{ opt.label }}
+    </option>
+  </ng-container>
+</select>

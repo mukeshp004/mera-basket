@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -6,6 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormlyFieldConfig } from '@ngx-formly/core';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, Observable } from 'rxjs';
 import { PRODUCT_TYPE } from '../../../shared/enums/product-type.enum';
@@ -13,9 +14,9 @@ import { IAttribute } from '../../../shared/models/attributes/attribute';
 import { IAttributeFamily } from '../../../shared/models/attributes/attribute-family';
 import { IAttributeGroup } from '../../../shared/models/attributes/attribute-group';
 import { IProduct } from '../../../shared/models/product';
+import { HelperService } from '../../../shared/services/helper.service';
 import { AttributeFamilyService } from '../../attribute-family/services/attribute-family.service';
 import { AttributeService } from '../../attribute/attribute.service';
-import { CategoryService } from '../../category/category.service';
 import { ProductService } from '../services/product.service';
 
 @Component({
@@ -24,7 +25,10 @@ import { ProductService } from '../services/product.service';
   styleUrls: ['./product-upsert.component.scss'],
 })
 export class ProductUpsertComponent implements OnInit {
-  form = this.getForm();
+  @ViewChild('formlyForm') formlyForm!: any;
+  formFields: FormlyFieldConfig[] = [];
+  form: FormGroup = this.fb.group({});
+  model = {};
   isSaving = false;
   product!: IProduct;
   productTypes = PRODUCT_TYPE;
@@ -32,6 +36,8 @@ export class ProductUpsertComponent implements OnInit {
   attributes: IAttribute[] = [];
   attributeFamilies: IAttributeFamily[] = [];
   selectedAttributeFamily: any;
+  attributeFamilyOptions: any[] = [];
+  productTypeOptions = this.helperService.enum2Options(PRODUCT_TYPE);
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -40,7 +46,8 @@ export class ProductUpsertComponent implements OnInit {
     private toastr: ToastrService,
     private productService: ProductService,
     private attributeService: AttributeService,
-    private attributeFamilyService: AttributeFamilyService
+    private attributeFamilyService: AttributeFamilyService,
+    private helperService: HelperService
   ) {}
 
   ngOnInit(): void {
@@ -50,6 +57,79 @@ export class ProductUpsertComponent implements OnInit {
     });
 
     this.getAttributeFamilies();
+    this.buildFormlyForm();
+
+    console.log('this.formlyForm', this.formlyForm);
+  }
+
+  buildFormlyForm() {
+    this.formFields = [
+      {
+        key: 'name',
+        type: 'input',
+        defaultValue: '',
+        templateOptions: {
+          label: 'Name',
+          placeholder: 'Name',
+          required: true,
+        },
+        validation: {
+          messages: {
+            required: (error, field: FormlyFieldConfig) =>
+              `"${field?.formControl?.value}" is required`,
+          },
+        },
+      },
+      {
+        key: 'type',
+        type: 'select',
+        templateOptions: {
+          label: 'Product Type',
+          options: this.productTypeOptions,
+        },
+      },
+      {
+        key: 'address',
+        wrappers: ['panel'],
+        templateOptions: { label: 'Address' },
+        fieldGroup: [
+          {
+            key: 'town',
+            type: 'input',
+            templateOptions: {
+              required: true,
+              type: 'text',
+              label: 'Town',
+            },
+          },
+        ],
+      },
+      // {
+      //   key: 'attribute_family_id',
+      //   type: 'select',
+      //   templateOptions: {
+      //     label: 'Family Attribute',
+      //     options: [],
+      //   },
+      //   hooks: {
+      //     onInit: (field?: FormlyFieldConfig) => {
+      //       console.log('attr family oninit', field);
+      //       this.attributeFamilyService
+      //         .get()
+      //         .subscribe((attributeFamilies: IAttributeFamily[]) => {
+      //           this.attributeFamilies = attributeFamilies;
+
+      //           attributeFamilies.forEach((attributeFamily) => {
+      //             // field?.templateOptions?.options?.push({
+      //             //   value: attributeFamily.id,
+      //             //   label: attributeFamily.name,
+      //             // });
+      //           });
+      //         });
+      //     },
+      //   },
+      // },
+    ] as FormlyFieldConfig[];
   }
 
   getAttributeFamilies() {
@@ -57,6 +137,10 @@ export class ProductUpsertComponent implements OnInit {
       .get()
       .subscribe((attributeFamilies: IAttributeFamily[]) => {
         this.attributeFamilies = attributeFamilies;
+
+        this.attributeFamilyOptions = this.attributeFamilies.map((a) => {
+          return { label: a.name, value: a.id };
+        });
 
         this.onAttributeFamilyChange();
       });
@@ -91,17 +175,6 @@ export class ProductUpsertComponent implements OnInit {
         this.form.addControl(group.name, this.fb.group(g));
         // console.log(this.form.controls);
       }
-    });
-  }
-
-  getForm(): FormGroup {
-    return this.fb.group({
-      id: [],
-      name: [],
-      sku: [],
-      type: [null, Validators.required],
-      attribute_family_id: [null, Validators.required],
-      status: ['0', Validators.required],
     });
   }
 

@@ -1,0 +1,13 @@
+fiedl : {{ field | json }}
+<br />
+
+control:- {{ formControl }}
+<br />
+<div class="form-check form-switch">
+  <input
+    class="form-check-input"
+    type="checkbox"
+    role="switch"
+    [formlyAttributes]="field"
+  />
+</div>

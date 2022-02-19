@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DynamicControlComponent } from './dynamic-control.component';
+import { FormlyPanelWrapperComponent } from './formly-panel-wrapper.component';
 
-describe('DynamicControlComponent', () => {
-  let component: DynamicControlComponent;
-  let fixture: ComponentFixture<DynamicControlComponent>;
+describe('FormlyPanelWrapperComponent', () => {
+  let component: FormlyPanelWrapperComponent;
+  let fixture: ComponentFixture<FormlyPanelWrapperComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DynamicControlComponent ]
+      declarations: [ FormlyPanelWrapperComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DynamicControlComponent);
+    fixture = TestBed.createComponent(FormlyPanelWrapperComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

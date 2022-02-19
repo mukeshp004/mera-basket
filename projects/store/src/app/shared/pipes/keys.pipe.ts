@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'keys',
 })
 export class KeysPipe implements PipeTransform {
-  transform(value: any, args?: unknown[]): any {
+  transform(value: any, args?: unknown[]): any[] {
     let list = [];
     for (var key in value) {
       if (!isNaN(parseInt(key, 10))) {
