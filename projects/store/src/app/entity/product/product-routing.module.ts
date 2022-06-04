@@ -1,3 +1,4 @@
+import { ProductAddFormlyComponent } from './product-add-formly/product-add-formly.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ProductListComponent } from './product-list/product-list.component';
@@ -12,6 +13,11 @@ const routes: Routes = [
   {
     path: 'add',
     component: ProductUpsertComponent,
+    // resolve: { entity: ProductResolveService },
+  },
+  {
+    path: 'add-formly',
+    component: ProductAddFormlyComponent,
     // resolve: { entity: ProductResolveService },
   },
   {

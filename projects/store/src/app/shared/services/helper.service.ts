@@ -8,9 +8,9 @@ export class HelperService {
 
   enum2Options(obj: any, args?: unknown[]): any[] {
     let list = [];
-    for (var key in obj) {
+    for (let key in obj) {
       if (!isNaN(parseInt(key, 10))) {
-        list.push({ value: key, label: obj[key] });
+        list.push({ value: +key, label: obj[key] });
       }
     }
     return list;

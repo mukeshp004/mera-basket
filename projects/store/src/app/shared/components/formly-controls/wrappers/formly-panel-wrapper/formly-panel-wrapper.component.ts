@@ -10,5 +10,10 @@ export class FormlyPanelWrapperComponent
   extends FieldWrapper<FormlyFieldConfig>
   implements OnInit
 {
+  isCollapsed = false;
   ngOnInit(): void {}
+
+  togglePanel() {
+    this.isCollapsed = !this.isCollapsed;
+  }
 }

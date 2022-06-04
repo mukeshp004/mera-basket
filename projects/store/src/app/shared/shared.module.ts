@@ -1,3 +1,4 @@
+import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
@@ -37,24 +38,9 @@ import { KeysPipe } from './pipes/keys.pipe';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    FormlyBootstrapModule,
     FormlyModule.forRoot({
-      types: [
-        {
-          name: 'input',
-          component: FormlyFieldInputComponent,
-          wrappers: ['form-field'],
-        },
-        {
-          name: 'select',
-          component: FormlyFieldSelectComponent,
-          wrappers: ['form-field'],
-        },
-        {
-          name: 'boolean',
-          component: FormlyFieldToggleComponent,
-          wrappers: ['form-field'],
-        },
-      ],
+      types: [],
       wrappers: [
         {
           name: 'form-field',
@@ -66,35 +52,7 @@ import { KeysPipe } from './pipes/keys.pipe';
         { name: 'required', message: 'This field is required' },
       ],
     }),
-    // DynamicFormModule.forRoot({
-    //   types: [
-    //     {
-    //       name: 'input',
-    //       component: FormlyFieldInputComponent,
-    //       wrappers: ['form-field'],
-    //     },
-    //     {
-    //       name: 'select',
-    //       component: FormlyFieldSelectComponent,
-    //       wrappers: ['form-field'],
-    //     },
-    //     {
-    //       name: 'boolean',
-    //       component: FormlyFieldToggleComponent,
-    //       wrappers: ['form-field'],
-    //     },
-    //   ],
-    //   wrappers: [
-    //     {
-    //       name: 'form-field',
-    //       component: FormlyFieldHorizontalWrapperComponent,
-    //     },
-    //     { name: 'panel', component: FormlyPanelWrapperComponent },
-    //   ],
-    //   validationMessages: [
-    //     { name: 'required', message: 'This field is required' },
-    //   ],
-    // }),
+
     AgGridModule.withComponents([]),
     LoggerModule.forRoot({
       serverLoggingUrl: '/api/logs',

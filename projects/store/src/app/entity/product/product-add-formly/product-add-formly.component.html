@@ -1,0 +1,61 @@
+<div class="breadcrumbs">
+  <ul>
+    <li>
+      <a href="#/product" title=""><i class="fa fa-home"></i></a>/
+    </li>
+    <li><a title="">Product</a></li>
+  </ul>
+</div>
+
+<div class="main-content">
+  <div class="content-header">
+    <div class="row">
+      <div class="col-12">
+        <h1>Product</h1>
+      </div>
+    </div>
+  </div>
+
+  <form
+    name="categoryForm"
+    role="form"
+    [formGroup]="form"
+    (ngSubmit)="submit()"
+  >
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Create Category</h3>
+      </div>
+      <div class="card-body">
+        <h2>Dynamic form</h2>
+
+        <formly-form
+          #formly
+          [form]="form"
+          [fields]="formFields"
+          [model]="model"
+        ></formly-form>
+
+        <pre>{{ form.value | json }}</pre>
+      </div>
+      <!--  end of card body -->
+      <div class="card-footer">
+        <button
+          class="btn btn-primary float-end"
+          type="submit"
+          [disabled]="form.invalid || isSaving"
+        >
+          Submit
+        </button>
+        <button
+          class="btn btn-secondary float-end me-2"
+          type="button"
+          (click)="goBack()"
+        >
+          Back
+        </button>
+      </div>
+      <!-- card footer-->
+    </div>
+  </form>
+</div>
