@@ -20,6 +20,8 @@ import { FormlyFieldHorizontalWrapperComponent } from './components/formly-contr
 import { FormlyPanelWrapperComponent } from './components/formly-controls/wrappers/formly-panel-wrapper/formly-panel-wrapper.component';
 import { FormlyWrapperFormFieldComponent } from './components/formly-controls/wrappers/formly-wrapper-form-field/formly-wrapper-form-field.component';
 import { KeysPipe } from './pipes/keys.pipe';
+import { JsonFormatterDirective } from './directives/json-formatter.directive';
+import { FormlyCategoryDropdownComponent } from './components/formly-controls/formly-category-dropdown/formly-category-dropdown.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +35,8 @@ import { KeysPipe } from './pipes/keys.pipe';
     FormlyWrapperFormFieldComponent,
     FormlyFieldHorizontalWrapperComponent,
     FormlyPanelWrapperComponent,
+    JsonFormatterDirective,
+    FormlyCategoryDropdownComponent,
   ],
   imports: [
     CommonModule,
@@ -80,6 +84,9 @@ import { KeysPipe } from './pipes/keys.pipe';
 
     //component
     ColorPickerComponent,
+
+    // directives
+    JsonFormatterDirective,
   ],
   providers: [NgEventBus],
 })

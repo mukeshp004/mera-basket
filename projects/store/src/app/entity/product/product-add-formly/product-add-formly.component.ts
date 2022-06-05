@@ -63,22 +63,6 @@ export class ProductAddFormlyComponent implements OnInit {
   buildFormlyForm() {
     this.formFields = [
       {
-        key: 'name',
-        type: 'input',
-        defaultValue: '',
-        templateOptions: {
-          label: 'Name',
-          placeholder: 'Name',
-          required: true,
-        },
-        validation: {
-          messages: {
-            required: (error, field: FormlyFieldConfig) =>
-              `"${field?.formControl?.value}" is required`,
-          },
-        },
-      },
-      {
         key: 'product_type',
         type: 'select',
         defaultValue: PRODUCT_TYPE.Simple,
@@ -123,7 +107,11 @@ export class ProductAddFormlyComponent implements OnInit {
       this.selectedAttributeFamily
     );
 
-    this.formFields = [...this.formFields, ...fields];
+    this.formFields = [
+      ...this.formFields,
+      ...fields,
+      this.productFormly.generateInventoryGroup(),
+    ];
   }
 
   goBack() {
