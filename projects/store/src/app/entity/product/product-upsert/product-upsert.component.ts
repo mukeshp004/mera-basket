@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -27,7 +27,7 @@ import { ProductService } from '../services/product.service';
 export class ProductUpsertComponent implements OnInit {
   @ViewChild('formlyForm') formlyForm!: any;
   formFields: FormlyFieldConfig[] = [];
-  form: FormGroup = this.fb.group({});
+  form: UntypedFormGroup = this.fb.group({});
   model = {};
   isSaving = false;
   product!: IProduct;
@@ -39,13 +39,13 @@ export class ProductUpsertComponent implements OnInit {
   attributeFamilyOptions: any[] = [];
   productTypeOptions = this.helperService.enum2Options(PRODUCT_TYPE);
 
-  filterForm!: FormGroup;
+  filterForm!: UntypedFormGroup;
   filterFields!: any[];
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private toastr: ToastrService,
     private productService: ProductService,
     private attributeService: AttributeService,
@@ -150,7 +150,7 @@ export class ProductUpsertComponent implements OnInit {
     this.filterForm = this.generateFilterForm();
   }
 
-  generateFilterForm(): FormGroup {
+  generateFilterForm(): UntypedFormGroup {
     const baseForm = this.fb.group({});
     this.filterFields.forEach((field) => {
       baseForm.addControl(field.key, this.generateFormGroup(baseForm, field));
@@ -159,7 +159,7 @@ export class ProductUpsertComponent implements OnInit {
     return baseForm;
   }
 
-  generateFormGroup(baseForm: FormGroup, field: any): FormGroup {
+  generateFormGroup(baseForm: UntypedFormGroup, field: any): UntypedFormGroup {
     if (field.group) {
       const formGroup = this.fb.group({});
       field.group.forEach((item: any) => {
@@ -167,7 +167,7 @@ export class ProductUpsertComponent implements OnInit {
       });
       return formGroup;
     } else {
-      baseForm.addControl(field.key, new FormControl(''));
+      baseForm.addControl(field.key, new UntypedFormControl(''));
     }
     return baseForm;
   }
@@ -279,8 +279,8 @@ export class ProductUpsertComponent implements OnInit {
         group.attributes?.forEach((attribute: IAttribute) => {
           const index = attribute.code || '';
           g[index] = attribute.is_required
-            ? new FormControl('', Validators.required)
-            : new FormControl('');
+            ? new UntypedFormControl('', Validators.required)
+            : new UntypedFormControl('');
         });
         this.form.addControl(group.name, this.fb.group(g));
         // console.log(this.form.controls);

@@ -5,7 +5,7 @@ import { IProduct } from './../../../shared/models/product';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, Pipe, ViewChild } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { HelperService } from '../../../shared/services/helper.service';
 import { AttributeFamilyService } from '../../attribute-family/services/attribute-family.service';
 import { AttributeService } from '../../attribute/attribute.service';
@@ -23,7 +23,7 @@ export class ProductAddFormlyComponent implements OnInit {
   @ViewChild('formly') formly: any;
   formFields: FormlyFieldConfig[] = [];
   model: any = {};
-  form: FormGroup = this.fb.group({});
+  form: UntypedFormGroup = this.fb.group({});
   isSaving = false;
   product!: IProduct;
   productTypes = PRODUCT_TYPE;
@@ -37,7 +37,7 @@ export class ProductAddFormlyComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private toastr: ToastrService,
     private productService: ProductService,
     private attributeService: AttributeService,

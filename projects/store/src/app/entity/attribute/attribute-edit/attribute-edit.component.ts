@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, Observable } from 'rxjs';
@@ -27,7 +27,7 @@ export class AttributeEditComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private attributeService: AttributeService,
     private toastr: ToastrService
   ) {}
@@ -62,7 +62,7 @@ export class AttributeEditComponent implements OnInit {
   }
 
   get options() {
-    return this.form.get('options') as FormArray;
+    return this.form.get('options') as UntypedFormArray;
   }
 
   get formControl() {
@@ -77,7 +77,7 @@ export class AttributeEditComponent implements OnInit {
     this.options.removeAt(index);
   }
 
-  getOptionForm(): FormGroup {
+  getOptionForm(): UntypedFormGroup {
     return this.fb.group({
       id: [],
       swatch_value: [],
