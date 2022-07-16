@@ -57,6 +57,8 @@ export class ProductAddFormlyComponent implements OnInit {
         this.attributeFamilies = attributeFamilies;
 
         this.buildFormlyForm();
+
+        this.addDefaultValues();
       });
   }
 
@@ -86,11 +88,18 @@ export class ProductAddFormlyComponent implements OnInit {
 
           change: this.onAttributFamilyChange,
         },
+        hooks: {
+          onInit: (field?: FormlyFieldConfig) => {
+            console.log('only works here for me');
+            this.onAttributFamilyChange(field);
+          },
+        },
       },
     ];
   }
 
-  onAttributFamilyChange = (formField: any, $event: any) => {
+  // onAttributFamilyChange = (formField: any, $event: any) => {
+  onAttributFamilyChange = (formField: any) => {
     const value = this.model['attribute_family_id'];
 
     this.selectedAttributeFamily = this.attributeFamilies.find(
@@ -123,11 +132,11 @@ export class ProductAddFormlyComponent implements OnInit {
     const params = this.form.value;
 
     console.log(params);
-    // if (params.id) {
-    //   this.subscribeToSaveResponse(this.productService.put(params.id, params));
-    // } else {
-    //   this.subscribeToSaveResponse(this.productService.post(params));
-    // }
+    if (params?.id) {
+      this.subscribeToSaveResponse(this.productService.put(params.id, params));
+    } else {
+      this.subscribeToSaveResponse(this.productService.post(params));
+    }
   }
 
   protected subscribeToSaveResponse(result: Observable<IProduct>): void {
@@ -141,8 +150,8 @@ export class ProductAddFormlyComponent implements OnInit {
     const createdMsg = 'Product created Successfully';
     const updatedMsg = 'Product updated Successfully';
 
-    this.toastr.success(this.product.id ? updatedMsg : createdMsg, 'Success');
-    this.router.navigate(['/category']);
+    this.toastr.success(this.product?.id ? updatedMsg : createdMsg, 'Success');
+    // this.router.navigate(['/category']);
   }
 
   protected onSaveError(error: any): void {
@@ -152,5 +161,52 @@ export class ProductAddFormlyComponent implements OnInit {
 
   protected onSaveFinalize(): void {
     this.isSaving = false;
+  }
+
+  addDefaultValues() {
+    this.model = {
+      product_type: 1,
+      attribute_family_id: 1,
+      general: {
+        sku: 'Maggi0001',
+        product_number: 'Maggi0001',
+        name: 'Maggi',
+        url_key: 'maggi',
+        tax_category_id: null,
+        new: null,
+        featured: null,
+        visible_individually: true,
+        guest_checkout: true,
+        status: true,
+        color: null,
+        size: null,
+        brand: null,
+      },
+      description: {
+        short_description: 'Maggi',
+        description: 'Maggi',
+      },
+      meta_description: {
+        meta_title: null,
+        meta_keywords: null,
+        meta_description: null,
+      },
+      price: {
+        price: 10,
+        cost: null,
+        special_price: null,
+        special_price_from: null,
+        special_price_to: null,
+      },
+      shipping: {
+        length: null,
+        width: null,
+        height: null,
+        weight: '10',
+      },
+      inventory: {
+        Inventory: null,
+      },
+    };
   }
 }

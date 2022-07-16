@@ -39,6 +39,9 @@ export class ProductUpsertComponent implements OnInit {
   attributeFamilyOptions: any[] = [];
   productTypeOptions = this.helperService.enum2Options(PRODUCT_TYPE);
 
+  filterForm!: FormGroup;
+  filterFields!: any[];
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -60,6 +63,113 @@ export class ProductUpsertComponent implements OnInit {
     this.buildFormlyForm();
 
     console.log('this.formlyForm', this.formlyForm);
+  }
+
+  buildRecursiveForm() {
+    this.filterFields = [
+      {
+        key: 'common',
+        title: 'main fields',
+        group: [
+          {
+            key: 'createdAt',
+            title: 'Create Date',
+            type: 'date',
+          },
+          {
+            key: 'test',
+            group: [
+              {
+                key: 'foo',
+                title: 'Foo',
+                type: 'select',
+              },
+              {
+                key: 'goo',
+                title: 'Goo',
+                type: 'input',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        key: 'individualPerson',
+        title: 'Physical Person',
+        group: [
+          {
+            key: 'firstname',
+            title: 'First Name',
+            type: 'text',
+          },
+          {
+            key: 'lastname',
+            title: 'Last Name',
+            type: 'text',
+          },
+          {
+            key: 'phone',
+            title: 'Phone Number',
+            type: 'text',
+          },
+          {
+            key: 'citizenshipCountry',
+            title: 'Country',
+            type: 'text',
+          },
+        ],
+      },
+      {
+        key: 'legalPerson',
+        title: 'Legal Person',
+        group: [
+          {
+            key: 'brandname',
+            title: 'Brand Name',
+            type: 'text',
+          },
+          {
+            key: 'fullname',
+            title: 'Full Name',
+            type: 'text',
+          },
+          {
+            key: 'phone',
+            title: 'Phone',
+            type: 'text',
+          },
+          {
+            key: 'registrationCountry',
+            title: 'Country',
+            type: 'text',
+          },
+        ],
+      },
+    ];
+
+    this.filterForm = this.generateFilterForm();
+  }
+
+  generateFilterForm(): FormGroup {
+    const baseForm = this.fb.group({});
+    this.filterFields.forEach((field) => {
+      baseForm.addControl(field.key, this.generateFormGroup(baseForm, field));
+    });
+    console.log(baseForm);
+    return baseForm;
+  }
+
+  generateFormGroup(baseForm: FormGroup, field: any): FormGroup {
+    if (field.group) {
+      const formGroup = this.fb.group({});
+      field.group.forEach((item: any) => {
+        formGroup.addControl(item.key, this.generateFormGroup(formGroup, item));
+      });
+      return formGroup;
+    } else {
+      baseForm.addControl(field.key, new FormControl(''));
+    }
+    return baseForm;
   }
 
   buildFormlyForm() {

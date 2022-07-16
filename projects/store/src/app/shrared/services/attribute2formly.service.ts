@@ -50,7 +50,7 @@ export class Attribute2formlyService {
       key: attribute.code,
       type: 'input',
       templateOptions: {
-        required: attribute.is_required,
+        required: attribute.is_required || false,
         type: 'text',
         label: attribute.name,
       },
@@ -63,7 +63,8 @@ export class Attribute2formlyService {
       type: 'select',
       templateOptions: {
         label: attribute.name,
-        required: attribute.is_required,
+        placeholder: 'Select options',
+        required: attribute.is_required || false,
         options: attribute.options,
         valueProp: 'id',
         labelProp: 'name',
@@ -76,7 +77,7 @@ export class Attribute2formlyService {
       key: attribute.code,
       type: 'input',
       templateOptions: {
-        required: attribute.is_required,
+        required: attribute.is_required || false,
         type: 'number',
         label: attribute.name,
       },
@@ -94,7 +95,7 @@ export class Attribute2formlyService {
       key: attribute.code,
       type: 'input',
       templateOptions: {
-        required: attribute.is_required,
+        required: attribute.is_required || false,
         type: 'date',
         label: attribute.name,
       },
@@ -107,7 +108,7 @@ export class Attribute2formlyService {
       type: 'checkbox',
       templateOptions: {
         label: attribute.name,
-        required: attribute.is_required,
+        required: attribute.is_required || false,
       },
     } as FormlyFieldConfig;
   }
@@ -118,7 +119,7 @@ export class Attribute2formlyService {
       type: 'textarea',
       templateOptions: {
         label: attribute.name,
-        required: attribute.is_required,
+        required: attribute.is_required || false,
         placeholder: 'This has 10 rows',
         // rows: 10,
       },

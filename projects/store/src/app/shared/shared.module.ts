@@ -1,7 +1,7 @@
 import { FormlyBootstrapModule } from '@ngx-formly/bootstrap';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { NgModule, Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FormlyModule } from '@ngx-formly/core';
@@ -44,7 +44,7 @@ import { FormlyCategoryDropdownComponent } from './components/formly-controls/fo
     ReactiveFormsModule,
     FormlyBootstrapModule,
     FormlyModule.forRoot({
-      types: [],
+      // types: [{ name: 'select', component: FormlyFieldSelectComponent }],
       wrappers: [
         {
           name: 'form-field',

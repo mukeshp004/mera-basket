@@ -13,8 +13,8 @@ export class AppComponent {
 
   constructor(private messageBus: MessageBusService) {}
 
+  // @HostListener('window:load', ['$event'])
   @HostListener('window:resize', ['$event'])
-  @HostListener('window:load', ['$event'])
   onResize(event: { target: { innerWidth: any } }) {
     this.width = event.target.innerWidth;
     this.messageBus.publish(MessageBusConstant.windowResize, {

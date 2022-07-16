@@ -19,6 +19,7 @@ export class AddGroupComponent implements OnInit {
   getForm(): FormGroup {
     return this.fb.group({
       id: [],
+      code: ['', Validators.required],
       name: ['', Validators.required],
       position: [0, Validators.required],
     });

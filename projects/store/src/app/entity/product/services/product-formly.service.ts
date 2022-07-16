@@ -18,7 +18,7 @@ export class ProductFormlyService {
     attributeFamily?.groups?.forEach((group: IAttributeGroup) => {
       if (group && group.name) {
         const g = this.attribute2formlyService.generateFormGroup(
-          group.name,
+          group.code || group.name,
           group.name
         );
 
@@ -49,6 +49,7 @@ export class ProductFormlyService {
       this.attribute2formlyService.generateField({
         code: 'Inventory',
         name: 'Inventory',
+        type: 'number',
       } as IAttribute),
     ];
 

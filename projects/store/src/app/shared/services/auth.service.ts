@@ -19,7 +19,7 @@ export class AuthService extends ApiService<IUser> {
     private router: Router
   ) {
     super(http);
-    
+
     this.relativeUrl = 'login';
     const userJsonString = localStorage.getItem('currentUser');
     const user = userJsonString !== null ? JSON.parse(userJsonString) : null;
@@ -35,7 +35,7 @@ export class AuthService extends ApiService<IUser> {
   /**
    * This method makes login call
    * If success the, stores users in local storage and redirects to dashboard page
-   * 
+   *
    * @param params Login params
    * @returns Observable<IUser>
    */
@@ -55,7 +55,7 @@ export class AuthService extends ApiService<IUser> {
    */
   logout() {
     /**
-     * This wilm remove the data from local storage
+     * This will remove the data from local storage
      */
     localStorage.removeItem('currentUser');
 
