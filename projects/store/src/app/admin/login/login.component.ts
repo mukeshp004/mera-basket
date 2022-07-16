@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GlobalConfigService } from '../../shared/configs/global-config.service';
 import { AuthService } from '../../shared/services/auth.service';
@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit {
     password: ['Password@123', Validators.required],
   });
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private globalConfig: GlobalConfigService,

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { jsonFormFields } from './json-from';
 
@@ -10,10 +10,10 @@ import { jsonFormFields } from './json-from';
 })
 export class JsonFromComponent implements OnInit {
   formFields: FormlyFieldConfig[] = jsonFormFields;
-  form: FormGroup = this.fb.group({});
+  form: UntypedFormGroup = this.fb.group({});
   model = {};
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: UntypedFormBuilder) {}
 
   ngOnInit(): void {
     console.log(this.formFields);

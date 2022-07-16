@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbAccordion, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -28,7 +28,7 @@ export class AttributeFamilyUpsertComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private toastr: ToastrService,
     private modalService: NgbModal,
     private attributeService: AttributeService,

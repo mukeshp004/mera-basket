@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AttributeGroup } from 'projects/store/src/app/shared/models/attributes/attribute-group';
 
@@ -12,11 +12,11 @@ export class AddGroupComponent implements OnInit {
   form = this.getForm();
   add = new EventEmitter();
 
-  constructor(public modal: NgbActiveModal, private fb: FormBuilder) {}
+  constructor(public modal: NgbActiveModal, private fb: UntypedFormBuilder) {}
 
   ngOnInit(): void {}
 
-  getForm(): FormGroup {
+  getForm(): UntypedFormGroup {
     return this.fb.group({
       id: [],
       name: ['', Validators.required],
