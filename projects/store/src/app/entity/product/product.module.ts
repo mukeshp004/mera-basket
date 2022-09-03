@@ -7,9 +7,25 @@ import { ProductUpsertComponent } from './product-upsert/product-upsert.componen
 import { SharedModule } from '../../shared/shared.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ProductAddFormlyComponent } from './product-add-formly/product-add-formly.component';
+import { ConfigurationModalComponent } from './modal/configuration-modal/configuration-modal.component';
+import { CdkStepperModule } from '@angular/cdk/stepper';
+// import { NgStepperModule } from 'ng-stepper';
 
 @NgModule({
-  declarations: [ProductListComponent, ProductUpsertComponent, ProductAddFormlyComponent],
-  imports: [CommonModule, SharedModule, ProductRoutingModule, NgbModule],
+  declarations: [
+    ProductListComponent,
+    ProductUpsertComponent,
+    ProductAddFormlyComponent,
+    ConfigurationModalComponent,
+  ],
+  imports: [
+    CommonModule,
+    SharedModule,
+    ProductRoutingModule,
+    NgbModule,
+    CdkStepperModule,
+    // NgStepperModule,
+  ],
+  // CdkStepperModule,NgStepperModule
 })
 export class ProductModule {}

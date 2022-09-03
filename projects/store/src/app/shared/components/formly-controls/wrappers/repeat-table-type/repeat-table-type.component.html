@@ -1,0 +1,28 @@
+<table class="table" *ngIf="field.fieldGroup && field.fieldGroup.length > 0">
+  <thead>
+    <tr>
+      <th *ngFor="let column of getColumns()">{{ column }}</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let fieldG of field.fieldGroup; let i = index">
+      <td *ngFor="let field of fieldG.fieldGroup">
+        <!-- <pre>{{ field | json }}</pre> -->
+        <formly-field class="col" [field]="field"></formly-field>
+      </td>
+      <td>
+        <button class="btn btn-danger" type="button" (click)="remove(i)">
+          [x]
+        </button>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <button class="btn btn-primary" type="button" (click)="add()">
+          <!-- {{ to.addText }} -->Add
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>

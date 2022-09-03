@@ -1,0 +1,74 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">Create Product Configurations</h4>
+  <button
+    type="button"
+    class="btn-close"
+    aria-describedby="modal-title"
+    (click)="modal.dismiss('Cross click')"
+  ></button>
+</div>
+<div class="modal-body">
+  <!-- <table>
+    <tr>
+      <td>Action</td>
+      <td>Code</td>
+      <td>Name</td>
+      <td>Required</td>
+    </tr>
+
+    <tr *ngFor="let attribute of attributes">
+      <td><input type="checkbox" /></td>
+      <td>{{ attribute.code }}</td>
+      <td>{{ attribute.name }}</td>
+      <td>{{ attribute.is_required }}</td>
+    </tr>
+  </table> -->
+
+  <div *ngFor="let attribute of attributes">
+    <h1>{{ attribute.name }}</h1>
+    <app-check-list
+      *ngIf="attribute.options && attribute.code"
+      [items]="attribute.options"
+      [label]="'name'"
+      [(ngModel)]="selectedAttributeOptions[attribute.code]"
+    ></app-check-list
+    >x
+  </div>
+
+  <table border="1" class="table" *ngIf="configurableProduct.length">
+    <tr>
+      <th>Image</th>
+      <th>SKU</th>
+      <th *ngFor="let attribute of getKey(configurableProduct[0])">
+        {{ attribute }}
+      </th>
+      <th>Quantity</th>
+      <th>Price</th>
+    </tr>
+    <tr *ngFor="let item of configurableProduct">
+      <td>0</td>
+      <td>Demo</td>
+
+      <td *ngFor="let attribute of getKey(item)">{{ item[attribute].name }}</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </table>
+</div>
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-primary"
+    (click)="generateConfigurablePRoduct()"
+  >
+    Generate
+  </button>
+  <button
+    type="button"
+    class="btn btn-outline-secondary"
+    (click)="modal.dismiss('cancel click')"
+  >
+    Cancel
+  </button>
+  <button type="button" class="btn btn-success" (click)="save()">Ok</button>
+</div>

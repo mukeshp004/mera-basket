@@ -1,0 +1,20 @@
+<div
+  class="form-check form-check-inline"
+  *ngFor="let item of items; let i = index"
+>
+  <input
+    class="form-check-input"
+    type="checkbox"
+    [id]="getUniqueId(item, i)"
+    (change)="onSeletionChange(item)"
+  />
+  <label class="form-check-label" [for]="getUniqueId(item, i)">{{
+    item[label]
+  }}</label>
+</div>
+
+<!-- <ul>
+  <li *ngFor="let item of items; let i = index">
+    <input type="checkbox" /> <label>{{ item[label] }}</label>
+  </li>
+</ul> -->

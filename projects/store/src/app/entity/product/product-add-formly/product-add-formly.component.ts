@@ -1,3 +1,6 @@
+import { MetaData } from 'ng-event-bus/lib/meta-data';
+import { MessageBusConstant } from './../../../shared/constants/message-bus.constant';
+import { MessageBusService } from './../../../shared/services/message-bus.service';
 import { finalize, map, Observable, pipe } from 'rxjs';
 import { IAttribute } from 'projects/store/src/app/shared/models/attributes/attribute';
 import { PRODUCT_TYPE } from './../../../shared/enums/product-type.enum';
@@ -11,7 +14,7 @@ import { AttributeFamilyService } from '../../attribute-family/services/attribut
 import { AttributeService } from '../../attribute/attribute.service';
 import { ProductService } from '../services/product.service';
 import { IAttributeFamily } from '../../../shared/models/attributes/attribute-family';
-import { FormlyFieldConfig } from '@ngx-formly/core';
+import { FormlyFieldConfig, FormlyForm } from '@ngx-formly/core';
 import { ProductFormlyService } from '../services/product-formly.service';
 
 @Component({
@@ -30,9 +33,13 @@ export class ProductAddFormlyComponent implements OnInit {
   productTypeOptions = this.helperService.enum2Options(PRODUCT_TYPE);
 
   attributes: IAttribute[] = [];
+  configurableAttributes: IAttribute[] = [];
+
   attributeFamilies: IAttributeFamily[] = [];
   selectedAttributeFamily: any;
   attributeFamilyOptions: any[] = [];
+
+  excludeConfigurableAttribute = false;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -43,11 +50,49 @@ export class ProductAddFormlyComponent implements OnInit {
     private attributeService: AttributeService,
     private attributeFamilyService: AttributeFamilyService,
     private helperService: HelperService,
-    private productFormly: ProductFormlyService
+    private productFormly: ProductFormlyService,
+    private messageBus: MessageBusService
   ) {}
 
   ngOnInit(): void {
-    this.getAttributeFamilies();
+    this.activatedRoute.data.subscribe((response: any) => {
+      this.product = response.entity;
+      this.updateForm();
+      this.getAttributeFamilies();
+    });
+    // this.getAttributeFamilies();
+    this.productsVariantsChangeListener();
+  }
+
+  productsVariantsChangeListener() {
+    this.messageBus
+      .listen(MessageBusConstant.productVariantsChanged)
+      .subscribe((payLoad: MetaData) => {
+        const variants = payLoad.data;
+
+        console.log('Message Bus listener', variants);
+        this.model['variants'] = [];
+
+        variants.forEach((variant: any) => {
+          let variantValues: any = {
+            name: 'demo',
+            sku: 'sku',
+          };
+
+          for (let key in variant) {
+            variantValues[key] = variant[key].name;
+          }
+
+          variantValues = {
+            ...variantValues,
+            quantity: 0,
+            price: 0,
+            status: 1,
+          };
+
+          this.model['variants'].push(variantValues);
+        });
+      });
   }
 
   getAttributeFamilies() {
@@ -56,22 +101,53 @@ export class ProductAddFormlyComponent implements OnInit {
       .subscribe((attributeFamilies: IAttributeFamily[]) => {
         this.attributeFamilies = attributeFamilies;
 
+        this.model = { type: PRODUCT_TYPE.Configurable };
+        // this.model = { type: PRODUCT_TYPE.Configurable, variants: [{}, {}] };
         this.buildFormlyForm();
 
-        this.addDefaultValues();
+        // this.addDefaultValues();
       });
   }
 
   buildFormlyForm() {
-    this.formFields = [
+    this.formFields = this.intFormField();
+  }
+
+  intFormField(): FormlyFieldConfig[] {
+    return [
       {
-        key: 'product_type',
+        key: 'name',
+        type: 'input',
+        templateOptions: {
+          required: true,
+          type: 'text',
+          label: 'Name',
+        },
+      },
+      {
+        key: 'sku',
+        type: 'input',
+        templateOptions: {
+          required: true,
+          type: 'text',
+          label: 'SKU',
+        },
+      },
+
+      {
+        key: 'type',
         type: 'select',
         defaultValue: PRODUCT_TYPE.Simple,
         templateOptions: {
           label: 'Product Type',
           options: this.productTypeOptions,
-          // change: this.onAttributFamilyChange,
+          change: this.onProductTypeChange,
+        },
+
+        modelOptions: {
+          debounce: {
+            default: 2000,
+          },
         },
       },
       {
@@ -86,21 +162,43 @@ export class ProductAddFormlyComponent implements OnInit {
           },
           labelProp: 'name',
 
-          change: this.onAttributFamilyChange,
+          change: this.onAttributeFamilyChange,
         },
         hooks: {
           onInit: (field?: FormlyFieldConfig) => {
-            console.log('only works here for me');
-            this.onAttributFamilyChange(field);
+            const typeControl = field?.form?.get('type');
+            typeControl?.valueChanges.subscribe((value) => {
+              console.log(this.model['type']);
+              console.log(value);
+            });
           },
         },
       },
     ];
   }
 
+  onProductTypeChange = (field: FormlyFieldConfig, $event: any) => {
+    this.model = {};
+    this.model['type'] = field.formControl?.value;
+
+    this.excludeConfigurableAttribute = false;
+    if (this.model['type'] === PRODUCT_TYPE.Configurable) {
+      this.excludeConfigurableAttribute = true;
+    }
+
+    if (this.model['attribute_family_id']) {
+      // this.appendForm();
+    }
+
+    // this.onAttributeFamilyChange({});
+    // this.appendForm();
+  };
+
   // onAttributFamilyChange = (formField: any, $event: any) => {
-  onAttributFamilyChange = (formField: any) => {
+  onAttributeFamilyChange = (formField: any) => {
     const value = this.model['attribute_family_id'];
+
+    if (!value) return;
 
     this.selectedAttributeFamily = this.attributeFamilies.find(
       (attributeFamily: IAttributeFamily) => {
@@ -108,19 +206,42 @@ export class ProductAddFormlyComponent implements OnInit {
       }
     );
 
+    this.getConfigurableAttributes();
+
     this.appendForm();
   };
 
+  getConfigurableAttributes() {
+    this.selectedAttributeFamily.groups.forEach((group: any) => {
+      group.attributes.forEach((attribute: IAttribute) => {
+        if (attribute.is_configurable) {
+          this.configurableAttributes.push(attribute);
+        }
+      });
+    });
+  }
+
   appendForm() {
-    const fields: FormlyFieldConfig[] = this.productFormly.formField(
-      this.selectedAttributeFamily
+    const fields: FormlyFieldConfig[] = this.productFormly.formFields(
+      this.selectedAttributeFamily,
+      this.excludeConfigurableAttribute
     );
 
+    // this.formFields = [];
+
+    // this.buildFormlyForm();
+
     this.formFields = [
-      ...this.formFields,
+      // ...this.formFields.filter((f) =>
+      //   ['type', 'attribute_family_id'].includes(f.key as string)
+      // ),
+      ...this.intFormField(),
+      this.productFormly.generateConfigurableGroup(this.configurableAttributes),
       ...fields,
       this.productFormly.generateInventoryGroup(),
     ];
+
+    console.log('this.formFields ==========', this.formFields);
   }
 
   goBack() {
@@ -129,7 +250,8 @@ export class ProductAddFormlyComponent implements OnInit {
 
   submit() {
     this.isSaving = true;
-    const params = this.form.value;
+    // const params = this.form.value;
+    const params = this.model;
 
     console.log(params);
     if (params?.id) {
@@ -163,9 +285,15 @@ export class ProductAddFormlyComponent implements OnInit {
     this.isSaving = false;
   }
 
+  updateForm() {
+    this.model = { ...this.product };
+
+    console.log(this.model);
+  }
+
   addDefaultValues() {
-    this.model = {
-      product_type: 1,
+    const model1 = {
+      type: 1,
       attribute_family_id: 1,
       general: {
         sku: 'Maggi0001',
@@ -208,5 +336,7 @@ export class ProductAddFormlyComponent implements OnInit {
         Inventory: null,
       },
     };
+
+    this.model = { ...this.model, ...model1 };
   }
 }

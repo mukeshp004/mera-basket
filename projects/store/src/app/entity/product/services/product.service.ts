@@ -11,4 +11,39 @@ export class ProductService extends ApiService<IProduct> {
     super(http);
     this.relativeUrl = 'products';
   }
+
+  generateConfigurableProduct(selecteAttributes: any) {
+    let results: any[] = [];
+
+    for (const key in selecteAttributes) {
+      const values = selecteAttributes[key];
+
+      if (!values || (Array.isArray(values) && values.length === 0)) {
+        continue;
+      }
+
+      if (results.length === 0) {
+        values.forEach((value: any) => {
+          const item: any = {};
+          item[`${key}`] = value;
+          results.push(item);
+        });
+      } else {
+        const append: any[] = [];
+
+        results.forEach((result) => {
+          values.forEach((value: any) => {
+            const item: any = { ...result };
+            item[`${key}`] = value;
+
+            append.push(item);
+          });
+        });
+
+        results = [...append];
+      }
+    }
+
+    return results;
+  }
 }

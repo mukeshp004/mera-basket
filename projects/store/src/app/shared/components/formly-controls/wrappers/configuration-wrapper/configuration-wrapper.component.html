@@ -1,0 +1,24 @@
+<div class="card mb-2">
+  <h3 class="card-header" (click)="togglePanel()">
+    <i
+      class="fa-solid"
+      [ngClass]="{ 'fa-angle-down': !isCollapsed, 'fa-angle-up': isCollapsed }"
+    ></i>
+    {{ to.label }}
+  </h3>
+  <div class="card-body" *ngIf="!isCollapsed">
+    <div class="row">
+      <div class="col">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="showConfigurationModal()"
+        >
+          Create Variations
+        </button>
+      </div>
+    </div>
+
+    <ng-container #fieldComponent></ng-container>
+  </div>
+</div>

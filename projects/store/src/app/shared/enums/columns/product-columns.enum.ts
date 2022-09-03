@@ -15,7 +15,7 @@ export enum ProductColumn {
   NAME = 'name',
   NUMBER = 'number',
   SKU = 'sku',
-  ATTRIBUTE_FAMILY = 'attribute_family',
+  ATTRIBUTE_FAMILY = 'attribute_family_id',
   TYPE = 'type',
   PRICE = 'price',
   QUANTITY = 'quantity',

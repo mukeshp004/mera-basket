@@ -6,11 +6,13 @@ import { Category, ICategory } from '../../shared/models/category';
 import { CategoryService } from './category.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class CategoryResolveService  implements Resolve<any> {
-
-  constructor(protected categoryService: CategoryService, protected router: Router) {}
+export class CategoryResolveService implements Resolve<any> {
+  constructor(
+    protected categoryService: CategoryService,
+    protected router: Router
+  ) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<ICategory> {
     // const id = route.paramMap.get('id');
@@ -31,4 +33,3 @@ export class CategoryResolveService  implements Resolve<any> {
     return of(new Category());
   }
 }
-

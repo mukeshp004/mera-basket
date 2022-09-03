@@ -15,6 +15,7 @@ export class MessageBusService {
   constructor(private eventBus: NgEventBus) {}
 
   public publish(key: string, payLoad?: any): void {
+    // console.log(key, payLoad);
     this.eventBus.cast(key, payLoad);
   }
 

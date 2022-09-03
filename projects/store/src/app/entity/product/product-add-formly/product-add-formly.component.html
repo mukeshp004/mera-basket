@@ -36,7 +36,7 @@
           [model]="model"
         ></formly-form>
 
-        <!-- <pre>{{ form.value | json }}</pre> -->
+        <pre>{{ form.value["general"] | json }}</pre>
         <pre [json-formatter]="form.value"></pre>
       </div>
       <!--  end of card body -->

@@ -22,8 +22,8 @@ const routes: Routes = [
   },
   {
     path: 'edit/:id',
-    component: ProductUpsertComponent,
-    // resolve: { entity: ProductResolveService },
+    component: ProductAddFormlyComponent,
+    resolve: { entity: ProductResolveService },
   },
 ];
 
