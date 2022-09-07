@@ -1,3 +1,5 @@
+import { ACTIVE_STATUS } from './../../../shared/enums/columns/active-status.enum';
+import { YES_NO } from './../../../shared/enums/columns/yes-no.enum';
 import { PRODUCT_TYPE } from './../../../shared/enums/product-type.enum';
 import { Injectable } from '@angular/core';
 import { ColDef } from 'ag-grid-community';
@@ -40,7 +42,15 @@ export class ProductGridService {
         headerName: ProductColumnLabel.QUANTITY,
         field: ProductColumn.QUANTITY,
       },
-      { headerName: ProductColumnLabel.STATUS, field: ProductColumn.STATUS },
+      {
+        headerName: ProductColumnLabel.STATUS,
+        field: ProductColumn.STATUS,
+        valueGetter: (params) => {
+          return params.data.status === 1
+            ? ACTIVE_STATUS[params.data.status]
+            : ACTIVE_STATUS[0];
+        },
+      },
     ];
 
     return columns;

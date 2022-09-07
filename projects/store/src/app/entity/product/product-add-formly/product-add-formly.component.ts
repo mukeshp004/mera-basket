@@ -74,21 +74,26 @@ export class ProductAddFormlyComponent implements OnInit {
         this.model['variants'] = [];
 
         variants.forEach((variant: any) => {
+          console.log('================', variant);
           let variantValues: any = {
-            name: 'demo',
-            sku: 'sku',
+            name: this.model.name,
+            sku: `${this.model.sku}-${Object.values(variant)
+              .map((option: any) => option.name.toLowerCase())
+              .join('-')}`,
           };
 
           for (let key in variant) {
-            variantValues[key] = variant[key].name;
+            variantValues[key] = variant[key].id;
           }
 
           variantValues = {
             ...variantValues,
             quantity: 0,
             price: 0,
-            status: 1,
+            status: 0,
           };
+
+          console.log(variantValues);
 
           this.model['variants'].push(variantValues);
         });
@@ -101,7 +106,7 @@ export class ProductAddFormlyComponent implements OnInit {
       .subscribe((attributeFamilies: IAttributeFamily[]) => {
         this.attributeFamilies = attributeFamilies;
 
-        this.model = { type: PRODUCT_TYPE.Configurable };
+        // this.model = { type: PRODUCT_TYPE.Configurable };
         // this.model = { type: PRODUCT_TYPE.Configurable, variants: [{}, {}] };
         this.buildFormlyForm();
 
@@ -137,13 +142,15 @@ export class ProductAddFormlyComponent implements OnInit {
       {
         key: 'type',
         type: 'select',
-        defaultValue: PRODUCT_TYPE.Simple,
+        // defaultValue: PRODUCT_TYPE.Simple,
         templateOptions: {
           label: 'Product Type',
           options: this.productTypeOptions,
           change: this.onProductTypeChange,
         },
-
+        expressionProperties: {
+          'templateOptions.disabled': '!model.name || !model.sku',
+        },
         modelOptions: {
           debounce: {
             default: 2000,
@@ -163,6 +170,9 @@ export class ProductAddFormlyComponent implements OnInit {
           labelProp: 'name',
 
           change: this.onAttributeFamilyChange,
+        },
+        expressionProperties: {
+          'templateOptions.disabled': '!model.name || !model.sku',
         },
         hooks: {
           onInit: (field?: FormlyFieldConfig) => {

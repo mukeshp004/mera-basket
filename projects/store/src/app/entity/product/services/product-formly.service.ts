@@ -22,7 +22,7 @@ export class ProductFormlyService {
           group.name
         );
 
-        console.log('group.attributes', group.attributes);
+        // console.log('group.attributes', group.attributes);
 
         let attributes = group.attributes || [];
 
@@ -32,13 +32,13 @@ export class ProductFormlyService {
           });
         }
 
-        console.log('attributes', attributes);
+        // console.log('attributes', attributes);
 
         attributes.forEach((attribute: IAttribute) => {
           const field = this.attribute2formlyService.generateField(
             attribute
           ) as FormlyFieldConfig;
-          console.log(attribute);
+          // console.log(attribute);
           if (field) {
             g.fieldGroup?.push(field);
           }
