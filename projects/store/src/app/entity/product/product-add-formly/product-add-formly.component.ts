@@ -4,11 +4,18 @@ import { MessageBusService } from './../../../shared/services/message-bus.servic
 import { finalize, map, Observable, pipe } from 'rxjs';
 import { IAttribute } from 'projects/store/src/app/shared/models/attributes/attribute';
 import { PRODUCT_TYPE } from './../../../shared/enums/product-type.enum';
-import { IProduct } from './../../../shared/models/product';
+import {
+  IProduct,
+  IProductFindResponse,
+} from './../../../shared/models/product';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, Pipe, ViewChild } from '@angular/core';
-import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
+import {
+  UntypedFormGroup,
+  UntypedFormBuilder,
+  FormGroup,
+} from '@angular/forms';
 import { HelperService } from '../../../shared/services/helper.service';
 import { AttributeFamilyService } from '../../attribute-family/services/attribute-family.service';
 import { AttributeService } from '../../attribute/attribute.service';
@@ -36,7 +43,7 @@ export class ProductAddFormlyComponent implements OnInit {
   configurableAttributes: IAttribute[] = [];
 
   attributeFamilies: IAttributeFamily[] = [];
-  selectedAttributeFamily: any;
+  selectedAttributeFamily?: IAttributeFamily;
   attributeFamilyOptions: any[] = [];
 
   excludeConfigurableAttribute = false;
@@ -56,8 +63,15 @@ export class ProductAddFormlyComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe((response: any) => {
-      this.product = response.entity;
-      this.updateForm();
+      const data: IProductFindResponse = response.entity;
+
+      if (data) {
+        this.product = data.product;
+        this.selectedAttributeFamily = data.attributeFamily;
+        this.updateForm();
+        // this.addDefaultValues();
+      }
+      // console.log(this.product);
       this.getAttributeFamilies();
     });
     // this.getAttributeFamilies();
@@ -108,7 +122,12 @@ export class ProductAddFormlyComponent implements OnInit {
 
         // this.model = { type: PRODUCT_TYPE.Configurable };
         // this.model = { type: PRODUCT_TYPE.Configurable, variants: [{}, {}] };
+        // this.updateForm();
         this.buildFormlyForm();
+
+        // setTimeout(() => {
+        //   this.updateForm();
+        // }, 1000);
 
         // this.addDefaultValues();
       });
@@ -162,6 +181,7 @@ export class ProductAddFormlyComponent implements OnInit {
         type: 'select',
         templateOptions: {
           label: 'Attribute Family',
+          placeholder: 'Select Attribute Family',
           options: this.attributeFamilies,
           valueProp: (option: any) => option.id,
           compareWith: (o1: IAttributeFamily, o2: IAttributeFamily) => {
@@ -176,19 +196,19 @@ export class ProductAddFormlyComponent implements OnInit {
         },
         hooks: {
           onInit: (field?: FormlyFieldConfig) => {
-            const typeControl = field?.form?.get('type');
-            typeControl?.valueChanges.subscribe((value) => {
-              console.log(this.model['type']);
-              console.log(value);
-            });
+            console.log('onInit', field);
+            this.onAttributeFamilyChange(field);
           },
+          // onChanges: (field?: FormlyFieldConfig) => {
+          //   console.log('onChanges', field?.model);
+          //   this.onAttributeFamilyChange(field);
+          // },
         },
       },
     ];
   }
 
   onProductTypeChange = (field: FormlyFieldConfig, $event: any) => {
-    this.model = {};
     this.model['type'] = field.formControl?.value;
 
     this.excludeConfigurableAttribute = false;
@@ -197,17 +217,21 @@ export class ProductAddFormlyComponent implements OnInit {
     }
 
     if (this.model['attribute_family_id']) {
-      // this.appendForm();
+      this.appendForm();
     }
 
     // this.onAttributeFamilyChange({});
     // this.appendForm();
+    this.form = new FormGroup({});
   };
 
-  // onAttributFamilyChange = (formField: any, $event: any) => {
+  // onAttributeFamilyChange = (formField: any, $event: any) => {
   onAttributeFamilyChange = (formField: any) => {
+    console.log('onAttributeFamilyChange called');
     const value = this.model['attribute_family_id'];
 
+    // console.log('$event', $event);
+    console.log('value', value, formField.formControl.value);
     if (!value) return;
 
     this.selectedAttributeFamily = this.attributeFamilies.find(
@@ -216,13 +240,15 @@ export class ProductAddFormlyComponent implements OnInit {
       }
     );
 
+    console.log('Configutable attribute called');
     this.getConfigurableAttributes();
 
+    console.log('Append Form called');
     this.appendForm();
   };
 
   getConfigurableAttributes() {
-    this.selectedAttributeFamily.groups.forEach((group: any) => {
+    this.selectedAttributeFamily?.groups?.forEach((group: any) => {
       group.attributes.forEach((attribute: IAttribute) => {
         if (attribute.is_configurable) {
           this.configurableAttributes.push(attribute);
@@ -232,26 +258,32 @@ export class ProductAddFormlyComponent implements OnInit {
   }
 
   appendForm() {
-    const fields: FormlyFieldConfig[] = this.productFormly.formFields(
-      this.selectedAttributeFamily,
-      this.excludeConfigurableAttribute
-    );
+    if (this.selectedAttributeFamily) {
+      const fields: FormlyFieldConfig[] = this.productFormly.formFields(
+        this.selectedAttributeFamily,
+        this.excludeConfigurableAttribute
+      );
 
-    // this.formFields = [];
+      // this.formFields = [];
 
-    // this.buildFormlyForm();
+      // this.buildFormlyForm();
 
-    this.formFields = [
-      // ...this.formFields.filter((f) =>
-      //   ['type', 'attribute_family_id'].includes(f.key as string)
-      // ),
-      ...this.intFormField(),
-      this.productFormly.generateConfigurableGroup(this.configurableAttributes),
-      ...fields,
-      this.productFormly.generateInventoryGroup(),
-    ];
+      this.formFields = [...this.intFormField()];
 
-    console.log('this.formFields ==========', this.formFields);
+      if (this.model['type'] === PRODUCT_TYPE.Configurable) {
+        this.formFields.push(
+          this.productFormly.generateConfigurableGroup(
+            this.configurableAttributes
+          )
+        );
+      }
+
+      this.formFields.push(...fields);
+
+      this.formFields.push(this.productFormly.generateInventoryGroup());
+
+      console.log('this.formFields ==========', this.formFields);
+    }
   }
 
   goBack() {
@@ -297,12 +329,21 @@ export class ProductAddFormlyComponent implements OnInit {
 
   updateForm() {
     this.model = { ...this.product };
+    this.model['name'] = this.product['general']['name']
+      ? this.product['general']['name']
+      : 'shirt';
+
+    this.model['meta_description'] = this.product['meta_description'];
+
+    // this.model['type'] = 2;
 
     console.log(this.model);
   }
 
   addDefaultValues() {
     const model1 = {
+      name: 'Maggi',
+      sku: 'Maggi0001',
       type: 1,
       attribute_family_id: 1,
       general: {
