@@ -1,11 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import "~bootstrap/scss/bootstrap";
+$fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
+@import "@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "@fortawesome/fontawesome-free/scss/solid.scss";
+@import "@fortawesome/fontawesome-free/scss/brands.scss";
+
+/* You can add global styles to this file, and also import other style files */
+@import "node_modules/bootstrap/scss/bootstrap.scss";
 
 // Ag-grid Styles import
 @import "ag-grid-community/dist/styles/ag-grid.css";
 @import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 
-@import "ngx-toastr/toastr.css";
+// @import "ngx-toastr/toastr.css";
 
 @import "./scss/index.scss";
