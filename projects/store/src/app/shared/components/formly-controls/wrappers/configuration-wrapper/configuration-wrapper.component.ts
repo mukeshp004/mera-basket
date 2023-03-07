@@ -161,11 +161,7 @@ export class ConfigurationWrapperComponent
       fieldGroup: fieldGroup,
     };
 
-    this.field.fieldArray.fieldGroup?.push(...fieldGroup);
-
     (<any>this.options)?.build();
-
-    // this.cd.detectChanges();
   }
 
   setColumns() {
