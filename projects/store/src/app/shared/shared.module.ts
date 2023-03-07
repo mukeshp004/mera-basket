@@ -26,6 +26,7 @@ import { JsonFormatterDirective } from './directives/json-formatter.directive';
 import { KeysPipe } from './pipes/keys.pipe';
 import { CheckListComponent } from './components/check-list/check-list.component';
 import { RepeatTableTypeComponent } from './components/formly-controls/wrappers/repeat-table-type/repeat-table-type.component';
+import { PanelWrapperComponent } from '../panel-wrapper/panel-wrapper.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { RepeatTableTypeComponent } from './components/formly-controls/wrappers/
           component: FormlyFieldHorizontalWrapperComponent,
         },
         { name: 'panel', component: FormlyPanelWrapperComponent },
+        { name: 'dpanel', component: PanelWrapperComponent },
         {
           name: 'configuration-panel',
           component: ConfigurationWrapperComponent,

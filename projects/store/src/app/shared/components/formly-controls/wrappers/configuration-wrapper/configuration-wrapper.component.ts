@@ -1,24 +1,24 @@
-import { Attribute2formlyService } from './../../../../../shrared/services/attribute2formly.service';
-import { ProductFormlyService } from './../../../../../entity/product/services/product-formly.service';
-import { ColDef } from 'ag-grid-community';
-import { MessageBusService } from './../../../../services/message-bus.service';
-import { first, forEach } from 'lodash';
-import { UntypedFormBuilder } from '@angular/forms';
-import {
-  Attribute,
-  IAttribute,
-} from './../../../../models/attributes/attribute';
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  NgModuleRef,
+  OnChanges,
   OnInit,
+  SimpleChanges,
 } from '@angular/core';
-import { FieldWrapper, FormlyFieldConfig } from '@ngx-formly/core';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import {
+  FieldWrapper,
+  FormlyFieldConfig,
+  FormlyFormBuilder,
+} from '@ngx-formly/core';
 import { ConfigurationModalComponent } from 'projects/store/src/app/entity/product/modal/configuration-modal/configuration-modal.component';
 import { MessageBusConstant } from '../../../../constants/message-bus.constant';
+import { ProductFormlyService } from './../../../../../entity/product/services/product-formly.service';
+import { Attribute2formlyService } from './../../../../../shrared/services/attribute2formly.service';
+import { IAttribute } from './../../../../models/attributes/attribute';
+import { MessageBusService } from './../../../../services/message-bus.service';
 
 @Component({
   selector: 'app-configuration-wrapper',
@@ -44,8 +44,8 @@ export class ConfigurationWrapperComponent
     super();
   }
   ngOnInit(): void {
-    console.log('this', this);
     // this.addFields();
+    // this.configurableAttributes = this.props['additionalProperties'].attributes;
   }
 
   ngAfterViewInit(): void {
@@ -58,7 +58,7 @@ export class ConfigurationWrapperComponent
       ConfigurationModalComponent
     ) as NgbModalRef;
     modalRef.componentInstance.attributes = [
-      ...this.to['additionalProperties'].attributes,
+      ...this.props['additionalProperties'].attributes,
     ];
 
     modalRef.componentInstance.change.subscribe((variants: any[]) => {
@@ -96,9 +96,9 @@ export class ConfigurationWrapperComponent
       .map((f: any) => {
         let field = this.attribute2formlyService.generateField(f);
 
-        // if (field.templateOptions) {
-        field.templateOptions!.readonly = true;
-        field.templateOptions!.label = '';
+        // if (field.props) {
+        field.props!.readonly = true;
+        field.props!.label = '';
         // }
 
         return field;
@@ -109,7 +109,7 @@ export class ConfigurationWrapperComponent
         type: 'input',
         key: 'name',
         className: 'col-sm-4',
-        templateOptions: {
+        props: {
           // type: 'date',
         },
       },
@@ -117,7 +117,7 @@ export class ConfigurationWrapperComponent
         className: 'col-sm-4',
         type: 'input',
         key: 'sku',
-        templateOptions: {
+        props: {
           // label: 'Name of Investment:',
           required: true,
         },
@@ -127,7 +127,7 @@ export class ConfigurationWrapperComponent
         className: 'col-sm-4',
         type: 'input',
         key: 'quantity',
-        templateOptions: {
+        props: {
           type: 'number',
           required: true,
         },
@@ -136,7 +136,7 @@ export class ConfigurationWrapperComponent
         className: 'col-sm-4',
         type: 'input',
         key: 'price',
-        templateOptions: {
+        props: {
           type: 'number',
           required: true,
         },
@@ -145,7 +145,7 @@ export class ConfigurationWrapperComponent
         className: 'col-sm-4',
         type: 'select',
         key: 'status',
-        templateOptions: {
+        props: {
           required: true,
           options: [
             { id: 0, name: 'InActive' },
@@ -161,9 +161,11 @@ export class ConfigurationWrapperComponent
       fieldGroup: fieldGroup,
     };
 
-    (<any>this.options)._buildForm();
+    this.field.fieldArray.fieldGroup?.push(...fieldGroup);
 
-    this.cd.detectChanges();
+    (<any>this.options)?.build();
+
+    // this.cd.detectChanges();
   }
 
   setColumns() {
@@ -175,6 +177,6 @@ export class ConfigurationWrapperComponent
       'Price',
       'Status',
     ];
-    this.to['columns'] = columns;
+    this.props['columns'] = columns;
   }
 }

@@ -12,7 +12,7 @@ export class Attribute2formlyService {
     return {
       key: key,
       wrappers: ['panel'],
-      templateOptions: { label: label, isCollapse: false },
+      props: { label: label, isCollapse: false },
       fieldGroup: [],
     } as FormlyFieldConfig;
   }
@@ -49,7 +49,7 @@ export class Attribute2formlyService {
     return {
       key: attribute.code,
       type: 'input',
-      templateOptions: {
+      props: {
         required: attribute.is_required || false,
         type: 'text',
         label: attribute.name,
@@ -61,7 +61,7 @@ export class Attribute2formlyService {
     return {
       key: attribute.code,
       type: 'select',
-      templateOptions: {
+      props: {
         label: attribute.name,
         placeholder: 'Select options',
         required: attribute.is_required || false,
@@ -76,7 +76,7 @@ export class Attribute2formlyService {
     return {
       key: attribute.code,
       type: 'input',
-      templateOptions: {
+      props: {
         required: attribute.is_required || false,
         type: 'number',
         label: attribute.name,
@@ -94,7 +94,7 @@ export class Attribute2formlyService {
     return {
       key: attribute.code,
       type: 'input',
-      templateOptions: {
+      props: {
         required: attribute.is_required || false,
         type: 'date',
         label: attribute.name,
@@ -106,7 +106,7 @@ export class Attribute2formlyService {
     return {
       key: attribute.code,
       type: 'checkbox',
-      templateOptions: {
+      props: {
         label: attribute.name,
         required: attribute.is_required || false,
       },
@@ -117,7 +117,7 @@ export class Attribute2formlyService {
     return {
       key: attribute.code,
       type: 'textarea',
-      templateOptions: {
+      props: {
         label: attribute.name,
         required: attribute.is_required || false,
         placeholder: 'This has 10 rows',

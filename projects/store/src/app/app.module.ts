@@ -15,9 +15,10 @@ import { PagesModule } from './pages/pages.module';
 import { ErrorInterceptorService } from './shared/interceptors/error-interceptor.service';
 import { JwtInterceptorService } from './shared/interceptors/jwt-interceptor.service';
 import { SharedModule } from './shared/shared.module';
+import { PanelWrapperComponent } from './panel-wrapper/panel-wrapper.component';
 
 @NgModule({
-  declarations: [AppComponent, DemoComponent, JsonFromComponent],
+  declarations: [AppComponent, DemoComponent, JsonFromComponent, PanelWrapperComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

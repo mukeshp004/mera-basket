@@ -5,7 +5,7 @@ export const jsonFormFields: FormlyFieldConfig[] = [
     key: 'name',
     type: 'input',
     defaultValue: 'Mukesh',
-    templateOptions: {
+    props: {
       label: 'Name',
       placeholder: 'Name',
       required: true,
@@ -20,7 +20,7 @@ export const jsonFormFields: FormlyFieldConfig[] = [
   {
     key: 'email',
     type: 'input',
-    templateOptions: {
+    props: {
       label: 'Email',
       placeholder: 'Email',
       required: true,
@@ -32,7 +32,7 @@ export const jsonFormFields: FormlyFieldConfig[] = [
   {
     key: 'Password',
     type: 'input',
-    templateOptions: {
+    props: {
       label: 'Password',
       placeholder: 'Password',
       type: 'password',
@@ -42,7 +42,7 @@ export const jsonFormFields: FormlyFieldConfig[] = [
   {
     key: 'save',
     type: 'boolean',
-    templateOptions: {
+    props: {
       label: 'Save details',
       placeholder: 'Name',
       type: 'password',
@@ -52,7 +52,7 @@ export const jsonFormFields: FormlyFieldConfig[] = [
   {
     key: 'marvel1',
     type: 'select',
-    templateOptions: {
+    props: {
       label: 'Normal Select',
       options: [
         { label: 'Iron Man', value: 'iron_man' },
@@ -66,7 +66,7 @@ export const jsonFormFields: FormlyFieldConfig[] = [
   {
     key: 'marvel2',
     type: 'select',
-    templateOptions: {
+    props: {
       label: 'Grouped Select',
       placeholder: 'Select marvel 1',
       options: [
@@ -81,12 +81,12 @@ export const jsonFormFields: FormlyFieldConfig[] = [
   {
     key: 'address',
     wrappers: ['panel'],
-    templateOptions: { label: 'Address' },
+    props: { label: 'Address' },
     fieldGroup: [
       {
         key: 'town',
         type: 'input',
-        templateOptions: {
+        props: {
           required: true,
           type: 'text',
           label: 'Town',

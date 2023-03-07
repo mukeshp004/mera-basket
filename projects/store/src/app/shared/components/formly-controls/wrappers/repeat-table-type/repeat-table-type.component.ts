@@ -1,10 +1,17 @@
-import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { FieldArrayType, FormlyFormBuilder } from '@ngx-formly/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
+import { FieldArrayType } from '@ngx-formly/core';
 
 @Component({
   selector: 'app-repeat-table-type',
   templateUrl: './repeat-table-type.component.html',
   styleUrls: ['./repeat-table-type.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class RepeatTableTypeComponent
   extends FieldArrayType
@@ -24,6 +31,6 @@ export class RepeatTableTypeComponent
   }
 
   getColumns() {
-    return this.to['columns'];
+    return this.props['columns'];
   }
 }

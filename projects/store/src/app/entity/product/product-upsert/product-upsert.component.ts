@@ -178,7 +178,7 @@ export class ProductUpsertComponent implements OnInit {
         key: 'name',
         type: 'input',
         defaultValue: '',
-        templateOptions: {
+        props: {
           label: 'Name',
           placeholder: 'Name',
           required: true,
@@ -193,7 +193,7 @@ export class ProductUpsertComponent implements OnInit {
       {
         key: 'type',
         type: 'select',
-        templateOptions: {
+        props: {
           label: 'Product Type',
           options: this.productTypeOptions,
         },
@@ -201,12 +201,12 @@ export class ProductUpsertComponent implements OnInit {
       {
         key: 'address',
         wrappers: ['panel'],
-        templateOptions: { label: 'Address' },
+        props: { label: 'Address' },
         fieldGroup: [
           {
             key: 'town',
             type: 'input',
-            templateOptions: {
+            props: {
               required: true,
               type: 'text',
               label: 'Town',
@@ -217,7 +217,7 @@ export class ProductUpsertComponent implements OnInit {
       // {
       //   key: 'attribute_family_id',
       //   type: 'select',
-      //   templateOptions: {
+      //   props: {
       //     label: 'Family Attribute',
       //     options: [],
       //   },
@@ -230,7 +230,7 @@ export class ProductUpsertComponent implements OnInit {
       //           this.attributeFamilies = attributeFamilies;
 
       //           attributeFamilies.forEach((attributeFamily) => {
-      //             // field?.templateOptions?.options?.push({
+      //             // field?.props?.options?.push({
       //             //   value: attributeFamily.id,
       //             //   label: attributeFamily.name,
       //             // });

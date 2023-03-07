@@ -4,7 +4,7 @@
       class="fa-solid"
       [ngClass]="{ 'fa-angle-down': !isCollapsed, 'fa-angle-up': isCollapsed }"
     ></i>
-    {{ to.label }}
+    {{ props.label }}
   </h3>
   <div class="card-body" *ngIf="!isCollapsed">
     <ng-container #fieldComponent></ng-container>

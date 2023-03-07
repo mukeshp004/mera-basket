@@ -4,8 +4,8 @@
   [formControl]="formControl"
   [formlyAttributes]="field"
 >
-  <option *ngIf="to.placeholder" [ngValue]="undefined">
-    {{ to.placeholder }}
+  <option *ngIf="props.placeholder" [ngValue]="undefined">
+    {{ props.placeholder }}
   </option>
   <ng-container *ngFor="let opt of items">
     <option [ngValue]="opt.value" [disabled]="opt.disabled">

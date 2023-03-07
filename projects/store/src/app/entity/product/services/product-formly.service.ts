@@ -75,7 +75,7 @@ export class ProductFormlyService {
       key: 'variants',
       type: 'repeat-table',
       wrappers: ['configuration-panel'],
-      templateOptions: {
+      props: {
         label: 'Configuration',
         isCollapse: false,
         additionalProperties: {
