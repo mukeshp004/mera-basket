@@ -52,6 +52,13 @@ export class ProductAddFormlyComponent implements OnInit {
 
   productDetail: IProductFindResponse | undefined = undefined;
 
+  /**
+   * Selected attribute option for product
+   * attribute[color] = [ op1, op2 ]
+   */
+
+  selectedAttributeOptions: any = {};
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -81,25 +88,26 @@ export class ProductAddFormlyComponent implements OnInit {
         }, 1000);
       }
     });
-    this.productsVariantsChangeListener();
+    // this.productsVariantsChangeListener();
   }
 
   productsVariantsChangeListener() {
     this.messageBus
       .listen(MessageBusConstant.productVariantsChanged)
       .subscribe((payLoad: MetaData) => {
-        const variants = payLoad.data;
+        const variants = payLoad.data.variants;
 
-        console.log('Message Bus listener', variants);
         this.model['variants'] = [];
 
         variants.forEach((variant: any) => {
           console.log('================', variant);
+          const variantOptions = Object.values(variant)
+            .map((option: any) => option.name.toLowerCase())
+            .join('-');
+
           let variantValues: any = {
-            name: this.model.name,
-            sku: `${this.model.sku}-${Object.values(variant)
-              .map((option: any) => option.name.toLowerCase())
-              .join('-')}`,
+            name: `${this.model.name}-${variantOptions}`,
+            sku: `${this.model.sku}-${variantOptions}`,
           };
 
           for (let key in variant) {
@@ -193,7 +201,7 @@ export class ProductAddFormlyComponent implements OnInit {
           },
           labelProp: 'name',
 
-          change: this.onAttributeFamilyChange,
+          // change: this.onAttributeFamilyChange,
         },
         expressions: {
           'templateOptions.disabled': '!model.name || !model.sku',
@@ -215,9 +223,9 @@ export class ProductAddFormlyComponent implements OnInit {
             console.log('onChanges', field?.model);
             field?.formControl?.valueChanges
               .pipe(
-                distinctUntilChanged(),
+                // distinctUntilChanged(),
                 tap(() => {
-                  // this.onAttributeFamilyChange(field);
+                  this.onAttributeFamilyChange(field);
                 })
               )
               .subscribe((v) => console.log(v));
@@ -238,10 +246,6 @@ export class ProductAddFormlyComponent implements OnInit {
     if (this.model['attribute_family_id']) {
       // this.appendForm();
     }
-
-    // this.onAttributeFamilyChange({});
-    // this.appendForm();
-    this.form = new FormGroup({});
   };
 
   // onAttributeFamilyChange = (formField: any, $event: any) => {
@@ -264,6 +268,7 @@ export class ProductAddFormlyComponent implements OnInit {
 
   getConfigurableAttributes() {
     this.configurableAttributes = [];
+
     this.selectedAttributeFamily?.groups?.forEach((group: any) => {
       group.attributes.forEach((attribute: IAttribute) => {
         if (attribute.is_configurable) {
@@ -271,6 +276,25 @@ export class ProductAddFormlyComponent implements OnInit {
         }
       });
     });
+
+    // this.setColor();
+  }
+
+  setColor() {
+    const colorAttr = this.configurableAttributes.find(
+      (attribute: IAttribute) => {
+        return attribute.code === 'color';
+      }
+    );
+
+    console.log(colorAttr);
+    this.selectedAttributeOptions['color'] = colorAttr?.options?.filter(
+      (option) => {
+        return option.id === 2 || option.id === 3;
+      }
+    );
+
+    console.log(this.selectedAttributeOptions);
   }
 
   appendForm() {
@@ -283,7 +307,9 @@ export class ProductAddFormlyComponent implements OnInit {
       if (this.model['type'] === PRODUCT_TYPE.Configurable) {
         this.configurableformFields =
           this.productFormly.generateConfigurableGroup(
-            this.configurableAttributes
+            this.configurableAttributes,
+            this.selectedAttributeOptions,
+            this.model
           );
 
         fields.push(this.configurableformFields);
@@ -302,13 +328,7 @@ export class ProductAddFormlyComponent implements OnInit {
 
       fields.push(this.productFormly.generateInventoryGroup());
 
-      this.form = new FormGroup({});
-
-      this.formFields = [];
-      this.formFields = fields;
-
-      console.log('this.formFields', this.formFields);
-
+      this.formFields = [...fields];
       this.cd.detectChanges();
     }
   }

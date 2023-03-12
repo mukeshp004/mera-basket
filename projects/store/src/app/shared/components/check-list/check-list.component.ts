@@ -31,7 +31,7 @@ export class CheckListComponent implements ControlValueAccessor {
 
   disabled = false;
 
-  selectedItems: Array<any> = [];
+  @Input() selectedItems: Array<any> = [];
 
   constructor() {}
 
@@ -54,7 +54,7 @@ export class CheckListComponent implements ControlValueAccessor {
   }
 
   writeValue(items: any[]): void {
-    this.selectedItems = items;
+    this.selectedItems = items || [];
   }
 
   registerOnChange(onChangeFn: any) {
@@ -74,5 +74,9 @@ export class CheckListComponent implements ControlValueAccessor {
 
   setDisabledState(disabled: boolean) {
     this.disabled = disabled;
+  }
+
+  isChecked(item: any): boolean {
+    return this.selectedItems && this.selectedItems.includes(item);
   }
 }

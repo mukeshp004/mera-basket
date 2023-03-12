@@ -69,17 +69,22 @@ export class ProductFormlyService {
   }
 
   generateConfigurableGroup(
-    configurableAttributes: IAttribute[]
+    configurableAttributes: IAttribute[],
+    selectedAttributeOptions: any,
+    productModel: any
   ): FormlyFieldConfig {
     const configGroup = {
       key: 'variants',
       type: 'repeat-table',
       wrappers: ['configuration-panel'],
+      defaultValue: [],
       props: {
         label: 'Configuration',
         isCollapse: false,
         additionalProperties: {
           attributes: configurableAttributes,
+          selectedAttributeOptions: selectedAttributeOptions,
+          productModel: productModel,
         },
       },
       fieldArray: {
@@ -88,5 +93,85 @@ export class ProductFormlyService {
     } as FormlyFieldConfig;
 
     return configGroup;
+  }
+
+  generateVariantionFieldGroup(
+    variants: any[],
+    configurableAttributes: IAttribute[]
+  ) {
+    if (variants.length === 0) [];
+
+    const selectedAttributes = Object.keys(variants[0]);
+    const fields: FormlyFieldConfig[] = [
+      ...configurableAttributes
+        .filter((attribute: IAttribute) => {
+          return selectedAttributes.includes(attribute.code as string);
+        })
+        .map((f: any) => {
+          let field = this.attribute2formlyService.generateField(f);
+
+          // if (field.props) {
+          field.props!.readonly = true;
+          field.props!.label = '';
+          // }
+
+          return field;
+        }),
+    ];
+
+    const fieldGroup = [
+      {
+        type: 'input',
+        key: 'name',
+        className: 'col-sm-4',
+        props: {
+          // type: 'date',
+        },
+      },
+      {
+        className: 'col-sm-4',
+        type: 'input',
+        key: 'sku',
+        props: {
+          // label: 'Name of Investment:',
+          required: true,
+        },
+      },
+      ...fields,
+      {
+        className: 'col-sm-4',
+        type: 'input',
+        key: 'quantity',
+        props: {
+          type: 'number',
+          required: true,
+        },
+      },
+      {
+        className: 'col-sm-4',
+        type: 'input',
+        key: 'price',
+        props: {
+          type: 'number',
+          required: true,
+        },
+      },
+      {
+        className: 'col-sm-4',
+        type: 'select',
+        key: 'status',
+        props: {
+          required: true,
+          options: [
+            { id: 0, name: 'InActive' },
+            { id: 1, name: 'Active' },
+          ],
+          valueProp: 'id',
+          labelProp: 'name',
+        },
+      },
+    ];
+
+    return fieldGroup;
   }
 }

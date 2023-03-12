@@ -1,19 +1,13 @@
 import {
   AfterViewInit,
-  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  OnChanges,
   OnInit,
-  SimpleChanges,
 } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import {
-  FieldWrapper,
-  FormlyFieldConfig,
-  FormlyFormBuilder,
-} from '@ngx-formly/core';
+import { FieldWrapper, FormlyFieldConfig } from '@ngx-formly/core';
 import { ConfigurationModalComponent } from 'projects/store/src/app/entity/product/modal/configuration-modal/configuration-modal.component';
+import { ProductService } from 'projects/store/src/app/entity/product/services/product.service';
 import { MessageBusConstant } from '../../../../constants/message-bus.constant';
 import { ProductFormlyService } from './../../../../../entity/product/services/product-formly.service';
 import { Attribute2formlyService } from './../../../../../shrared/services/attribute2formly.service';
@@ -31,54 +25,115 @@ export class ConfigurationWrapperComponent
 {
   isCollapsed = false;
   variants: any[] = [];
+  selectedAttributes: any[] = [];
   configurableAttributes: any[] = [];
+  selectedAttributeOptions: any = {};
+
+  productModel: any;
 
   constructor(
     private modalService: NgbModal,
     private cd: ChangeDetectorRef,
     private productFormly: ProductFormlyService,
-
+    private productService: ProductService,
     private attribute2formlyService: Attribute2formlyService,
     private messageBus: MessageBusService
   ) {
     super();
   }
   ngOnInit(): void {
+    this.setUpDefaultValues();
     // this.addFields();
-    // this.configurableAttributes = this.props['additionalProperties'].attributes;
+  }
+
+  setUpDefaultValues() {
+    this.configurableAttributes = this.props['additionalProperties'].attributes;
+    this.productModel = this.props['additionalProperties'].productModel;
+    this.selectedAttributeOptions =
+      this.props['additionalProperties'].selectedAttributeOptions;
+
+    if (Object.keys(this.selectedAttributeOptions).length > 0) {
+      this.setupVariableProduct(this.selectedAttributeOptions);
+    }
   }
 
   ngAfterViewInit(): void {
-    // this.addFields();
-    this.configurableAttributes = this.to['additionalProperties'].attributes;
+    this.setUpDefaultValues();
   }
 
   showConfigurationModal() {
     const modalRef = this.modalService.open(
       ConfigurationModalComponent
     ) as NgbModalRef;
+
     modalRef.componentInstance.attributes = [
       ...this.props['additionalProperties'].attributes,
     ];
 
-    modalRef.componentInstance.change.subscribe((variants: any[]) => {
-      this.variants = variants;
+    modalRef.componentInstance.selectedAttributeOptions =
+      this.selectedAttributeOptions;
 
-      this.messageBus.publish(
-        MessageBusConstant.productVariantsChanged,
-        variants
-      );
+    modalRef.componentInstance.change.subscribe(
+      (selectedAttributeOptions: any[]) => {
+        this.setupVariableProduct(selectedAttributeOptions);
+      }
+    );
+  }
 
-      this.setColumns();
-      this.addFields();
+  setupModel() {
+    setTimeout(() => {
+      this.variants.forEach((variant: any) => {
+        console.log('================', variant);
+        const variantOptions = Object.values(variant)
+          .map((option: any) => option.name.toLowerCase())
+          .join('-');
 
-      // this.model['variants'] = [];
+        let variantValues: any = {
+          name: `${this.productModel.name}-${variantOptions}`,
+          sku: `${this.productModel.sku}-${variantOptions}`,
+        };
 
-      // variants.forEach((variant: any) => {
-      //   // this.model['variants'].push({
-      //   //   name: 'demo',
-      //   // });
-      // });
+        for (let key in variant) {
+          variantValues[key] = variant[key].id;
+        }
+
+        variantValues = {
+          ...variantValues,
+          quantity: 0,
+          price: 0,
+          status: 1,
+        };
+
+        this.field.model?.push(variantValues);
+
+        this.addFields();
+        this.setColumns();
+      });
+    });
+  }
+
+  setupVariableProduct(selectedAttributeOptions: any): void {
+    this.selectedAttributeOptions = selectedAttributeOptions;
+
+    this.variants = this.productService.generateConfigurableProduct(
+      this.selectedAttributeOptions
+    );
+
+    this.field.model.splice(0, this.field.model.length);
+
+    console.log(this.field.model);
+
+    this.addFields();
+    this.setColumns();
+
+    /**
+     * This will setup variable model value after product configuration is rendered
+     */
+    this.setupModel();
+
+    this.messageBus.publish(MessageBusConstant.productVariantsChanged, {
+      variants: this.variants,
+      // selectedAttributeOptions: this.selectedAttributeOptions,
     });
   }
 
@@ -89,32 +144,34 @@ export class ConfigurationWrapperComponent
   addFields() {
     const selectedAttributes = Object.keys(this.variants[0]);
 
-    const fields: FormlyFieldConfig[] = this.configurableAttributes
-      .filter((attribute: IAttribute) => {
-        return selectedAttributes.includes(attribute.code as string);
-      })
-      .map((f: any) => {
-        let field = this.attribute2formlyService.generateField(f);
+    const fields: FormlyFieldConfig[] = [
+      ...this.configurableAttributes
+        .filter((attribute: IAttribute) => {
+          return selectedAttributes.includes(attribute.code as string);
+        })
+        .map((f: any) => {
+          let field = this.attribute2formlyService.generateField(f);
 
-        // if (field.props) {
-        field.props!.readonly = true;
-        field.props!.label = '';
-        // }
+          // if (field.props) {
+          field.props!.readonly = true;
+          field.props!.label = '';
+          // }
 
-        return field;
-      });
+          return field;
+        }),
+    ];
 
     const fieldGroup = [
       {
         type: 'input',
         key: 'name',
-        className: 'col-sm-4',
+        className: 'col-sm-12',
         props: {
           // type: 'date',
         },
       },
       {
-        className: 'col-sm-4',
+        className: 'col-sm-12',
         type: 'input',
         key: 'sku',
         props: {
@@ -124,7 +181,7 @@ export class ConfigurationWrapperComponent
       },
       ...fields,
       {
-        className: 'col-sm-4',
+        className: 'col-sm-12',
         type: 'input',
         key: 'quantity',
         props: {
@@ -133,7 +190,7 @@ export class ConfigurationWrapperComponent
         },
       },
       {
-        className: 'col-sm-4',
+        className: 'col-sm-12',
         type: 'input',
         key: 'price',
         props: {
@@ -142,7 +199,7 @@ export class ConfigurationWrapperComponent
         },
       },
       {
-        className: 'col-sm-4',
+        className: 'col-sm-12',
         type: 'select',
         key: 'status',
         props: {

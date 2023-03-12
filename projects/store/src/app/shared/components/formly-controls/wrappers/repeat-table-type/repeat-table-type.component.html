@@ -1,11 +1,14 @@
-<table class="table" *ngIf="field.fieldGroup && field.fieldGroup.length > 0">
+<table
+  class="table table-sm table-bordered table-hover"
+  *ngIf="field.fieldGroup && field.fieldGroup.length > 0"
+>
   <thead>
     <tr>
       <th *ngFor="let column of getColumns()">{{ column }}</th>
       <th>Action</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody class="table-group-divider">
     <tr *ngFor="let fieldG of field.fieldGroup; let i = index">
       <td *ngFor="let field of fieldG.fieldGroup">
         <!-- <pre>{{ field | json }}</pre> -->
@@ -17,12 +20,14 @@
         </button>
       </td>
     </tr>
+  </tbody>
+  <tfoot>
     <tr>
-      <td>
+      <td [colSpan]="getColumns().length + 1">
         <button class="btn btn-primary" type="button" (click)="add()">
           <!-- {{ props.addText }} -->Add
         </button>
       </td>
     </tr>
-  </tbody>
+  </tfoot>
 </table>

@@ -22,9 +22,28 @@ export class ConfigurationModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.attributes.forEach((attribute) => {
-      this.selectedAttributeOptions[`${attribute.code}`] = [];
+    if (Object.keys(this.selectedAttributeOptions).length === 0) {
+      this.attributes.forEach((attribute) => {
+        this.selectedAttributeOptions[`${attribute.code}`] = [];
+      });
+    }
+
+    // this.setColor();
+  }
+
+  setColor() {
+    const colorAttr = this.attributes.find((attribute: IAttribute) => {
+      return attribute.code === 'color';
     });
+
+    console.log(colorAttr);
+    this.selectedAttributeOptions['color'] = colorAttr?.options?.filter(
+      (option) => {
+        return option.id === 1 || option.id === 2;
+      }
+    );
+
+    console.log(this.selectedAttributeOptions);
   }
 
   getKey(item: any): string[] {
@@ -39,11 +58,7 @@ export class ConfigurationModalComponent implements OnInit {
   }
 
   save(): void {
-    this.change.emit(
-      this.productService.generateConfigurableProduct(
-        this.selectedAttributeOptions
-      )
-    );
+    this.change.emit(this.selectedAttributeOptions);
     this.modal.close();
   }
 }
