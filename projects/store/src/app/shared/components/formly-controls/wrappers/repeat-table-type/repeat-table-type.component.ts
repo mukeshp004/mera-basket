@@ -18,7 +18,6 @@ export class RepeatTableTypeComponent
   implements OnInit, OnChanges
 {
   // https://stackblitz.com/edit/angular-material-formly-table?file=src%2Fapp%2Fformly%2Fmy-formly.module.ts,src%2Fapp%2Fformly%2Fmy-formly-array-type.component.ts
-  fieldArray = [];
 
   constructor() {
     super();
@@ -32,5 +31,9 @@ export class RepeatTableTypeComponent
 
   getColumns() {
     return this.props['columns'];
+  }
+
+  getColSpan() {
+    return this.props['columns'] ? this.getColumns().length + 1 : 1;
   }
 }

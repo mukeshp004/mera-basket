@@ -9,7 +9,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import { MetaData } from 'ng-event-bus/lib/meta-data';
 import { ToastrService } from 'ngx-toastr';
 import { IAttribute } from 'projects/store/src/app/shared/models/attributes/attribute';
-import { distinctUntilChanged, finalize, Observable, tap } from 'rxjs';
+import { delay, distinctUntilChanged, finalize, Observable, tap } from 'rxjs';
 import { IAttributeFamily } from '../../../shared/models/attributes/attribute-family';
 import { HelperService } from '../../../shared/services/helper.service';
 import { AttributeFamilyService } from '../../attribute-family/services/attribute-family.service';
@@ -208,15 +208,16 @@ export class ProductAddFormlyComponent implements OnInit {
         },
         hooks: {
           // onInit: (field?: FormlyFieldConfig) => {
-          //   field?.formControl?.valueChanges
-          //     .pipe(
-          //       tap(() => {
-          //         this.onAttributeFamilyChange(field);
-          //       })
-          //     )
-          //     .subscribe((v) => console.log(v));
+          //   // field?.formControl?.valueChanges
+          //   //   .pipe(
+          //   //     tap(() => {
+          //   //       this.onAttributeFamilyChange(field);
+          //   //     })
+          //   //   )
+          //   //   .subscribe((v) => console.log(v));
           //   setTimeout(() => {
-          //     // this.onAttributeFamilyChange(field);
+          //     console.log('attribute dropdown intialized');
+          //     this.onAttributeFamilyChange(field);
           //   }, 100);
           // },
           onChanges: (field?: FormlyFieldConfig) => {
@@ -224,6 +225,7 @@ export class ProductAddFormlyComponent implements OnInit {
             field?.formControl?.valueChanges
               .pipe(
                 // distinctUntilChanged(),
+                delay(10),
                 tap(() => {
                   this.onAttributeFamilyChange(field);
                 })
@@ -328,8 +330,10 @@ export class ProductAddFormlyComponent implements OnInit {
 
       fields.push(this.productFormly.generateInventoryGroup());
 
-      this.formFields = [...fields];
-      this.cd.detectChanges();
+      setTimeout(() => {
+        this.formFields = [...fields];
+      });
+      // this.cd.detectChanges();
     }
   }
 
