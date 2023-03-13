@@ -27,6 +27,7 @@ import { KeysPipe } from './pipes/keys.pipe';
 import { CheckListComponent } from './components/check-list/check-list.component';
 import { RepeatTableTypeComponent } from './components/formly-controls/wrappers/repeat-table-type/repeat-table-type.component';
 import { PanelWrapperComponent } from '../panel-wrapper/panel-wrapper.component';
+import { TranslateModule } from '@ngx-translate/core/public_api';
 
 @NgModule({
   declarations: [
@@ -96,6 +97,8 @@ import { PanelWrapperComponent } from '../panel-wrapper/panel-wrapper.component'
     ToastrModule,
     AgGridModule,
     ColorPickerModule,
+
+    //translate module
 
     //pipe
     KeysPipe,

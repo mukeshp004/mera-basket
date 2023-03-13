@@ -47,10 +47,11 @@ export class ConfigurationWrapperComponent
   }
 
   setUpDefaultValues() {
-    this.configurableAttributes = this.props['additionalProperties'].attributes;
-    this.productModel = this.props['additionalProperties'].productModel;
-    this.selectedAttributeOptions =
-      this.props['additionalProperties'].selectedAttributeOptions;
+    const props = this.props['additionalProperties'];
+    this.configurableAttributes = props.attributes;
+    this.productModel = props.productModel;
+
+    this.selectedAttributeOptions = props.selectedAttributeOptions;
 
     if (Object.keys(this.selectedAttributeOptions).length > 0) {
       this.setupVariableProduct(this.selectedAttributeOptions);
@@ -81,55 +82,49 @@ export class ConfigurationWrapperComponent
   }
 
   setupModel() {
-    setTimeout(() => {
-      this.variants.forEach((variant: any) => {
-        console.log('================', variant);
-        const variantOptions = Object.values(variant)
-          .map((option: any) => option.name.toLowerCase())
-          .join('-');
+    this.variants.forEach((variant: any) => {
+      console.log('================', variant);
+      const variantOptions = Object.values(variant)
+        .map((option: any) => option.name.toLowerCase())
+        .join('-');
 
-        let variantValues: any = {
-          name: `${this.productModel.name}-${variantOptions}`,
-          sku: `${this.productModel.sku}-${variantOptions}`,
-        };
+      let variantValues: any = {
+        name: `${this.productModel.name}-${variantOptions}`,
+        sku: `${this.productModel.sku}-${variantOptions}`,
+      };
 
-        for (let key in variant) {
-          variantValues[key] = variant[key].id;
-        }
+      for (let key in variant) {
+        variantValues[key] = variant[key].id;
+      }
 
-        variantValues = {
-          ...variantValues,
-          quantity: 0,
-          price: 0,
-          status: 1,
-        };
+      variantValues = {
+        ...variantValues,
+        quantity: 0,
+        price: 0,
+        status: 1,
+      };
 
-        this.field.model?.push(variantValues);
-
-        this.addFields();
-        this.setColumns();
-      });
+      this.field.model?.push(variantValues);
     });
   }
 
   setupVariableProduct(selectedAttributeOptions: any): void {
+    this.field.fieldGroup = [];
+    this.field.model.splice(0, this.field.model.length);
+
     this.selectedAttributeOptions = selectedAttributeOptions;
 
     this.variants = this.productService.generateConfigurableProduct(
       this.selectedAttributeOptions
     );
 
-    this.field.model.splice(0, this.field.model.length);
-
-    console.log(this.field.model);
-
-    this.addFields();
-    this.setColumns();
-
     /**
      * This will setup variable model value after product configuration is rendered
      */
     this.setupModel();
+
+    this.addFields();
+    this.setColumns();
 
     this.messageBus.publish(MessageBusConstant.productVariantsChanged, {
       variants: this.variants,

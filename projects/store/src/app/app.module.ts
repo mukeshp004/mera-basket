@@ -16,9 +16,15 @@ import { ErrorInterceptorService } from './shared/interceptors/error-interceptor
 import { JwtInterceptorService } from './shared/interceptors/jwt-interceptor.service';
 import { SharedModule } from './shared/shared.module';
 import { PanelWrapperComponent } from './panel-wrapper/panel-wrapper.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  declarations: [AppComponent, DemoComponent, JsonFromComponent, PanelWrapperComponent],
+  declarations: [
+    AppComponent,
+    DemoComponent,
+    JsonFromComponent,
+    PanelWrapperComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -29,6 +35,7 @@ import { PanelWrapperComponent } from './panel-wrapper/panel-wrapper.component';
     BrowserAnimationsModule,
     LoadingBarHttpClientModule,
     LoadingBarModule,
+    TranslateModule.forRoot(),
   ],
   providers: [
     {

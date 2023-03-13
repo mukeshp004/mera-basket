@@ -70,7 +70,7 @@ export class AttributeListComponent implements OnInit {
     this.gridOptions = {
       defaultColDef: this.defaultColDef,
       columnDefs: columns,
-      frameworkComponents: {
+      components: {
         actionButton: ActionButtonCellRendererComponent,
       },
     };

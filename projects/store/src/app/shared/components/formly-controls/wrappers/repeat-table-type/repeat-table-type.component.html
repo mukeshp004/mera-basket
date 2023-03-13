@@ -9,25 +9,33 @@
     </tr>
   </thead>
   <tbody class="table-group-divider">
-    <tr *ngFor="let fieldG of field.fieldGroup; let i = index">
-      <td *ngFor="let field of fieldG.fieldGroup">
-        <!-- <pre>{{ field | json }}</pre> -->
-        <formly-field class="col" [field]="field"></formly-field>
-      </td>
-      <td>
-        <button class="btn btn-danger" type="button" (click)="remove(i)">
-          [x]
-        </button>
-      </td>
-    </tr>
+    <ng-template
+      [ngTemplateOutlet]="tbody"
+      [ngTemplateOutletContext]="{ group: field.fieldGroup }"
+    >
+    </ng-template>
   </tbody>
   <tfoot>
     <tr>
       <td [colSpan]="getColSpan()">
-        <button class="btn btn-primary" type="button" (click)="add()">
+        <button class="btn btn-primary mx-2" type="button" (click)="add()">
           <!-- {{ props.addText }} -->Add
         </button>
       </td>
     </tr>
   </tfoot>
 </table>
+
+<!-- This is row Tempate that will be used above -->
+<ng-template #tbody let-group="group">
+  <tr *ngFor="let fieldG of group; let i = index">
+    <td *ngFor="let ffield of fieldG.fieldGroup">
+      <formly-field class="col" [field]="ffield"></formly-field>
+    </td>
+    <td>
+      <button class="btn btn-danger" type="button" (click)="remove(i)">
+        [x]
+      </button>
+    </td>
+  </tr>
+</ng-template>
