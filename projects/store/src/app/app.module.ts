@@ -17,6 +17,8 @@ import { JwtInterceptorService } from './shared/interceptors/jwt-interceptor.ser
 import { SharedModule } from './shared/shared.module';
 import { PanelWrapperComponent } from './panel-wrapper/panel-wrapper.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { AbstractAppService } from 'projects/common-lib/src/lib/shared/services/abstract-app.service';
+import { AppService } from './shared/services/app.service';
 
 @NgModule({
   declarations: [
@@ -48,6 +50,8 @@ import { TranslateModule } from '@ngx-translate/core';
       useClass: ErrorInterceptorService,
       multi: true,
     },
+
+    { provide: AbstractAppService, useClass: AppService },
   ],
   bootstrap: [AppComponent],
 })
