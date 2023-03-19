@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit {
     device_name: ['web'],
     password: ['Password@123', Validators.required],
   });
+
   constructor(
     private fb: UntypedFormBuilder,
     private route: ActivatedRoute,

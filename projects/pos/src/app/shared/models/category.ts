@@ -5,6 +5,7 @@ export interface ICategory {
   slug?: string;
   show_in_menu?: number;
   display_mode?: number;
+  status?: number;
 }
 
 export class Category implements ICategory {
@@ -14,6 +15,7 @@ export class Category implements ICategory {
     description?: string,
     slug?: string,
     show_in_menu?: number,
-    display_mode?: number
+    display_mode?: number,
+    status?: number
   ) {}
 }

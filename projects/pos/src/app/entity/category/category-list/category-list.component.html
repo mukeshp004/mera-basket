@@ -1,7 +1,7 @@
 <div class="breadcrumbs">
   <ul>
     <li>
-      <a href="#page/dashboard" title=""><i class="fa fa-home"></i></a>/
+      <a href="#/category" title=""><i class="fa fa-home"></i></a>/
     </li>
     <li><a title="">Category</a></li>
   </ul>
@@ -18,7 +18,7 @@
 
   <div class="card">
     <div class="card-header">
-      <h3 class="card-title">Category</h3>
+      <h3 class="card-title">Category List</h3>
 
       <div class="card-tools">
         <button
@@ -41,6 +41,26 @@
         </button>
       </div>
     </div>
-    <div class="card-body">This is some text within a card body.</div>
+    <div class="card-body">
+      <div class="row mb-2">
+        <div class="col">
+          <button [routerLink]="['add']" class="btn btn-primary float-end">
+            Add Category
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col" style="height: 500px">
+          <ag-grid-angular
+            #agGrid
+            style="width: 100%; height: 100%"
+            id="myGrid"
+            class="ag-theme-alpine"
+            [gridOptions]="gridOptions"
+            (gridReady)="onGridReady($event)"
+          ></ag-grid-angular>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
