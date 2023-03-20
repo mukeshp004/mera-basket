@@ -16,23 +16,34 @@ export class AppService implements AbstractAppService {
       },
       {
         name: 'Category',
-        icon: 'fas fa-tachometer-alt',
+        icon: 'fa-solid fa-bars',
         path: '/entity/category',
       },
       {
         name: 'Distrubuter',
-        icon: 'fas fa-tachometer-alt',
+        icon: 'fa-solid fa-users',
         path: 'entity/distributor',
       },
       {
-        name: 'Product',
+        name: 'Inventory',
         path: 'entity/product',
+        // icon: '',
         children: [
           {
             name: 'Category',
             path: 'entity/Catogery',
           },
         ],
+      },
+      {
+        name: 'Purchase',
+        icon: 'fa-solid fa-warehouse',
+        path: 'entity/purchase',
+      },
+      {
+        name: 'Sales',
+        icon: 'fa-solid fa-cart-shopping',
+        path: 'entity/sales',
       },
     ];
 

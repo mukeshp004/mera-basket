@@ -9,7 +9,7 @@
     <ul>
       <li *ngFor="let menu of menuList">
         <a [routerLink]="[menu.path]" routerLinkActive="router-link-active">
-          <i class="fas fa-tachometer-alt"></i>
+          <i [class]="menu.icon || 'fa-solid fa-arrow-right'"></i>
           <span>{{ menu.name }}</span>
         </a>
       </li>

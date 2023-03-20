@@ -1,16 +1,15 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PurchaseAddComponent } from './purchase-add/purchase-add.component';
-import { PurchaseListComponent } from './purchase-list/purchase-list.component';
+import { SalesListComponent } from './sales-list/sales-list.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: PurchaseListComponent,
+    component: SalesListComponent,
   },
   // {
   //   path: 'add',
-  // component: PurchaseAddComponent,
+  // component: SaleListComponent,
   //   resolve: { entity: CategoryResolveService },
   // },
   // {
@@ -24,4 +23,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class PurchaseRoutingModule {}
+export class SaleRoutingModule {}
