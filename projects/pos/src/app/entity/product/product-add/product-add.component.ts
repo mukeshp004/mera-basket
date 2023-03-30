@@ -42,13 +42,13 @@ export class ProductAddComponent implements OnInit {
       type: [''],
       description: [''],
       is_new: [''],
-      quantity: [''],
-      cost: [''],
-      mrp: [''],
-      price: [''],
+      quantity: [0],
+      cost: [0, Validators.required],
+      mrp: [0, Validators.required],
+      price: [0, Validators.required],
       size: [''],
       color: [''],
-      status: [''],
+      status: [1],
       stocks: this.fb.array([]),
     });
 

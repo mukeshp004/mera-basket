@@ -17,26 +17,74 @@
   </div>
 
   <div class="row">
-    <div class="col-9">
+    <div class="col-12">
       <div class="row">
         <div class="col-12 mb-2">
           <div class="card">
             <!-- end of card header -->
             <div class="card-body">
               <div class="row">
-                <div class="col-4">
-                  <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1">
-                      <i class="fa-solid fa-barcode"></i>
-                    </span>
+                <div class="col-sm-3">
+                  <div class="input-group">
                     <input
-                      type="text"
                       class="form-control"
-                      placeholder="Enter item name or scan barcode"
-                      aria-label="Username"
-                      aria-describedby="basic-addon1"
+                      placeholder="dd-mm-yyyy"
+                      name="dp"
+                      [(ngModel)]="datepicker"
+                      ngbDatepicker
+                      #d="ngbDatepicker"
+                      [navigation]="'select'"
+                      (dateSelect)="onDateSelect($event)"
                     />
+                    <button
+                      class="btn btn-outline-secondary"
+                      (click)="d.toggle()"
+                      type="button"
+                    >
+                      <i class="far fa-calendar"></i>
+                    </button>
                   </div>
+                </div>
+                <div class="col-sm-3">
+                  <input
+                    id="typeahead-basic"
+                    type="text"
+                    class="form-control"
+                    [ngbTypeahead]="searchSupplier"
+                    [inputFormatter]="supplierFormatter"
+                    [resultTemplate]="rt"
+                    (selectItem)="onSupplierSelect($event)"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 mb-2">
+          <div class="card">
+            <!-- end of card header -->
+            <div class="card-body">
+              <div class="row mt-2">
+                <div class="col-12">
+                  <form [formGroup]="productFrom">
+                    <div class="input-group mb-3">
+                      <span class="input-group-text" id="basic-addon1">
+                        <i class="fa-solid fa-barcode"></i>
+                      </span>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter item name or scan barcode"
+                        formControlName="scanner"
+                        [ngbTypeahead]="search"
+                        [resultTemplate]="rt"
+                        [inputFormatter]="formatter"
+                        (selectItem)="onScannerListSelect($event)"
+                        [editable]="false"
+                      />
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>
@@ -48,7 +96,7 @@
         <div class="col-12">
           <div class="card">
             <div class="card-header">
-              <h3 class="card-title">Projects</h3>
+              <h3 class="card-title">Purchase Item</h3>
 
               <div class="card-tools">
                 <button
@@ -73,13 +121,56 @@
             </div>
             <!-- end of card header -->
             <div class="card-body">
-              <table class="table">
-                <thead>
-                  <th>#</th>
-                </thead>
-              </table>
+              <div class="row">
+                <div class="col" style="height: 300px">
+                  <app-purchase-item-grid
+                    [rowData]="cartItems"
+                  ></app-purchase-item-grid>
+                </div>
+              </div>
+
+              <div class="row mt-4">
+                <div class="col-6">
+                  <table class="table table-bordered">
+                    <tbody></tbody>
+                  </table>
+                </div>
+                <div class="col-6">
+                  <table class="table table-bordered">
+                    <tbody>
+                      <tr>
+                        <td>Discount Amount</td>
+                        <td>0.00</td>
+                      </tr>
+                      <tr>
+                        <td>Total</td>
+                        <td>{{ grossTotal }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-            <!-- end of card boday -->
+            <!-- end of card body -->
+            <div class="card-footer">
+              <button
+                class="btn btn-primary float-end"
+                type="submit"
+                (click)="submit()"
+                [disabled]="isSaving"
+              >
+                Submit
+              </button>
+
+              <button
+                class="btn btn-secondary float-end me-2"
+                type="button"
+                (click)="goBack()"
+              >
+                Back
+              </button>
+            </div>
+            <!-- end of card footer -->
           </div>
           <!-- end of card -->
         </div>
@@ -89,7 +180,7 @@
     </div>
     <!-- end of col -->
 
-    <div class="col-3 mb-2">
+    <div class="col-3 mb-2 d-none">
       <div class="card">
         <!-- end of card header -->
         <div class="card-body">
@@ -110,7 +201,7 @@
             </div>
           </div>
         </div>
-        <!-- end of card boday -->
+        <!-- end of card body -->
       </div>
       <!-- end of card -->
     </div>
@@ -118,3 +209,7 @@
   </div>
   <!-- end of row -->
 </div>
+
+<ng-template #rt let-r="result" let-t="term">
+  <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
+</ng-template>

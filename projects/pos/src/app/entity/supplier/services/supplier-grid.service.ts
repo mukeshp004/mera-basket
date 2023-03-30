@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 import { ColDef } from 'ag-grid-community';
 import {
-  PurchaseColumn,
-  PurchaseColumnLabel,
-} from '../../../shared/enums/columns/purchase-columns.enum';
+  SupplierColumn,
+  SupplierColumnLabel,
+} from '../../../shared/enums/columns/supplier-columns.enum';
 
 @Injectable({
   providedIn: 'root',
 })
-export class PurchaseGridService {
+export class SupplierGridService {
   constructor() {}
-
   getColumns(): ColDef[] {
     const columns: ColDef[] = [
       {
@@ -19,25 +18,23 @@ export class PurchaseGridService {
         cellRendererParams: {},
       },
       {
-        headerName: PurchaseColumnLabel.QUANTITY,
-        field: PurchaseColumn.QUANTITY,
+        headerName: SupplierColumnLabel.NAME,
+        field: SupplierColumn.NAME,
         suppressColumnsToolPanel: false,
       },
       {
-        headerName: PurchaseColumnLabel.SUB_TOTAL,
-        field: PurchaseColumn.SUB_TOTAL,
+        headerName: SupplierColumnLabel.EMAIL,
+        field: SupplierColumn.EMAIL,
+        suppressColumnsToolPanel: false,
       },
       {
-        headerName: PurchaseColumnLabel.TAX,
-        field: PurchaseColumn.TAX,
+        headerName: SupplierColumnLabel.PHONE,
+        field: SupplierColumn.PHONE,
+        suppressColumnsToolPanel: false,
       },
       {
-        headerName: PurchaseColumnLabel.TOTAL,
-        field: PurchaseColumn.TOTAL,
-      },
-      {
-        headerName: PurchaseColumnLabel.STATUS,
-        field: PurchaseColumn.STATUS,
+        headerName: SupplierColumnLabel.STATUS,
+        field: SupplierColumn.STATUS,
         valueGetter: (params) => {
           return params.data.status === 1 ? 'Active' : 'Inactive';
         },

@@ -20,9 +20,9 @@ export class AppService implements AbstractAppService {
         path: '/entity/category',
       },
       {
-        name: 'Distrubuter',
+        name: 'Supplier',
         icon: 'fa-solid fa-users',
-        path: 'entity/distributor',
+        path: 'entity/supplier',
       },
       {
         name: 'Inventory',

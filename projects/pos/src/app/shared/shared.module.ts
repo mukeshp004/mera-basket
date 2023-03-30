@@ -6,6 +6,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { AgGridModule } from 'ag-grid-angular';
 import { ActionButtonCellRendererComponent } from 'projects/common-lib/src/lib/shared/components/ag-grid/cell-renderer/action-button-cell-renderer/action-button-cell-renderer.component';
 import { ConfirmModalComponent } from 'projects/common-lib/src/lib/shared/components/confirm-modal/confirm-modal.component';
+import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [ActionButtonCellRendererComponent, ConfirmModalComponent],
@@ -15,6 +16,7 @@ import { ConfirmModalComponent } from 'projects/common-lib/src/lib/shared/compon
     ReactiveFormsModule,
     HttpClientModule,
     ToastrModule.forRoot(),
+    NgbTypeaheadModule,
     AgGridModule.withComponents([]),
   ],
   exports: [
@@ -25,6 +27,7 @@ import { ConfirmModalComponent } from 'projects/common-lib/src/lib/shared/compon
     AgGridModule,
 
     // Components
+    NgbTypeaheadModule,
     ActionButtonCellRendererComponent,
   ],
 })

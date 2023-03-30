@@ -12,6 +12,7 @@ import { IUser } from '../models/user';
 export class AuthService extends AbstractApiService<IUser> {
   private currentUserSubject: BehaviorSubject<IUser>;
   public currentUser: Observable<IUser>;
+  relativeUrl = 'login';
 
   constructor(
     protected override http: HttpClient,
@@ -20,7 +21,6 @@ export class AuthService extends AbstractApiService<IUser> {
   ) {
     super(http);
 
-    this.relativeUrl = 'login';
     const userJsonString = localStorage.getItem('currentUser');
     const user = userJsonString !== null ? JSON.parse(userJsonString) : null;
 

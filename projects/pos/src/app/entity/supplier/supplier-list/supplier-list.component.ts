@@ -5,16 +5,16 @@ import { GridApi, ColumnApi, GridOptions, ColDef } from 'ag-grid-community';
 import { ToastrService } from 'ngx-toastr';
 import { ActionButtonCellRendererComponent } from 'projects/common-lib/src/lib/shared/components/ag-grid/cell-renderer/action-button-cell-renderer/action-button-cell-renderer.component';
 import { ConfirmModalComponent } from 'projects/common-lib/src/lib/shared/components/confirm-modal/confirm-modal.component';
-import { IPurchase } from '../../../shared/models/purchase';
-import { PurchaseGridService } from '../services/purchase-grid.service';
-import { PurchaseService } from '../services/purchase.service';
+import { Category } from '../../../shared/models/category';
+import { SupplierGridService } from '../services/supplier-grid.service';
+import { SupplierService } from '../services/supplier.service';
 
 @Component({
-  selector: 'app-purchase-list',
-  templateUrl: './purchase-list.component.html',
-  styleUrls: ['./purchase-list.component.scss'],
+  selector: 'app-supplier-list',
+  templateUrl: './supplier-list.component.html',
+  styleUrls: ['./supplier-list.component.scss'],
 })
-export class PurchaseListComponent implements OnInit {
+export class SupplierListComponent implements OnInit {
   gridApi!: GridApi;
   gridColumnApi!: ColumnApi;
   gridOptions!: GridOptions;
@@ -22,8 +22,8 @@ export class PurchaseListComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private purchaseGridService: PurchaseGridService,
-    private purchaseService: PurchaseService,
+    private supplierGridService: SupplierGridService,
+    private supplierService: SupplierService,
     private toastr: ToastrService,
     private modalService: NgbModal
   ) {}
@@ -41,7 +41,7 @@ export class PurchaseListComponent implements OnInit {
       floatingFilter: true,
     };
 
-    const columns = this.purchaseGridService.getColumns();
+    const columns = this.supplierGridService.getColumns();
 
     columns
       .filter((col) => col.headerName === 'Action')
@@ -78,17 +78,17 @@ export class PurchaseListComponent implements OnInit {
   }
 
   editCategory = (params: any) => {
-    this.router.navigate([`entity/purchase/edit/${params.data.id}`]);
+    this.router.navigate([`entity/supplier/edit/${params.data.id}`]);
   };
 
   deleteCategory = (params: any) => {
     const modalRef = this.modalService.open(ConfirmModalComponent);
-    modalRef.componentInstance.msg = 'Do you want to delete Purchase';
+    modalRef.componentInstance.msg = 'Do you want to delete supplier';
     modalRef.closed.subscribe((response) => {
-      this.purchaseService.delete(params.data.id).subscribe(() => {
+      this.supplierService.delete(params.data.id).subscribe(() => {
         const row = this.gridApi.getRowNode(params.data.id);
         this.gridApi.applyTransactionAsync({ remove: [row] });
-        this.toastr.success('Purchase Deleted!', 'Success');
+        this.toastr.success('Supplier Deleted!', 'Success');
       });
     });
   };
@@ -98,8 +98,8 @@ export class PurchaseListComponent implements OnInit {
     this.gridColumnApi = params.columnApi;
 
     this.gridColumnApi.autoSizeAllColumns();
-    this.purchaseService.get().subscribe((purchases: IPurchase[]) => {
-      this.gridApi.setRowData(purchases);
+    this.supplierService.get().subscribe((categories: Category[]) => {
+      this.gridApi.setRowData(categories);
     });
   }
 }

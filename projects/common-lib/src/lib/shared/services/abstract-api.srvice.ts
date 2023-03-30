@@ -14,14 +14,14 @@ export abstract class AbstractApiService<T> {
   /**
    * Relative url of website
    */
-  protected relativeUrl!: string;
+  public abstract relativeUrl: string;
 
   constructor(protected http: HttpClient) {
     this.baseUrl = 'http://localhost:8000/api';
   }
 
-  getRelativeUrl(): string {
-    return this.relativeUrl;
+  getRelativeUrl(url: string | undefined): string {
+    return url ? url : this.relativeUrl;
   }
 
   setRelativeUrl(url: string) {
@@ -29,31 +29,35 @@ export abstract class AbstractApiService<T> {
     return this;
   }
 
-  get(params?: any): Observable<T[]> {
-    return this.http.get<T[]>(`${this.baseUrl}/${this.getRelativeUrl()}`, {
+  get(params?: any, url?: string): Observable<T[]> {
+    return this.http.get<T[]>(`${this.baseUrl}/${this.getRelativeUrl(url)}`, {
       params: params,
     });
   }
 
-  post(params: any): Observable<T> {
+  post(params: any, url?: string): Observable<T> {
     return this.http.post<T>(
-      `${this.baseUrl}/${this.getRelativeUrl()}`,
+      `${this.baseUrl}/${this.getRelativeUrl(url)}`,
       params
     );
   }
 
-  find(id: number): Observable<T> {
-    return this.http.get<T>(`${this.baseUrl}/${this.getRelativeUrl()}/${id}`);
+  find(id: number, url?: string): Observable<T> {
+    return this.http.get<T>(
+      `${this.baseUrl}/${this.getRelativeUrl(url)}/${id}`
+    );
   }
 
-  put(id: number, params: any): Observable<T> {
+  put(id: number, params: any, url?: string): Observable<T> {
     return this.http.put<T>(
-      `${this.baseUrl}/${this.getRelativeUrl()}/${id}`,
+      `${this.baseUrl}/${this.getRelativeUrl(url)}/${id}`,
       params
     );
   }
 
-  delete(id: number) {
-    return this.http.delete(`${this.baseUrl}/${this.getRelativeUrl()}/${id}`);
+  delete(id: number, url?: string) {
+    return this.http.delete(
+      `${this.baseUrl}/${this.getRelativeUrl(url)}/${id}`
+    );
   }
 }

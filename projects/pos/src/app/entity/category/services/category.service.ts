@@ -7,8 +7,9 @@ import { ICategory } from '../../../shared/models/category';
   providedIn: 'root',
 })
 export class CategoryService extends AbstractApiService<ICategory> {
+  relativeUrl = 'categories';
+
   constructor(protected override http: HttpClient) {
     super(http);
-    this.relativeUrl = 'categories';
   }
 }
