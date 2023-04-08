@@ -23,7 +23,7 @@ export class CartService {
 
   private getItem(productId: number): CartItem | undefined {
     let item = this.items.find(
-      (cartItem: any) => cartItem.productId === productId
+      (cartItem: CartItem) => cartItem.product_id === productId
     );
 
     return item;
@@ -37,10 +37,10 @@ export class CartService {
     discountPercentage?: number
   ): void {
     let item = this.items.find(
-      (cartItem: any) => cartItem.productId === productId
+      (cartItem: CartItem) => cartItem.product_id === productId
     );
 
-    if (!item) {
+    if (item === undefined) {
       item = new CartItem(productId, productId);
       // item.product = product;
       // item.productId = product.id;
@@ -68,10 +68,10 @@ export class CartService {
     let item = this.getItem(productId);
 
     if (item) {
-      item.price = price;
-      item.quantity = +quantity;
-      item.discount = discount;
-      item.discount_percentage = discountPercentage;
+      item.price = this.str2float(price);
+      item.quantity = this.str2float(+quantity);
+      item.discount = this.str2float(discount);
+      item.discount_percentage = this.str2float(discountPercentage);
       item.total = item.quantity * price;
 
       this.commit();
@@ -131,10 +131,15 @@ export class CartService {
     return total;
   }
 
-  str2float(data: string | number) {
+  str2float(data: string | number): number {
     if (typeof data === 'number') {
       return data;
     }
+
+    if (!data) {
+      return 0;
+    }
+
     return parseFloat(data);
   }
 }

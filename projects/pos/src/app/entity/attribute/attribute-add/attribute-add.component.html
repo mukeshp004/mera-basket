@@ -1,0 +1,325 @@
+<div class="breadcrumbs">
+  <ul>
+    <li>
+      <a href="#/attribute" title=""><i class="fa fa-home"></i></a>/
+    </li>
+    <li><a title="">Attribute</a></li>
+  </ul>
+</div>
+
+<div class="main-content">
+  <div class="content-header">
+    <div class="row">
+      <div class="col-12">
+        <h1>Attribute</h1>
+      </div>
+    </div>
+  </div>
+
+  <form name="form" role="form" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Create Attribute</h3>
+      </div>
+      <div class="card-body">
+        <div class="mb-3 row">
+          <label for="name" class="col-sm-2 col-form-label">Name</label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              formControlName="name"
+            />
+          </div>
+        </div>
+        <!-- end of row -->
+
+        <div class="mb-3 row">
+          <label for="code" class="col-sm-2 col-form-label">Code</label>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              id="code"
+              formControlName="code"
+            />
+          </div>
+        </div>
+        <!-- end of row -->
+
+        <div class="mb-3 row">
+          <label for="type" class="col-sm-2 col-form-label">Type</label>
+          <div class="col-sm-10">
+            <select
+              type="text"
+              class="form-control"
+              id="type"
+              formControlName="type"
+            >
+              <option value="">Select Attribute Type</option>
+              <option
+                *ngFor="let item of attributeTypes | keys"
+                [value]="item.key"
+              >
+                {{ item.value }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <!-- end of row -->
+
+        <ng-container *ngIf="isMultiOptionType()">
+          <div class="mb-3 row">
+            <label for="swatch_type" class="col-sm-2 col-form-label"
+              >Swatch Type</label
+            >
+            <div class="col-sm-10">
+              <select
+                type="text"
+                class="form-control"
+                id="swatch_type"
+                formControlName="swatch_type"
+              >
+                <option value="">Select Swatch Type</option>
+                <option
+                  *ngFor="let item of swatchTypes | keys"
+                  [value]="item.key"
+                >
+                  {{ item.value }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <!-- end of row -->
+
+          <div class="mb-3 row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-10">
+              <table class="table" [cellPadding]="10">
+                <thead>
+                  <tr>
+                    <td>#</td>
+                    <td *ngIf="formControl['swatch_type'].value">Swatch</td>
+                    <td>name</td>
+                    <td>position</td>
+                  </tr>
+                </thead>
+                <tr
+                  formArrayName="options"
+                  *ngFor="let option of options.controls; let i = index"
+                >
+                  <ng-container [formGroupName]="i">
+                    <td>
+                      <div class="d-flex flex-row mb-3">
+                        <button
+                          type="button"
+                          class="btn btn-danger"
+                          (click)="removeOption(i)"
+                        >
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                    <td *ngIf="formControl['swatch_type'].value">
+                      <ng-container
+                        *ngIf="
+                          formControl['swatch_type'].value ==
+                          swatchTypes['COLOR']
+                        "
+                      >
+                        <app-color-picker
+                          formControlName="swatch_value"
+                        ></app-color-picker>
+                      </ng-container>
+                      <ng-container
+                        *ngIf="
+                          formControl['swatch_type'].value ==
+                          swatchTypes['FILE']
+                        "
+                      >
+                        <input
+                          type="file"
+                          accept="image/*"
+                          formControlName="swatch_value"
+                        />
+                      </ng-container>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        class="form-control"
+                        formControlName="name"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        class="form-control"
+                        formControlName="position"
+                      />
+                    </td>
+                  </ng-container>
+                </tr>
+              </table>
+              <button
+                type="button"
+                class="btn btn-primary mb-2"
+                (click)="addOption()"
+              >
+                Add Option
+              </button>
+            </div>
+          </div>
+        </ng-container>
+
+        <div class="mb-3 row">
+          <label for="validation" class="col-sm-2 col-form-label"
+            >Validation</label
+          >
+          <div class="col-sm-10">
+            <select
+              type="text"
+              class="form-control"
+              id="validation"
+              formControlName="validation"
+            >
+              <option value="">Select Attribute Validation</option>
+              <option
+                *ngFor="let item of attributeValidations | keys"
+                [value]="item.key"
+              >
+                {{ item.value }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <!-- end of row -->
+
+        <div class="mb-3 row">
+          <label for="is_required" class="col-sm-2 col-form-label"
+            >Is Required</label
+          >
+          <div class="col-sm-10">
+            <div class="form-check form-switch">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="is_required"
+                formControlName="is_required"
+              />
+            </div>
+          </div>
+        </div>
+        <!-- end of row -->
+
+        <div class="mb-3 row">
+          <label for="is_unique" class="col-sm-2 col-form-label"
+            >Is Unique</label
+          >
+          <div class="col-sm-10">
+            <div class="form-check form-switch">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="is_unique"
+                formControlName="is_unique"
+              />
+            </div>
+          </div>
+        </div>
+        <!-- end of row -->
+
+        <div class="mb-3 row">
+          <label for="is_filterable" class="col-sm-2 col-form-label"
+            >Is is_filterable</label
+          >
+          <div class="col-sm-10">
+            <div class="form-check form-switch">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="is_filterable"
+                formControlName="is_filterable"
+              />
+            </div>
+          </div>
+        </div>
+        <!-- end of row -->
+
+        <div class="mb-3 row">
+          <label for="is_configurable" class="col-sm-2 col-form-label"
+            >Is Configurable</label
+          >
+          <div class="col-sm-10">
+            <div class="form-check form-switch">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="is_configurable"
+                formControlName="is_configurable"
+              />
+            </div>
+          </div>
+        </div>
+        <!-- end of row -->
+
+        <div class="mb-3 row">
+          <label for="is_user_defined" class="col-sm-2 col-form-label"
+            >Is User Defined</label
+          >
+          <div class="col-sm-10">
+            <div class="form-check form-switch">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="is_user_defined"
+                formControlName="is_user_defined"
+              />
+            </div>
+          </div>
+        </div>
+        <!-- end of row -->
+
+        <div class="mb-3 row">
+          <label for="status" class="col-sm-2 col-form-label">Status</label>
+          <div class="col-sm-10">
+            <select
+              id="status"
+              class="form-select"
+              aria-label="Default select example"
+              formControlName="status"
+            >
+              <option>Select Status</option>
+              <option value="0">InActive</option>
+              <option value="1">Active</option>
+            </select>
+          </div>
+        </div>
+        <!-- end of row -->
+      </div>
+      <div class="card-footer">
+        <button
+          class="btn btn-primary float-end"
+          type="submit"
+          [disabled]="form.invalid || isSaving"
+        >
+          Submit
+        </button>
+        <button
+          class="btn btn-secondary float-end me-2"
+          type="button"
+          (click)="goBack()"
+        >
+          Back
+        </button>
+      </div>
+      <!-- card footer-->
+    </div>
+  </form>
+</div>

@@ -1,0 +1,13 @@
+<input
+  id="typeahead-basic"
+  type="text"
+  class="form-control"
+  [ngbTypeahead]="searchSupplier"
+  [inputFormatter]="supplierFormatter"
+  [resultTemplate]="supplierTpl"
+  (selectItem)="onSupplierSelect($event)"
+/>
+
+<ng-template #supplierTpl let-r="result" let-t="term">
+  <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
+</ng-template>

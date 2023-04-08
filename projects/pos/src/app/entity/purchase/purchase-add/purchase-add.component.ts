@@ -161,6 +161,14 @@ export class PurchaseAddComponent implements OnInit {
     );
   };
 
+  supplierFormatter = (x: { name: string }) => x.name;
+
+  onSupplierSelect(event: NgbTypeaheadSelectItemEvent) {
+    console.log(event);
+    const supplier = event.item;
+    this.purchase.supplier_id = supplier.id;
+  }
+
   search: any = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(500),
@@ -174,8 +182,9 @@ export class PurchaseAddComponent implements OnInit {
           item = this.products
             .filter((product: IProduct) => {
               return (
-                (product.name || '').toLowerCase().indexOf(term.toLowerCase()) >
-                -1
+                (`${product.name}${product.sku}` || '')
+                  .toLowerCase()
+                  .indexOf(term.toLowerCase()) > -1
               );
             })
             .slice(0, 10);
@@ -185,15 +194,7 @@ export class PurchaseAddComponent implements OnInit {
       })
     );
 
-  formatter = (x: { name: string }) => x.name;
-
-  supplierFormatter = (x: { name: string }) => x.name;
-
-  onSupplierSelect(event: NgbTypeaheadSelectItemEvent) {
-    console.log(event);
-    const supplier = event.item;
-    this.purchase.supplier_id = supplier.id;
-  }
+  formatter = (product: IProduct) => `${product.name} - ${product.sku}`;
 
   onScannerListSelect(event: NgbTypeaheadSelectItemEvent) {
     event.preventDefault();
@@ -230,11 +231,11 @@ export class PurchaseAddComponent implements OnInit {
   }
 
   protected onSaveSuccess(): void {
-    const createdMsg = 'Product created Successfully';
-    const updatedMsg = 'Product updated Successfully';
+    const createdMsg = 'Purchase created Successfully';
+    const updatedMsg = 'Purchase updated Successfully';
 
     this.toastr.success(this.purchase.id ? updatedMsg : createdMsg, 'Success');
-    this.router.navigate(['entity/product']);
+    this.router.navigate(['entity/purchase']);
   }
 
   protected onSaveError(error: any): void {

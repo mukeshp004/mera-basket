@@ -5,6 +5,8 @@ import { ToastrService } from 'ngx-toastr';
 import { finalize, Observable } from 'rxjs';
 import { IProduct } from '../../../shared/models/product';
 import { ProductService } from '../services/product.service';
+import { SupplierService } from '../../supplier/services/supplier.service';
+import { ISupplier } from '../../../shared/models/supplier';
 
 @Component({
   selector: 'app-product-add',
@@ -15,6 +17,7 @@ export class ProductAddComponent implements OnInit {
   productForm = this.getForm();
   isSaving = false;
   product!: IProduct;
+  suppliers: ISupplier[] = [];
 
   active = 1;
 
@@ -23,13 +26,24 @@ export class ProductAddComponent implements OnInit {
     private router: Router,
     private fb: UntypedFormBuilder,
     private productService: ProductService,
+    private supplierService: SupplierService,
     private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe((response: any) => {
       this.product = response.entity;
-      this.updateForm(this.product);
+      if (this.product.id) {
+        this.updateForm(this.product);
+      }
+    });
+  }
+
+  getSupplier() {
+    this.supplierService.get().subscribe({
+      next: (suppliers: ISupplier[]) => {
+        this.suppliers = suppliers;
+      },
     });
   }
 
@@ -37,6 +51,7 @@ export class ProductAddComponent implements OnInit {
     return this.fb.group({
       id: [],
       name: ['', Validators.required],
+      supplier_id: [''],
       slug: [''],
       sku: [''],
       type: [''],
@@ -81,6 +96,7 @@ export class ProductAddComponent implements OnInit {
     this.productForm.patchValue({
       id: product.id,
       slug: product.slug,
+      sku: product.sku,
       name: product.name,
       description: product.description,
       is_new: product.is_new,

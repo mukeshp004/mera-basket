@@ -28,7 +28,9 @@ export class CategoryAddComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.data.subscribe((response: any) => {
       this.category = response.entity;
-      this.updateForm(this.category);
+      if (this.category.id) {
+        this.updateForm(this.category);
+      }
     });
   }
 

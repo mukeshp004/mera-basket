@@ -8,7 +8,7 @@
 </div>
 
 <div class="main-content">
-  <div class="content-header">
+  <div class="content-header d-none">
     <div class="row">
       <div class="col-12">
         <h1>Purchase</h1>
@@ -65,10 +65,10 @@
           <div class="card">
             <!-- end of card header -->
             <div class="card-body">
-              <div class="row mt-2">
+              <div class="row">
                 <div class="col-12">
                   <form [formGroup]="productFrom">
-                    <div class="input-group mb-3">
+                    <div class="input-group">
                       <span class="input-group-text" id="basic-addon1">
                         <i class="fa-solid fa-barcode"></i>
                       </span>
@@ -78,7 +78,7 @@
                         placeholder="Enter item name or scan barcode"
                         formControlName="scanner"
                         [ngbTypeahead]="search"
-                        [resultTemplate]="rt"
+                        [resultTemplate]="productTemplate"
                         [inputFormatter]="formatter"
                         (selectItem)="onScannerListSelect($event)"
                         [editable]="false"
@@ -122,7 +122,7 @@
             <!-- end of card header -->
             <div class="card-body">
               <div class="row">
-                <div class="col" style="height: 300px">
+                <div class="col" style="height: 400px">
                   <app-purchase-item-grid
                     [rowData]="cartItems"
                   ></app-purchase-item-grid>
@@ -209,6 +209,10 @@
   </div>
   <!-- end of row -->
 </div>
+
+<ng-template #productTemplate let-r="result" let-t="term">
+  <ngb-highlight [result]="r.name + ' ' + r.sku" [term]="t"></ngb-highlight>
+</ng-template>
 
 <ng-template #rt let-r="result" let-t="term">
   <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>

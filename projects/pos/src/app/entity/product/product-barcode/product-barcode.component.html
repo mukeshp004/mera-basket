@@ -1,0 +1,104 @@
+<div class="breadcrumbs">
+  <ul>
+    <li>
+      <a href="#/barcode" title=""><i class="fa fa-home"></i></a>/
+    </li>
+    <li><a title="">Barcode</a></li>
+  </ul>
+</div>
+
+<div class="main-content">
+  <div class="content-header">
+    <div class="row">
+      <div class="col-12">
+        <h1>Barcode</h1>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Barcode List</h3>
+    </div>
+    <div class="card-body">
+      <div class="row mb-2">
+        <div class="col">
+          <div class="row g-3">
+            <div class="col-sm-2">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Enter item name or scan barcode"
+                [(ngModel)]="p"
+                [ngbTypeahead]="search"
+                [resultTemplate]="rt"
+                [inputFormatter]="formatter"
+                (selectItem)="onProductSelected($event)"
+                [editable]="false"
+              />
+            </div>
+            <div class="col-sm-1">
+              <input
+                type="number"
+                [(ngModel)]="row"
+                class="form-control"
+                placeholder="State"
+                aria-label="State"
+              />
+            </div>
+            <div class="col-sm-1">
+              <input
+                type="number"
+                [(ngModel)]="column"
+                class="form-control"
+                placeholder="Zip"
+                aria-label="Zip"
+              />
+            </div>
+
+            <div class="col-sm-1">
+              <input
+                type="number"
+                [(ngModel)]="width"
+                class="form-control"
+                placeholder="Zip"
+                aria-label="Zip"
+              />
+            </div>
+
+            <div class="col-sm-1">
+              <input
+                type="number"
+                [(ngModel)]="height"
+                class="form-control"
+                placeholder="Zip"
+                aria-label="Zip"
+              />
+            </div>
+          </div>
+          <!--  end of div row  -->
+        </div>
+      </div>
+      <div class="row">
+        <div class="col" *ngIf="selectedProduct && selectedProduct.sku">
+          <table>
+            <tr *ngFor="let r of getNoList(row)">
+              <td *ngFor="let c of getNoList(column)">
+                <ngx-barcode
+                  [bc-value]="selectedProduct.sku"
+                  [bc-display-value]="true"
+                  [bc-width]="width"
+                  [bc-height]="height"
+                ></ngx-barcode>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #rt let-r="result" let-t="term">
+  <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
+</ng-template>

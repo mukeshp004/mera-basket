@@ -5,6 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 // for HttpClient import:
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+import { AbstractAppService } from 'projects/common-lib/src/lib/shared/services/abstract-app.service';
 import { AdminModule } from './admin/admin.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -12,13 +13,11 @@ import { DemoComponent } from './demo/demo.component';
 import { JsonFromComponent } from './json-from/json-from.component';
 import { LayoutModule } from './layout/layout.module';
 import { PagesModule } from './pages/pages.module';
+import { PanelWrapperComponent } from './panel-wrapper/panel-wrapper.component';
 import { ErrorInterceptorService } from './shared/interceptors/error-interceptor.service';
 import { JwtInterceptorService } from './shared/interceptors/jwt-interceptor.service';
-import { SharedModule } from './shared/shared.module';
-import { PanelWrapperComponent } from './panel-wrapper/panel-wrapper.component';
-import { TranslateModule } from '@ngx-translate/core';
-import { AbstractAppService } from 'projects/common-lib/src/lib/shared/services/abstract-app.service';
 import { AppService } from './shared/services/app.service';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -37,7 +36,6 @@ import { AppService } from './shared/services/app.service';
     BrowserAnimationsModule,
     LoadingBarHttpClientModule,
     LoadingBarModule,
-    TranslateModule.forRoot(),
   ],
   providers: [
     {

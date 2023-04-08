@@ -9,13 +9,13 @@ import { ErrorInterceptorService } from 'projects/common-lib/src/lib/shared/inte
 import { JwtInterceptorService } from 'projects/common-lib/src/lib/shared/interceptors/jwt-interceptor.service';
 import { AbstractAppService } from 'projects/common-lib/src/lib/shared/services/abstract-app.service';
 // import { SharedModule as CommonSharedModule } from 'projects/common-lib/src/lib/shared/shared.module';
-import { LayoutModule } from 'projects/common-lib/src/public-api';
 import { LoginComponent } from './admin/login/login.component';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppService } from './shared/services/app.service';
 import { SharedModule } from './shared/shared.module';
+import { LayoutModule } from 'projects/common-lib/src/public-api';
 
 @NgModule({
   declarations: [AppComponent, LoginComponent],
@@ -23,7 +23,7 @@ import { SharedModule } from './shared/shared.module';
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    LayoutRoutingModule,
+    LayoutModule,
     SharedModule,
     LoggerModule.forRoot({
       serverLoggingUrl: '/api/logs',

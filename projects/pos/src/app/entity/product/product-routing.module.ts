@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ProductAddComponent } from './product-add/product-add.component';
 import { ProductListComponent } from './product-list/product-list.component';
 import { ProductResolveService } from './services/product-resolve.service';
+import { ProductBarcodeComponent } from './product-barcode/product-barcode.component';
 
 const routes: Routes = [
   {
@@ -18,6 +19,10 @@ const routes: Routes = [
     path: 'edit/:id',
     component: ProductAddComponent,
     resolve: { entity: ProductResolveService },
+  },
+  {
+    path: 'barcode',
+    component: ProductBarcodeComponent,
   },
 ];
 

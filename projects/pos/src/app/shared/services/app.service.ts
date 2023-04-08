@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AbstractAppService } from 'projects/common-lib/src/lib/shared/services/abstract-app.service';
+import { Menu } from '../models/menu';
 
 @Injectable({
   providedIn: 'root',
@@ -7,17 +8,12 @@ import { AbstractAppService } from 'projects/common-lib/src/lib/shared/services/
 export class AppService implements AbstractAppService {
   constructor() {}
 
-  getMenu(): any[] {
+  getMenu(): Menu[] {
     const menu = [
       {
         name: 'Dashboard',
         icon: 'fas fa-tachometer-alt',
         path: 'page/dashboard',
-      },
-      {
-        name: 'Category',
-        icon: 'fa-solid fa-bars',
-        path: '/entity/category',
       },
       {
         name: 'Supplier',
@@ -26,12 +22,22 @@ export class AppService implements AbstractAppService {
       },
       {
         name: 'Inventory',
-        path: 'entity/product',
-        // icon: '',
+        icon: 'fa-solid fa-cart-plus',
         children: [
           {
             name: 'Category',
-            path: 'entity/Catogery',
+            icon: 'fa-solid fa-bars',
+            path: '/entity/category',
+          },
+          {
+            name: 'Attribute',
+            icon: 'fa-solid fa-bars',
+            path: '/entity/attribute',
+          },
+          {
+            name: 'Product',
+            icon: 'fa-brands fa-product-hunt',
+            path: 'entity/product',
           },
         ],
       },

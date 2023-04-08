@@ -6,13 +6,84 @@
   }"
 >
   <section class="menu">
-    <ul>
+    <!-- <ul>
       <li *ngFor="let menu of menuList">
         <a [routerLink]="[menu.path]" routerLinkActive="router-link-active">
           <i [class]="menu.icon || 'fa-solid fa-arrow-right'"></i>
           <span>{{ menu.name }}</span>
         </a>
       </li>
+    </ul> -->
+    <ul class="navigation-list">
+      <ng-container
+        *ngTemplateOutlet="menuItemTemplate; context: { $implicit: menuList }"
+      ></ng-container>
     </ul>
   </section>
 </aside>
+
+<!--Menu List Tempalte -->
+<ng-template #menuItemTemplate let-items>
+  <li *ngFor="let item of items" [ngClass]="item.active ? 'active' : ''">
+    <ng-container
+      *ngTemplateOutlet="anchorLinkTpl; context: { $implicit: item }"
+    ></ng-container>
+
+    <ng-container *ngIf="item.children">
+      <ul class="sub-menu">
+        <ng-container
+          *ngTemplateOutlet="
+            menuItemTemplate;
+            context: { $implicit: item.children }
+          "
+        >
+        </ng-container>
+      </ul>
+    </ng-container>
+  </li>
+</ng-template>
+
+<ng-template #anchorLinkTpl let-item>
+  <ng-container *ngIf="item.path">
+    <a
+      [routerLink]="[item.path]"
+      routerLinkActive="active"
+      (click)="item.active = !item.active"
+    >
+      <i [class]="item.icon || 'fa-solid fa-arrow-right'"></i>
+      <span
+        >{{ item.name }}
+
+        <i
+          *ngIf="item.children"
+          class="fas"
+          [ngClass]="{
+            'fa-angle-left': !item.active,
+            'fa-angle-down': item.active
+          }"
+        ></i>
+      </span>
+    </a>
+  </ng-container>
+  <ng-container *ngIf="!item.path">
+    <a
+      href="javascript:void(0)"
+      routerLinkActive="active"
+      (click)="item.active = !item.active"
+    >
+      <i [class]="item.icon || 'fa-solid fa-arrow-right'"></i>
+      <span
+        >{{ item.name }}
+
+        <i
+          *ngIf="item.children"
+          class="fas"
+          [ngClass]="{
+            'fa-angle-left': !item.active,
+            'fa-angle-down': item.active
+          }"
+        ></i>
+      </span>
+    </a>
+  </ng-container>
+</ng-template>

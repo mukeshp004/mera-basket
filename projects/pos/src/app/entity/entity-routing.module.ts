@@ -6,6 +6,11 @@ const routes: Routes = [
     path: '',
     children: [
       {
+        path: 'attribute',
+        loadChildren: () =>
+          import('./attribute/attribute.module').then((m) => m.AttributeModule),
+      },
+      {
         path: 'category',
         loadChildren: () =>
           import('./category/category.module').then((m) => m.CategoryModule),

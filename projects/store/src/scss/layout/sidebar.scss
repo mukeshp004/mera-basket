@@ -26,7 +26,7 @@ aside.left-sidebar {
         padding: 9px 10px;
         transition: all 0.4s ease 0s;
 
-        &:hover {
+        &:hover, &.active {
           color: #fff;
           background: linear-gradient(to bottom, #8a7aff 0%, #715eff 100%);
         }
@@ -46,6 +46,20 @@ aside.left-sidebar {
           padding: 5px;
         }
       }
+
+      .sub-menu {
+        margin-left: 10px;
+        display: none;
+
+     
+       }
+
+       &.active {
+        .sub-menu {
+          display: block;
+          flex: 1;
+        }
+       }
     }
   }
 }

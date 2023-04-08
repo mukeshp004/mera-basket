@@ -1,15 +1,25 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { ToastrModule } from 'ngx-toastr';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { AgGridModule } from 'ag-grid-angular';
+import { ToastrModule } from 'ngx-toastr';
 import { ActionButtonCellRendererComponent } from 'projects/common-lib/src/lib/shared/components/ag-grid/cell-renderer/action-button-cell-renderer/action-button-cell-renderer.component';
 import { ConfirmModalComponent } from 'projects/common-lib/src/lib/shared/components/confirm-modal/confirm-modal.component';
-import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { SupplierDropdownComponent } from './components/supplier-dropdown/supplier-dropdown.component';
+// import { KeysPipe } from 'projects/common-lib/src/lib/shared/pipes/keys.pipe';
 
 @NgModule({
-  declarations: [ActionButtonCellRendererComponent, ConfirmModalComponent],
+  declarations: [
+    ActionButtonCellRendererComponent,
+    ConfirmModalComponent,
+    SupplierDropdownComponent,
+
+    // Directive ------------
+
+    // Pipes ------------
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -26,9 +36,15 @@ import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
     ToastrModule,
     AgGridModule,
 
-    // Components
+    // Components ------------
     NgbTypeaheadModule,
     ActionButtonCellRendererComponent,
+    SupplierDropdownComponent,
+
+    // Directive ------------
+
+    // Pipes ------------
+    // KeysPipe,
   ],
 })
 export class SharedModule {}

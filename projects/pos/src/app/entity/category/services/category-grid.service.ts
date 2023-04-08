@@ -9,9 +9,6 @@ import {
 @Injectable({
   providedIn: 'root',
 })
-@Injectable({
-  providedIn: 'root',
-})
 export class CategoryGridService {
   constructor() {}
 

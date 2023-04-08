@@ -15,7 +15,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
   declarations: [LayoutComponent, HeaderComponent, SidebarComponent],
   imports: [
     CommonModule,
-    SharedModule,
+    // SharedModule,
     LayoutRoutingModule,
     NgbDropdownModule,
     NgbAccordionModule,

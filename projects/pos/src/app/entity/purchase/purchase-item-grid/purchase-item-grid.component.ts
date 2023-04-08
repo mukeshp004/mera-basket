@@ -13,12 +13,14 @@ import {
   ColDef,
   RowDataTransaction,
   CellValueChangedEvent,
+  ColGroupDef,
 } from 'ag-grid-community';
 import { ToastrService } from 'ngx-toastr';
 import { ActionButtonCellRendererComponent } from 'projects/common-lib/src/lib/shared/components/ag-grid/cell-renderer/action-button-cell-renderer/action-button-cell-renderer.component';
 import { ConfirmModalComponent } from 'projects/common-lib/src/lib/shared/components/confirm-modal/confirm-modal.component';
 import { CartItem } from '../../../shared/models/cart/cart-item';
 import { CartService } from '../../../shared/services/cart/cart.service';
+import { PurchaseItemGridService } from '../services/purchase-item-grid.service';
 
 @Component({
   selector: 'app-purchase-item-grid',
@@ -35,6 +37,7 @@ export class PurchaseItemGridComponent implements OnInit, OnChanges {
 
   constructor(
     private cart: CartService,
+    private purchaseItemGridService: PurchaseItemGridService,
     private toastr: ToastrService,
     private modalService: NgbModal
   ) {}
@@ -70,7 +73,7 @@ export class PurchaseItemGridComponent implements OnInit, OnChanges {
       floatingFilter: true,
     };
 
-    const columns: ColDef[] = this.getColumns();
+    const columns: ColDef[] = this.purchaseItemGridService.getColumns();
 
     columns
       .filter((col) => col.headerName === 'Action')
@@ -130,61 +133,5 @@ export class PurchaseItemGridComponent implements OnInit, OnChanges {
     this.gridColumnApi.autoSizeAllColumns();
 
     this.gridApi.setRowData([]);
-  }
-
-  getColumns(): ColDef[] {
-    const columns: ColDef[] = [
-      {
-        headerName: 'Action',
-        cellRenderer: 'actionButtons',
-        maxWidth: 80,
-        // cellRendererParams: {},
-      },
-      {
-        headerName: 'Name',
-        field: 'name',
-        maxWidth: 150,
-        valueGetter: (params) => {
-          return params.data.product.name;
-        },
-      },
-      {
-        headerName: 'Quantity',
-        field: 'quantity',
-        filter: 'agNumberColumnFilter',
-        editable: true,
-      },
-      {
-        headerName: 'Price',
-        field: 'price',
-        filter: 'agNumberColumnFilter',
-        editable: true,
-        valueGetter: (params) => {
-          return (+params.data.price).toFixed(2);
-        },
-      },
-      {
-        headerName: 'Discount',
-        filter: 'agNumberColumnFilter',
-        field: 'discount',
-        editable: true,
-      },
-      {
-        headerName: 'Discount %',
-        field: 'discountPercentage',
-        filter: 'agNumberColumnFilter',
-        editable: true,
-      },
-      {
-        headerName: 'Total',
-        field: 'total',
-        filter: 'agNumberColumnFilter',
-        valueGetter: (params) => {
-          return parseFloat(params.data.total).toFixed(2);
-        },
-      },
-    ];
-
-    return columns;
   }
 }
