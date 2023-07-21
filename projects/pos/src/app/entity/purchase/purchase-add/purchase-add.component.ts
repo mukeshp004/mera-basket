@@ -1,4 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -24,7 +30,8 @@ import { PurchaseService } from '../services/purchase.service';
   templateUrl: './purchase-add.component.html',
   styleUrls: ['./purchase-add.component.scss'],
 })
-export class PurchaseAddComponent implements OnInit {
+export class PurchaseAddComponent implements OnInit, AfterViewInit {
+  @ViewChild('scanner') scanner!: ElementRef;
   productFrom: FormGroup = this.generateProductForm();
   cartItems: CartItem[] = [];
   products: IProduct[] = [];
@@ -59,6 +66,10 @@ export class PurchaseAddComponent implements OnInit {
     this.cartItemListener();
     this.getProducts();
     this.getSupplier();
+  }
+
+  ngAfterViewInit(): void {
+    this.scanner.nativeElement.focus();
   }
 
   getSupplier() {
@@ -235,11 +246,10 @@ export class PurchaseAddComponent implements OnInit {
     const updatedMsg = 'Purchase updated Successfully';
 
     this.toastr.success(this.purchase.id ? updatedMsg : createdMsg, 'Success');
-    this.router.navigate(['entity/purchase']);
+    // this.router.navigate(['entity/purchase']);
   }
 
   protected onSaveError(error: any): void {
-    // Api for inheritance.
     this.toastr.error(error.message);
   }
 

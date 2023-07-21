@@ -128,7 +128,7 @@ export class ConfigurationWrapperComponent
 
     this.messageBus.publish(MessageBusConstant.productVariantsChanged, {
       variants: this.variants,
-      // selectedAttributeOptions: this.selectedAttributeOptions,
+      selectedAttributeOptions: this.selectedAttributeOptions,
     });
   }
 
@@ -137,6 +137,8 @@ export class ConfigurationWrapperComponent
   }
 
   addFields() {
+    console.log("variatns ====>", this.variants);
+    if(!this.variants || this.variants.length == 0 ) return;
     const selectedAttributes = Object.keys(this.variants[0]);
 
     const fields: FormlyFieldConfig[] = [
@@ -217,6 +219,9 @@ export class ConfigurationWrapperComponent
   }
 
   setColumns() {
+    
+    if(!this.variants || this.variants.length == 0 ) return;
+    
     const columns = [
       'Name',
       'SKU',

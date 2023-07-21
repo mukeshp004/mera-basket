@@ -7,10 +7,10 @@ export interface IProduct {
   description?: string;
   is_new?: boolean;
   quantity?: number;
-  cost?: number;
+  cost_price?: number;
   mrp?: number;
   discount?: number;
-  price?: number;
+  sale_price?: number;
   color?: string;
   size?: string;
   status?: number;
@@ -26,9 +26,9 @@ export class Product implements IProduct {
     description?: string,
     is_new?: boolean,
     quantity?: number,
-    cost?: number,
+    cost_price?: number,
     mrp?: number,
-    price?: number,
+    sale_price?: number,
     color?: string,
     size?: string,
     status?: number

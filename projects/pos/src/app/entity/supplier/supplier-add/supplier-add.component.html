@@ -1,9 +1,9 @@
 <div class="breadcrumbs">
   <ul>
     <li>
-      <a href="#/category" title=""><i class="fa fa-home"></i></a>/
+      <a href="#/supplier" title=""><i class="fa fa-home"></i></a>/
     </li>
-    <li><a title="">Category</a></li>
+    <li><a title="">Supplier</a></li>
   </ul>
 </div>
 
@@ -11,20 +11,15 @@
   <div class="content-header">
     <div class="row">
       <div class="col-12">
-        <h1>Category</h1>
+        <h1>Supplier</h1>
       </div>
     </div>
   </div>
 
-  <form
-    name="categoryForm"
-    role="form"
-    [formGroup]="form"
-    (ngSubmit)="submit()"
-  >
+  <form name="form" role="form" [formGroup]="form" (ngSubmit)="submit()">
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">Create Category</h3>
+        <h3 class="card-title">Create Supplier</h3>
       </div>
       <div class="card-body">
         <div class="mb-3 row">

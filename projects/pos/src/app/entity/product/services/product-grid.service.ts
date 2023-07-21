@@ -41,16 +41,16 @@ export class ProductGridService {
         field: ProductColumn.QUANTITY,
       },
       {
-        headerName: ProductColumnLabel.COST,
-        field: ProductColumn.COST,
+        headerName: ProductColumnLabel.COST_PRICE,
+        field: ProductColumn.COST_PRICE,
       },
       {
         headerName: ProductColumnLabel.MRP,
         field: ProductColumn.MRP,
       },
       {
-        headerName: ProductColumnLabel.PRICE,
-        field: ProductColumn.PRICE,
+        headerName: ProductColumnLabel.SALE_PRICE,
+        field: ProductColumn.SALE_PRICE,
       },
       {
         headerName: ProductColumnLabel.SIZE,

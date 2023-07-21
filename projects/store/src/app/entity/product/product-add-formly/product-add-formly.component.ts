@@ -23,6 +23,12 @@ import {
   IProductFindResponse,
 } from './../../../shared/models/product';
 import { MessageBusService } from './../../../shared/services/message-bus.service';
+import { IAttributeGroup } from '../../../shared/models/attributes/attribute-group';
+import { forIn } from 'lodash';
+import {
+  AttributeOption,
+  IAttributeOption,
+} from '../../../shared/models/attributes/attribute-option';
 
 @Component({
   selector: 'app-product-add-formly',
@@ -37,7 +43,9 @@ export class ProductAddFormlyComponent implements OnInit {
   model: any = {};
   form: UntypedFormGroup = this.fb.group({});
   isSaving = false;
+
   product!: IProduct;
+  variants?: IProduct[];
   productTypes = PRODUCT_TYPE;
   productTypeOptions = this.helperService.enum2Options(PRODUCT_TYPE);
 
@@ -82,6 +90,9 @@ export class ProductAddFormlyComponent implements OnInit {
       this.getAttributeFamilies();
       if (this.productDetail) {
         this.product = this.productDetail.product;
+        this.variants = this.product.variants;
+
+        console.log('this.variants ====> ', this.variants);
         this.selectedAttributeFamily = this.productDetail.attributeFamily;
         setTimeout(() => {
           this.updateForm();
@@ -92,6 +103,14 @@ export class ProductAddFormlyComponent implements OnInit {
   }
 
   productsVariantsChangeListener() {
+    this.messageBus
+      .listen(MessageBusConstant.productVariantsChanged)
+      .subscribe((payLoad: MetaData) => {
+        this.selectedAttributeOptions = payLoad.data.selectedAttributeOptions;
+      });
+  }
+
+  productsVariantsChangeListener1() {
     this.messageBus
       .listen(MessageBusConstant.productVariantsChanged)
       .subscribe((payLoad: MetaData) => {
@@ -144,10 +163,18 @@ export class ProductAddFormlyComponent implements OnInit {
       });
   }
 
+  /**
+   * Builds product form
+   */
   buildFormlyForm() {
     this.formFields = this.intFormField();
   }
 
+  /**
+   * Initialize form
+   *
+   * @returns FormlyFieldConfig[]
+   */
   intFormField(): FormlyFieldConfig[] {
     return [
       {
@@ -158,6 +185,9 @@ export class ProductAddFormlyComponent implements OnInit {
           type: 'text',
           label: 'Name',
         },
+        // expressionProperties: {
+        //   'model.sku': (model) => model.name,
+        // },
       },
       {
         key: 'sku',
@@ -237,6 +267,12 @@ export class ProductAddFormlyComponent implements OnInit {
     ];
   }
 
+  /**
+   * This method is called when product type is changed
+   *
+   * @param field FormlyFieldConfig
+   * @param $event
+   */
   onProductTypeChange = (field: FormlyFieldConfig, $event: any) => {
     this.model['type'] = field.formControl?.value;
 
@@ -268,6 +304,9 @@ export class ProductAddFormlyComponent implements OnInit {
     this.appendForm();
   };
 
+  /**
+   * This method get the configurable attribute and set in this.configurableAttributes;
+   */
   getConfigurableAttributes() {
     this.configurableAttributes = [];
 
@@ -280,6 +319,96 @@ export class ProductAddFormlyComponent implements OnInit {
     });
 
     // this.setColor();
+    this.setConfigurableAttribute();
+  }
+
+  setConfigurableAttributeWithoutConfig() {
+    if (!this.product || !this.product['super_attributes']) return;
+
+    const supper_attirbutes = this.product['super_attributes'];
+
+    const supper_attirbute_code: string[] = this.product[
+      'super_attributes'
+    ].map((attribute: IAttribute) => attribute.code);
+
+    // console.log('super_attributes code =====>', supper_attirbute_code);
+
+    /**
+     * get selected attribute and groups
+     */
+    const groups: { [key: string]: IAttributeGroup } = {};
+
+    this.selectedAttributeFamily?.groups?.forEach((group) => {
+      group.attributes?.forEach((attribute) => {
+        if (attribute.code && supper_attirbute_code.includes(attribute.code!)) {
+          groups[attribute.code] = group;
+        }
+      });
+    });
+
+    // console.log('attribute Groups with selecte attrinute  ==> ', groups);
+
+    /**
+     * to get selected options from variable prouct using groups and attributes
+     */
+    const options: { [key: string]: any } = {};
+
+    for (let attributeCode in groups) {
+      const group = groups[attributeCode];
+      this.variants?.forEach((variant) => {
+        const value = variant[group.code!][attributeCode];
+        if (!options[attributeCode]) {
+          options[attributeCode] = [];
+        }
+
+        if (value && !options[attributeCode].includes(value)) {
+          options[attributeCode].push(value);
+        }
+      });
+    }
+
+    // console.log('options  ==> ', options);
+
+    supper_attirbute_code.forEach((attrCode: string) => {
+      const attr = this.configurableAttributes.find((attribute: IAttribute) => {
+        return attribute.code === attrCode;
+      });
+
+      this.selectedAttributeOptions[attrCode] = attr?.options?.filter(
+        (option: any) => {
+          return options[attrCode].includes(option.id);
+        }
+      );
+    });
+  }
+
+  setConfigurableAttribute() {
+    if (!this.product || !this.product['super_attributes']) return;
+    const superAttributes: { [key: number]: any[] } =
+      this.product['super_attributes'];
+
+    const selectedaAttIds: any[] = Object.keys(
+      this.product['super_attributes']
+    ).map((e) => +e);
+
+    const selectedAttributes = this.configurableAttributes.filter(
+      (attribute: IAttribute) => {
+        return selectedaAttIds.includes(attribute.id);
+      }
+    );
+
+    selectedAttributes.forEach((attribute: IAttribute) => {
+      const filterOptions = superAttributes[attribute.id!];
+
+      const selectedOptions = attribute.options?.filter(
+        (option: IAttributeOption) => {
+          const selectedOptions = superAttributes[attribute.id!];
+          return filterOptions.includes(option.id);
+        }
+      );
+
+      return (this.selectedAttributeOptions[attribute.code!] = selectedOptions);
+    });
   }
 
   setColor() {
@@ -341,10 +470,37 @@ export class ProductAddFormlyComponent implements OnInit {
     this.router.navigate(['product']);
   }
 
+  transformSelectedAttributOption() {
+    let selectedAttributeOptions = {};
+    if (this.selectedAttributeOptions) {
+      const selectedOptions = [].concat(
+        ...(Object.values(this.selectedAttributeOptions) as any[])
+      );
+
+      selectedAttributeOptions = selectedOptions.reduce(
+        (result, current: IAttributeOption, index) => {
+          result[current.attribute_id!] = result[current.attribute_id!] || [];
+          result[current.attribute_id!].push(current.id);
+          return result;
+        },
+        {} as { [key: number]: any[] }
+      );
+    }
+
+    return selectedAttributeOptions;
+  }
+
   submit() {
-    this.isSaving = true;
+    // this.isSaving = true;
     // const params = this.form.value;
     const params = this.model;
+
+    console.log(this.configurableAttributes);
+    console.log(this.transformSelectedAttributOption());
+
+    if (this.selectedAttributeOptions) {
+      params['super_attributes'] = this.transformSelectedAttributOption();
+    }
 
     if (params?.id) {
       this.subscribeToSaveResponse(this.productService.put(params.id, params));
@@ -365,7 +521,7 @@ export class ProductAddFormlyComponent implements OnInit {
     const updatedMsg = 'Product updated Successfully';
 
     this.toastr.success(this.product?.id ? updatedMsg : createdMsg, 'Success');
-    // this.router.navigate(['/category']);
+    this.router.navigate(['/product']);
   }
 
   protected onSaveError(error: any): void {

@@ -24,22 +24,6 @@ export class DashboardComponent implements OnInit {
         label: 'First Name',
       },
     },
-    {
-      key: 'address',
-      wrappers: ['dpanel'],
-      props: { label: 'Address' },
-      fieldGroup: [
-        {
-          key: 'town',
-          type: 'input',
-          props: {
-            required: true,
-            type: 'text',
-            label: 'Town',
-          },
-        },
-      ],
-    },
   ];
 
   ngOnInit(): void {}

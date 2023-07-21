@@ -16,6 +16,7 @@ import { AppComponent } from './app.component';
 import { AppService } from './shared/services/app.service';
 import { SharedModule } from './shared/shared.module';
 import { LayoutModule } from 'projects/common-lib/src/public-api';
+import { KeyboardShortcutsModule } from 'ng-keyboard-shortcuts';
 
 @NgModule({
   declarations: [AppComponent, LoginComponent],
@@ -25,6 +26,8 @@ import { LayoutModule } from 'projects/common-lib/src/public-api';
     AppRoutingModule,
     LayoutModule,
     SharedModule,
+
+    KeyboardShortcutsModule.forRoot(),
     LoggerModule.forRoot({
       serverLoggingUrl: '/api/logs',
       level: NgxLoggerLevel.DEBUG,

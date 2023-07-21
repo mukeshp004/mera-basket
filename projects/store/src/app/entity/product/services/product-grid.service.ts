@@ -37,10 +37,19 @@ export class ProductGridService {
           return params.data['attribute_family']['name'] || '';
         },
       },
-      { headerName: ProductColumnLabel.PRICE, field: ProductColumn.PRICE },
+      {
+        headerName: ProductColumnLabel.PRICE,
+        field: ProductColumn.PRICE,
+        valueFormatter: (params) => {
+          return params.data.price.price;
+        },
+      },
       {
         headerName: ProductColumnLabel.QUANTITY,
         field: ProductColumn.QUANTITY,
+        // valueFormatter: (params) => {
+        //   return params.data.price.price;
+        // },
       },
       {
         headerName: ProductColumnLabel.STATUS,

@@ -42,20 +42,16 @@
       </div>
     </div>
     <div class="card-body">
-      This is some text within a card body.
-
-      <div>
-        <form [formGroup]="form" (ngSubmit)="submit()">
-          <formly-form
-            [model]="model"
-            [fields]="fields"
-            [form]="form"
-          ></formly-form>
-          <button type="submit" class="btn btn-primary submit-button">
-            Submit
-          </button>
-        </form>
-      </div>
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <formly-form
+          [model]="model"
+          [fields]="fields"
+          [form]="form"
+        ></formly-form>
+        <button type="submit" class="btn btn-primary submit-button">
+          Submit
+        </button>
+      </form>
     </div>
   </div>
 </div>

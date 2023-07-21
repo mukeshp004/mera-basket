@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { CartItem, ICartItem } from '../../models/cart/cart-item';
 import { IProduct } from '../../models/product';
 import { BehaviorSubject } from 'rxjs';
+import { LocalStorageService } from 'ngx-webstorage';
 
 @Injectable({
   providedIn: 'root',
@@ -10,12 +11,18 @@ export class CartService {
   items$ = new BehaviorSubject<any>([]);
   items: CartItem[] = [];
 
+  key = 'purchase_cart';
+
   total = 0;
   deliveryTotal = 0;
   grossTotal = 0;
 
   constructor() {}
 
+  /**
+   *
+   * @returns cart item observables
+   */
   public getItems() {
     // return this.items;
     return this.items$.asObservable();
@@ -52,12 +59,21 @@ export class CartService {
       item.price = item.price || price || 0;
       item.discount = discount || 0;
       item.discount_percentage = discountPercentage || 0;
-      item.total = item.quantity * item.price;
+      // item.total = item.quantity * item.price;
 
       this.commit();
     }
   }
 
+  /**
+   * Edit Card Item
+   *
+   * @param productId productId
+   * @param quantity number
+   * @param price number
+   * @param discount number
+   * @param discountPercentage number
+   */
   editItem(
     productId: number,
     quantity: number,
@@ -72,7 +88,7 @@ export class CartService {
       item.quantity = this.str2float(+quantity);
       item.discount = this.str2float(discount);
       item.discount_percentage = this.str2float(discountPercentage);
-      item.total = item.quantity * price;
+      // item.total = item.quantity * price;
 
       this.commit();
     }
@@ -94,6 +110,8 @@ export class CartService {
 
   sendUpdate() {
     this.items$.next(this.items);
+    localStorage.setItem(this.key, JSON.stringify(this.items));
+    // this.localStorage.store(this.key, this.items);
   }
 
   commit() {
@@ -116,6 +134,7 @@ export class CartService {
 
     let total = this.str2float(qty) * this.str2float(price);
     total = this.calculateItemDiscount(item, total);
+    item.total = total;
     return total;
   };
 

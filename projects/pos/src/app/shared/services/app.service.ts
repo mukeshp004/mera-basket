@@ -39,12 +39,28 @@ export class AppService implements AbstractAppService {
             icon: 'fa-brands fa-product-hunt',
             path: 'entity/product',
           },
+          {
+            name: 'Barcode',
+            icon: 'fa-solid fa-barcode',
+            path: 'entity/product/barcode',
+          },
         ],
       },
       {
         name: 'Purchase',
         icon: 'fa-solid fa-warehouse',
-        path: 'entity/purchase',
+        children: [
+          {
+            name: 'Purchase',
+            icon: 'fa-solid fa-warehouse',
+            path: 'entity/purchase',
+          },
+          {
+            name: 'Purchase Return',
+            icon: 'fa-solid fa-warehouse',
+            path: 'entity/purchase/return',
+          },
+        ],
       },
       {
         name: 'Sales',
