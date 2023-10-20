@@ -8,12 +8,14 @@ export interface IProduct {
   is_new?: boolean;
   quantity?: number;
   cost_price?: number;
+  price?: number;
   mrp?: number;
   discount?: number;
   sale_price?: number;
   color?: string;
   size?: string;
   status?: number;
+  variants?: IProduct[]
 }
 
 export class Product implements IProduct {
@@ -31,6 +33,7 @@ export class Product implements IProduct {
     sale_price?: number,
     color?: string,
     size?: string,
-    status?: number
+    status?: number,
+    variants?: IProduct[]
   ) {}
 }

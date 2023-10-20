@@ -233,6 +233,7 @@
       }
     }
   },
+  "defaultProject": "store",
   "cli": {
     "analytics": false
   }

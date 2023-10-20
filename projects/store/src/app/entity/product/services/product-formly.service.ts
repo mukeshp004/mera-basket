@@ -5,6 +5,8 @@ import { IAttributeFamily } from './../../../shared/models/attributes/attribute-
 import { Injectable } from '@angular/core';
 import { IAttribute } from '../../../shared/models/attributes/attribute';
 import { retry } from 'rxjs';
+import { IProduct } from '../../../shared/models/product';
+import { IInventorySource } from '../../../shared/models/inventory-source';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +20,8 @@ export class ProductFormlyService {
     attributeFamily?.groups?.forEach((group: IAttributeGroup) => {
       if (group && group.name) {
         const g = this.attribute2formlyService.generateFormGroup(
-          group.code || group.name,
+          // group.code || group.name,
+          null,
           group.name
         );
 
@@ -51,19 +54,28 @@ export class ProductFormlyService {
     return fields;
   }
 
-  generateInventoryGroup(): FormlyFieldConfig {
+  generateInventoryGroup(inventorySources: IInventorySource[]): FormlyFieldConfig {
     const inventoryGroup = this.attribute2formlyService.generateFormGroup(
-      'inventory',
+      'inventories',
       'Inventory'
     );
 
-    inventoryGroup.fieldGroup = [
+
+
+    inventoryGroup.fieldGroup = [];
+
+    inventorySources.forEach((inventorySource) => {
+
+
+      inventoryGroup.fieldGroup?.push(
       this.attribute2formlyService.generateField({
-        code: 'Inventory',
-        name: 'Inventory',
+        // code: `inventory-${inventorySource.id}`,
+        code: `inventory-${inventorySource.id}`,
+        name: inventorySource.name,
         type: 'number',
-      } as IAttribute),
-    ];
+      } as IAttribute))
+    
+    })
 
     return inventoryGroup;
   }
@@ -71,7 +83,9 @@ export class ProductFormlyService {
   generateConfigurableGroup(
     configurableAttributes: IAttribute[],
     selectedAttributeOptions: any,
-    productModel: any
+    productModel: any,
+    product: IProduct,
+    inventorySources: IInventorySource[]
   ): FormlyFieldConfig {
     const configGroup = {
       key: 'variants',
@@ -85,6 +99,8 @@ export class ProductFormlyService {
           attributes: configurableAttributes,
           selectedAttributeOptions: selectedAttributeOptions,
           productModel: productModel,
+          product: product,
+          inventorySources: inventorySources
         },
       },
       fieldArray: {

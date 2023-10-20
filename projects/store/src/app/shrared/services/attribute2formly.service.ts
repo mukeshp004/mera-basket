@@ -8,13 +8,19 @@ import { IAttribute } from '../../shared/models/attributes/attribute';
 export class Attribute2formlyService {
   constructor() {}
 
-  generateFormGroup(key: string, label: string): FormlyFieldConfig {
-    return {
-      key: key,
+  generateFormGroup(key: string| null, label: string): FormlyFieldConfig {
+    const formlyFieldConfig = {
+      // key: key,
       wrappers: ['panel'],
       props: { label: label, isCollapse: false },
       fieldGroup: [],
     } as FormlyFieldConfig;
+
+    if (key) {
+      formlyFieldConfig['key'] = key;
+    }
+
+    return formlyFieldConfig;
   }
 
   generateField(attribute: IAttribute): FormlyFieldConfig {
@@ -31,6 +37,7 @@ export class Attribute2formlyService {
         return this.generateDateField(attribute);
         break;
 
+      case 'number':
       case 'price':
         return this.generateAmountField(attribute);
         break;

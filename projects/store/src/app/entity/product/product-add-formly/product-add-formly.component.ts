@@ -1,16 +1,14 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import {
-  FormGroup,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-} from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { MetaData } from 'ng-event-bus/lib/meta-data';
 import { ToastrService } from 'ngx-toastr';
 import { IAttribute } from 'projects/store/src/app/shared/models/attributes/attribute';
-import { delay, distinctUntilChanged, finalize, Observable, tap } from 'rxjs';
+import { Observable, delay, finalize, tap } from 'rxjs';
 import { IAttributeFamily } from '../../../shared/models/attributes/attribute-family';
+import { IAttributeGroup } from '../../../shared/models/attributes/attribute-group';
+import { IAttributeOption } from '../../../shared/models/attributes/attribute-option';
 import { HelperService } from '../../../shared/services/helper.service';
 import { AttributeFamilyService } from '../../attribute-family/services/attribute-family.service';
 import { AttributeService } from '../../attribute/attribute.service';
@@ -23,12 +21,9 @@ import {
   IProductFindResponse,
 } from './../../../shared/models/product';
 import { MessageBusService } from './../../../shared/services/message-bus.service';
-import { IAttributeGroup } from '../../../shared/models/attributes/attribute-group';
-import { forIn } from 'lodash';
-import {
-  AttributeOption,
-  IAttributeOption,
-} from '../../../shared/models/attributes/attribute-option';
+import { IInventorySource } from '../../../shared/models/inventory-source';
+import { ProductValueService } from '../services/product-value.service';
+import { Inventory } from '../../../shared/models/inventory';
 
 @Component({
   selector: 'app-product-add-formly',
@@ -39,7 +34,7 @@ export class ProductAddFormlyComponent implements OnInit {
   @ViewChild('formly') formly: any;
 
   formFields: FormlyFieldConfig[] = [];
-  configurableformFields: FormlyFieldConfig = {};
+  configurableFormFields: FormlyFieldConfig = {};
   model: any = {};
   form: UntypedFormGroup = this.fb.group({});
   isSaving = false;
@@ -59,6 +54,7 @@ export class ProductAddFormlyComponent implements OnInit {
   excludeConfigurableAttribute = false;
 
   productDetail: IProductFindResponse | undefined = undefined;
+  inventorySources: IInventorySource[] = [];
 
   /**
    * Selected attribute option for product
@@ -78,28 +74,31 @@ export class ProductAddFormlyComponent implements OnInit {
     private helperService: HelperService,
     private productFormly: ProductFormlyService,
     private messageBus: MessageBusService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private productDefaultValueService: ProductValueService
   ) {}
 
   ngOnInit(): void {
-    this.buildFormlyForm();
     this.activatedRoute.data.subscribe((response: any) => {
-      // const data: IProductFindResponse = response.entity;
-      this.productDetail = response.entity;
+      const data: IProductFindResponse = response.entity;
+      this.attributeFamilies = data.attributeFamilies;
+      this.inventorySources = data.inventorySources;
 
-      this.getAttributeFamilies();
-      if (this.productDetail) {
-        this.product = this.productDetail.product;
+      console.log(this.inventorySources);
+
+      if (data.product) {
+        this.product = data.product;
         this.variants = this.product.variants;
 
-        console.log('this.variants ====> ', this.variants);
-        this.selectedAttributeFamily = this.productDetail.attributeFamily;
+        // console.log('this.variants ====> ', this.variants);
+        this.selectedAttributeFamily = data.attributeFamily;
         setTimeout(() => {
           this.updateForm();
         }, 1000);
       }
+
+      this.buildFormlyForm();
     });
-    // this.productsVariantsChangeListener();
   }
 
   productsVariantsChangeListener() {
@@ -119,7 +118,7 @@ export class ProductAddFormlyComponent implements OnInit {
         this.model['variants'] = [];
 
         variants.forEach((variant: any) => {
-          console.log('================', variant);
+          // console.log('================', variant);
           const variantOptions = Object.values(variant)
             .map((option: any) => option.name.toLowerCase())
             .join('-');
@@ -142,24 +141,6 @@ export class ProductAddFormlyComponent implements OnInit {
 
           this.model['variants'].push(variantValues);
         });
-      });
-  }
-
-  getAttributeFamilies() {
-    this.attributeFamilyService
-      .get()
-      .subscribe((attributeFamilies: IAttributeFamily[]) => {
-        this.attributeFamilies = attributeFamilies;
-        const attributeFamilyProps = this.formFields.find(
-          (f) => f.key === 'attribute_family_id'
-        )?.props;
-
-        if (attributeFamilyProps) {
-          attributeFamilyProps.options = this.attributeFamilies;
-        }
-
-        // this.addDefaultValues();
-        // this.addConfigProductDefaultValues(); // added for testing purpose
       });
   }
 
@@ -251,7 +232,6 @@ export class ProductAddFormlyComponent implements OnInit {
           //   }, 100);
           // },
           onChanges: (field?: FormlyFieldConfig) => {
-            console.log('onChanges', field?.model);
             field?.formControl?.valueChanges
               .pipe(
                 // distinctUntilChanged(),
@@ -260,7 +240,7 @@ export class ProductAddFormlyComponent implements OnInit {
                   this.onAttributeFamilyChange(field);
                 })
               )
-              .subscribe((v) => console.log(v));
+              .subscribe();
           },
         },
       },
@@ -273,7 +253,7 @@ export class ProductAddFormlyComponent implements OnInit {
    * @param field FormlyFieldConfig
    * @param $event
    */
-  onProductTypeChange = (field: FormlyFieldConfig, $event: any) => {
+  onProductTypeChange = (field: FormlyFieldConfig, $event?: any) => {
     this.model['type'] = field.formControl?.value;
 
     this.excludeConfigurableAttribute = false;
@@ -288,7 +268,6 @@ export class ProductAddFormlyComponent implements OnInit {
 
   // onAttributeFamilyChange = (formField: any, $event: any) => {
   onAttributeFamilyChange = (formField: any) => {
-    console.log('attribute change');
     const value = this.model['attribute_family_id'];
 
     if (!value) return;
@@ -325,13 +304,13 @@ export class ProductAddFormlyComponent implements OnInit {
   setConfigurableAttributeWithoutConfig() {
     if (!this.product || !this.product['super_attributes']) return;
 
-    const supper_attirbutes = this.product['super_attributes'];
+    const supper_attributes = this.product['super_attributes'];
 
-    const supper_attirbute_code: string[] = this.product[
+    const supper_attribute_code: string[] = this.product[
       'super_attributes'
     ].map((attribute: IAttribute) => attribute.code);
 
-    // console.log('super_attributes code =====>', supper_attirbute_code);
+    // console.log('super_attributes code =====>', supper_attribute_code);
 
     /**
      * get selected attribute and groups
@@ -340,13 +319,13 @@ export class ProductAddFormlyComponent implements OnInit {
 
     this.selectedAttributeFamily?.groups?.forEach((group) => {
       group.attributes?.forEach((attribute) => {
-        if (attribute.code && supper_attirbute_code.includes(attribute.code!)) {
+        if (attribute.code && supper_attribute_code.includes(attribute.code!)) {
           groups[attribute.code] = group;
         }
       });
     });
 
-    // console.log('attribute Groups with selecte attrinute  ==> ', groups);
+    // console.log('attribute Groups with select attribute  ==> ', groups);
 
     /**
      * to get selected options from variable prouct using groups and attributes
@@ -369,7 +348,7 @@ export class ProductAddFormlyComponent implements OnInit {
 
     // console.log('options  ==> ', options);
 
-    supper_attirbute_code.forEach((attrCode: string) => {
+    supper_attribute_code.forEach((attrCode: string) => {
       const attr = this.configurableAttributes.find((attribute: IAttribute) => {
         return attribute.code === attrCode;
       });
@@ -411,39 +390,42 @@ export class ProductAddFormlyComponent implements OnInit {
     });
   }
 
-  setColor() {
-    const colorAttr = this.configurableAttributes.find(
-      (attribute: IAttribute) => {
-        return attribute.code === 'color';
-      }
-    );
+  // setColor() {
+  //   const colorAttr = this.configurableAttributes.find(
+  //     (attribute: IAttribute) => {
+  //       return attribute.code === 'color';
+  //     }
+  //   );
 
-    console.log(colorAttr);
-    this.selectedAttributeOptions['color'] = colorAttr?.options?.filter(
-      (option) => {
-        return option.id === 2 || option.id === 3;
-      }
-    );
+  //   this.selectedAttributeOptions['color'] = colorAttr?.options?.filter(
+  //     (option) => {
+  //       return option.id === 2 || option.id === 3;
+  //     }
+  //   );
 
-    console.log(this.selectedAttributeOptions);
-  }
+  //   console.log(this.selectedAttributeOptions);
+  // }
 
   appendForm() {
-    console.log('append form called');
+    // console.log('append form called');
     let fields: FormlyFieldConfig[] = [];
 
     fields = [...this.intFormField()];
 
     if (this.selectedAttributeFamily) {
+      // Set configurable product
+      // set configurable wrapper
       if (this.model['type'] === PRODUCT_TYPE.Configurable) {
-        this.configurableformFields =
+        this.configurableFormFields =
           this.productFormly.generateConfigurableGroup(
             this.configurableAttributes,
             this.selectedAttributeOptions,
-            this.model
+            this.model,
+            this.product,
+            this.inventorySources
           );
 
-        fields.push(this.configurableformFields);
+        fields.push(this.configurableFormFields);
       }
 
       const configurableFields = this.productFormly.formFields(
@@ -451,18 +433,17 @@ export class ProductAddFormlyComponent implements OnInit {
         this.excludeConfigurableAttribute
       );
 
-      // this.buildFormlyForm();
-
-      // this.formFields = [...this.intFormField()];
-
       fields.push(...configurableFields);
 
-      fields.push(this.productFormly.generateInventoryGroup());
+      if (this.model['type'] !== PRODUCT_TYPE.Configurable) {
+        fields.push(
+          this.productFormly.generateInventoryGroup(this.inventorySources)
+        );
+      }
 
       setTimeout(() => {
         this.formFields = [...fields];
       });
-      // this.cd.detectChanges();
     }
   }
 
@@ -470,7 +451,7 @@ export class ProductAddFormlyComponent implements OnInit {
     this.router.navigate(['product']);
   }
 
-  transformSelectedAttributOption() {
+  transformSelectedAttributeOption() {
     let selectedAttributeOptions = {};
     if (this.selectedAttributeOptions) {
       const selectedOptions = [].concat(
@@ -492,14 +473,11 @@ export class ProductAddFormlyComponent implements OnInit {
 
   submit() {
     // this.isSaving = true;
-    // const params = this.form.value;
     const params = this.model;
-
-    console.log(this.configurableAttributes);
-    console.log(this.transformSelectedAttributOption());
+    console.log(this.model);
 
     if (this.selectedAttributeOptions) {
-      params['super_attributes'] = this.transformSelectedAttributOption();
+      params['super_attributes'] = this.transformSelectedAttributeOption();
     }
 
     if (params?.id) {
@@ -521,7 +499,7 @@ export class ProductAddFormlyComponent implements OnInit {
     const updatedMsg = 'Product updated Successfully';
 
     this.toastr.success(this.product?.id ? updatedMsg : createdMsg, 'Success');
-    this.router.navigate(['/product']);
+    // this.router.navigate(['/product']);
   }
 
   protected onSaveError(error: any): void {
@@ -535,114 +513,38 @@ export class ProductAddFormlyComponent implements OnInit {
 
   updateForm() {
     this.model = { ...this.product };
-    this.model['name'] = this.product['general']['name']
-      ? this.product['general']['name']
-      : 'shirt';
 
     this.model['meta_description'] = this.product['meta_description'];
 
-    // this.model['type'] = 2;
+    if (this.product.variants) {
+      this.model['variants'] = this.product.variants.map((variant) => {
+        // variant['price'] = variant.price;
+        return variant;
+      });
+    }
+
+    this.updateInventoryInModel();
+  }
+
+  updateInventoryInModel() {
+    if (this.model['type'] !== PRODUCT_TYPE.Configurable) {
+      this.model['inventories'] = {};
+      this.product.inventories?.forEach((inventory: Inventory) => {
+        this.model.inventories[`inventory-${inventory.inventory_source_id!}`] =
+          inventory.quantity;
+      });
+    }
   }
 
   addDefaultValues() {
-    const model1 = {
-      name: 'Maggi',
-      sku: 'Maggi0001',
-      type: 1,
-      attribute_family_id: 1,
-      general: {
-        sku: 'Maggi0001',
-        product_number: 'Maggi0001',
-        name: 'Maggi',
-        url_key: 'maggi',
-        tax_category_id: null,
-        new: null,
-        featured: null,
-        visible_individually: true,
-        guest_checkout: true,
-        status: true,
-        color: null,
-        size: null,
-        brand: null,
-      },
-      description: {
-        short_description: 'Maggi',
-        description: 'Maggi',
-      },
-      meta_description: {
-        meta_title: null,
-        meta_keywords: null,
-        meta_description: null,
-      },
-      price: {
-        price: 10,
-        cost: null,
-        special_price: null,
-        special_price_from: null,
-        special_price_to: null,
-      },
-      shipping: {
-        length: null,
-        width: null,
-        height: null,
-        weight: '10',
-      },
-      inventory: {
-        Inventory: null,
-      },
-    };
-
+    const model1 =
+      this.productDefaultValueService.getSimpleProductDefaultValue();
     this.model = { ...this.model, ...model1 };
   }
 
   addConfigProductDefaultValues() {
-    const model1 = {
-      name: 'jeans',
-      sku: 'j001 ',
-      type: 2,
-      attribute_family_id: 1,
-      general: {
-        sku: 'Maggi0001',
-        product_number: 'Maggi0001',
-        name: 'Maggi',
-        url_key: 'maggi',
-        tax_category_id: null,
-        new: null,
-        featured: null,
-        visible_individually: true,
-        guest_checkout: true,
-        status: true,
-        color: null,
-        size: null,
-        brand: null,
-      },
-      description: {
-        short_description: 'Maggi',
-        description: 'Maggi',
-      },
-      meta_description: {
-        meta_title: null,
-        meta_keywords: null,
-        meta_description: null,
-      },
-      price: {
-        price: 10,
-        cost: null,
-        special_price: null,
-        special_price_from: null,
-        special_price_to: null,
-      },
-      shipping: {
-        length: null,
-        width: null,
-        height: null,
-        weight: '10',
-      },
-      inventory: {
-        Inventory: null,
-      },
-    };
-
+    const model1 =
+      this.productDefaultValueService.getConfigurableProductDefaultValue();
     this.model = { ...this.model, ...model1 };
   }
 }

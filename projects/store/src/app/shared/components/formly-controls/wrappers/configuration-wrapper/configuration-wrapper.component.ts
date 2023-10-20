@@ -13,6 +13,9 @@ import { ProductFormlyService } from './../../../../../entity/product/services/p
 import { Attribute2formlyService } from './../../../../../shrared/services/attribute2formly.service';
 import { IAttribute } from './../../../../models/attributes/attribute';
 import { MessageBusService } from './../../../../services/message-bus.service';
+import { IProduct } from 'projects/pos/src/app/shared/models/product';
+import { IInventorySource } from '../../../../models/inventory-source';
+import { IInventory, Inventory } from '../../../../models/inventory';
 
 @Component({
   selector: 'app-configuration-wrapper',
@@ -30,6 +33,8 @@ export class ConfigurationWrapperComponent
   selectedAttributeOptions: any = {};
 
   productModel: any;
+  product?: IProduct;
+  inventorySources: IInventorySource[] = [];
 
   constructor(
     private modalService: NgbModal,
@@ -50,6 +55,8 @@ export class ConfigurationWrapperComponent
     const props = this.props['additionalProperties'];
     this.configurableAttributes = props.attributes;
     this.productModel = props.productModel;
+    this.product = props.product;
+    this.inventorySources = props.inventorySources;
 
     this.selectedAttributeOptions = props.selectedAttributeOptions;
 
@@ -83,7 +90,6 @@ export class ConfigurationWrapperComponent
 
   setupModel() {
     this.variants.forEach((variant: any) => {
-      console.log('================', variant);
       const variantOptions = Object.values(variant)
         .map((option: any) => option.name.toLowerCase())
         .join('-');
@@ -97,15 +103,53 @@ export class ConfigurationWrapperComponent
         variantValues[key] = variant[key].id;
       }
 
+      const variantProduct = this.getVariantProduct(variantValues);
+
       variantValues = {
+        id: variantProduct ? variantProduct.id: 0,
         ...variantValues,
-        quantity: 0,
-        price: 0,
+        // quantity: variantProduct ? variantProduct.quantity : 0,
+        // inventories: variantProduct ? this.setupInventoriesModel(variantProduct) : this.getInventoriesField(),
+        price: variantProduct ? variantProduct.price : 0,
         status: 1,
       };
 
       this.field.model?.push(variantValues);
     });
+  }
+
+  setupInventoriesModel(variantProduct: any) {
+    console.log(variantProduct);
+    const inventories: any = {};
+    variantProduct.inventories.forEach((inventory: IInventory) => {
+      inventories[`inventory-${inventory.inventory_source_id!}`] = inventory.quantity;
+    })
+
+  }
+
+  getVariantProduct(variant: any) {
+    if (this.product) {
+      let productVariants = [...(this.product.variants as IProduct[])];
+
+      // console.log('variant', variant)
+      for (const attrKey in variant) {
+        if (Object.prototype.hasOwnProperty.call(variant, attrKey)) {
+          if (!['name', 'sku'].includes(attrKey)) {
+            const attrValue = variant[attrKey];
+
+            productVariants = productVariants?.filter((p: IProduct) => {
+              return p[attrKey as keyof typeof p] === attrValue;
+            });
+          }
+        }
+      }
+
+      if (productVariants.length > 0) {
+        return productVariants[0];
+      }
+    }
+
+    return null;
   }
 
   setupVariableProduct(selectedAttributeOptions: any): void {
@@ -137,8 +181,8 @@ export class ConfigurationWrapperComponent
   }
 
   addFields() {
-    console.log("variatns ====>", this.variants);
-    if(!this.variants || this.variants.length == 0 ) return;
+    // console.log("variatns ====>", this.variants);
+    if (!this.variants || this.variants.length == 0) return;
     const selectedAttributes = Object.keys(this.variants[0]);
 
     const fields: FormlyFieldConfig[] = [
@@ -161,6 +205,14 @@ export class ConfigurationWrapperComponent
     const fieldGroup = [
       {
         type: 'input',
+        key: 'id',
+        className: 'col-sm-12',
+        props: {
+          type: 'number',
+        },
+      },
+      {
+        type: 'input',
         key: 'name',
         className: 'col-sm-12',
         props: {
@@ -177,14 +229,24 @@ export class ConfigurationWrapperComponent
         },
       },
       ...fields,
+      // {
+      //   className: 'col-sm-12',
+      //   type: 'input',
+      //   key: 'quantity',
+      //   props: {
+      //     type: 'number',
+      //     required: true,
+      //   },
+      // },
       {
+        key: 'inventories',
         className: 'col-sm-12',
-        type: 'input',
-        key: 'quantity',
+        wrappers: ['inventory-wrapper'],
         props: {
           type: 'number',
           required: true,
         },
+        fieldGroup: this.getInventoriesField(),
       },
       {
         className: 'col-sm-12',
@@ -218,10 +280,27 @@ export class ConfigurationWrapperComponent
     (<any>this.options)?.build();
   }
 
+  getInventoriesField() {
+    const fieldGroup: FormlyFieldConfig[] = [];
+
+    this.inventorySources.forEach((inventorySource) => {
+      console.log('inventorySource', inventorySource);
+
+      fieldGroup?.push(
+        this.attribute2formlyService.generateField({
+          code: `inventory-${inventorySource.id}`,
+          name: inventorySource.name,
+          type: 'number',
+        } as IAttribute)
+      );
+    });
+
+    return fieldGroup;
+  }
+
   setColumns() {
-    
-    if(!this.variants || this.variants.length == 0 ) return;
-    
+    if (!this.variants || this.variants.length == 0) return;
+
     const columns = [
       'Name',
       'SKU',

@@ -18,7 +18,7 @@ const routes: Routes = [
   {
     path: 'add-formly',
     component: ProductAddFormlyComponent,
-    // resolve: { entity: ProductResolveService },
+    resolve: { entity: ProductResolveService },
   },
   {
     path: 'edit/:id',

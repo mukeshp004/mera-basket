@@ -40,7 +40,6 @@
     "json-formatter-js": "^2.3.4",
     "ng-event-bus": "^4.0.0",
     "ng-keyboard-shortcuts": "^13.0.8",
-    "ngx-barcode": "^0.3.0",
     "ngx-color-picker": "^12.0.0",
     "ngx-logger": "^5.0.11",
     "ngx-toastr": "^16.1.0",

@@ -27,6 +27,9 @@ import { KeysPipe } from './pipes/keys.pipe';
 import { CheckListComponent } from './components/check-list/check-list.component';
 import { RepeatTableTypeComponent } from './components/formly-controls/wrappers/repeat-table-type/repeat-table-type.component';
 import { PanelWrapperComponent } from '../panel-wrapper/panel-wrapper.component';
+import { InventoryWrapperComponent } from './components/formly-controls/wrappers/inventory-wrapper/inventory-wrapper.component';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+// import { InventoryInputComponent } from './components/formly-controls/inventory-input/inventory-input.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +49,8 @@ import { PanelWrapperComponent } from '../panel-wrapper/panel-wrapper.component'
     RepeaterTypeComponent,
     CheckListComponent,
     RepeatTableTypeComponent,
+    InventoryWrapperComponent,
+    // InventoryInputComponent,
   ],
   imports: [
     CommonModule,
@@ -57,6 +62,7 @@ import { PanelWrapperComponent } from '../panel-wrapper/panel-wrapper.component'
         // { name: 'select', component: FormlyFieldSelectComponent },
         { name: 'repeat', component: RepeaterTypeComponent },
         { name: 'repeat-table', component: RepeatTableTypeComponent },
+        // { name: 'inventory-type', component: InventoryInputComponent },
       ],
       wrappers: [
         {
@@ -68,6 +74,10 @@ import { PanelWrapperComponent } from '../panel-wrapper/panel-wrapper.component'
         {
           name: 'configuration-panel',
           component: ConfigurationWrapperComponent,
+        },
+        {
+          name: 'inventory-wrapper',
+          component: InventoryWrapperComponent,
         },
       ],
       validationMessages: [
@@ -84,6 +94,7 @@ import { PanelWrapperComponent } from '../panel-wrapper/panel-wrapper.component'
     HttpClientModule,
     ToastrModule.forRoot(),
     ColorPickerModule,
+    NgbDropdownModule
   ],
   exports: [
     // Module
@@ -96,6 +107,7 @@ import { PanelWrapperComponent } from '../panel-wrapper/panel-wrapper.component'
     ToastrModule,
     AgGridModule,
     ColorPickerModule,
+    NgbDropdownModule,
 
     //translate module
 
