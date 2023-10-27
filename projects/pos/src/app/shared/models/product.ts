@@ -1,3 +1,5 @@
+import { IInventory } from "projects/store/src/app/shared/models/inventory";
+
 export interface IProduct {
   id?: number;
   slug?: string;
@@ -15,6 +17,7 @@ export interface IProduct {
   color?: string;
   size?: string;
   status?: number;
+  inventories?: IInventory[],
   variants?: IProduct[]
 }
 
@@ -34,6 +37,7 @@ export class Product implements IProduct {
     color?: string,
     size?: string,
     status?: number,
+    inventories?: IInventory[],
     variants?: IProduct[]
   ) {}
 }
