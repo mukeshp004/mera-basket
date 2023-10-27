@@ -38,6 +38,7 @@ export class ProductAddFormlyComponent implements OnInit {
   model: any = {};
   form: UntypedFormGroup = this.fb.group({});
   isSaving = false;
+  navigateOnSuccess = true;
 
   product!: IProduct;
   variants?: IProduct[];
@@ -499,7 +500,14 @@ export class ProductAddFormlyComponent implements OnInit {
     const updatedMsg = 'Product updated Successfully';
 
     this.toastr.success(this.product?.id ? updatedMsg : createdMsg, 'Success');
-    // this.router.navigate(['/product']);
+    if(this.navigateOnSuccess) {
+      this.router.navigate(['/product']);
+    }
+    this.navigateOnSuccess = true
+  }
+
+  submitWithOutNav() {
+    this.navigateOnSuccess =false
   }
 
   protected onSaveError(error: any): void {

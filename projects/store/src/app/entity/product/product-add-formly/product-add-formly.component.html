@@ -47,8 +47,18 @@
             type="submit"
             [disabled]="form.invalid || isSaving"
           >
+            Submit & close
+          </button>
+
+          <button
+            class="btn btn-primary float-end me-2"
+            type="submit"
+            [disabled]="form.invalid || isSaving"
+            (click)="submitWithOutNav()"
+          >
             Submit
           </button>
+
           <button
             class="btn btn-secondary float-end me-2"
             type="button"

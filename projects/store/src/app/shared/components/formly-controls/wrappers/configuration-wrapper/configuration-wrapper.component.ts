@@ -109,7 +109,7 @@ export class ConfigurationWrapperComponent
         id: variantProduct ? variantProduct.id: 0,
         ...variantValues,
         // quantity: variantProduct ? variantProduct.quantity : 0,
-        // inventories: variantProduct ? this.setupInventoriesModel(variantProduct) : this.getInventoriesField(),
+        inventories: variantProduct ? this.setupInventoriesModel(variantProduct) : this.getInventoriesField(),
         price: variantProduct ? variantProduct.price : 0,
         status: 1,
       };
@@ -119,11 +119,13 @@ export class ConfigurationWrapperComponent
   }
 
   setupInventoriesModel(variantProduct: any) {
-    console.log(variantProduct);
+    console.log("variantProduct ===>");
     const inventories: any = {};
     variantProduct.inventories.forEach((inventory: IInventory) => {
       inventories[`inventory-${inventory.inventory_source_id!}`] = inventory.quantity;
     })
+
+    return inventories;
 
   }
 
@@ -209,6 +211,7 @@ export class ConfigurationWrapperComponent
         className: 'col-sm-12',
         props: {
           type: 'number',
+          readonly: true
         },
       },
       {
@@ -302,6 +305,7 @@ export class ConfigurationWrapperComponent
     if (!this.variants || this.variants.length == 0) return;
 
     const columns = [
+      'Id',
       'Name',
       'SKU',
       ...Object.keys(this.variants[0]),

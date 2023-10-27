@@ -1,6 +1,6 @@
-<div class="row">
+<div class="row g-2">
   <div class="col">
-    <div ngbDropdown class="d-inline-block">
+    <div ngbDropdown class="d-inline-block"  #myDrop="ngbDropdown">
       <button
         type="button"
         class="btn btn-outline-primary"
@@ -13,7 +13,7 @@
         <ng-container #fieldComponent></ng-container>
 
         <div class="dropdown-divider"></div>
-        <button (click)="update()">done</button>
+        <button class="btn btn-secondary" type="button" (click)="update()">done</button>
       </div>
     </div>
   </div>

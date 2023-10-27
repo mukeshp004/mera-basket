@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import {
   FieldWrapper,
   FormlyFieldConfig,
@@ -17,6 +17,7 @@ export class InventoryWrapperComponent
   extends FieldWrapper<FormlyFieldConfig>
   implements OnInit, AfterViewInit
 {
+  @ViewChild('myDrop') dropdown: any;
   quantity = 0;
 
   constructor() {
@@ -26,24 +27,24 @@ export class InventoryWrapperComponent
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-   
+    this.getQuantity();
   }
 
   getQuantity() {
-    this.quantity = 0
-    const inventories = this.field.model
-    if (inventories && inventories.length > 0) {
-      for (const qty of inventories) {
-        
-        this.quantity += qty || 0
-      }
-      
+    this.quantity = 0;
+    const inventories = this.field.model;
+    const quantities = inventories ? Object.values(inventories) : [];
+
+    if (quantities.length > 0) {
+      quantities.forEach((quantity: any) => {
+        this.quantity += +quantity || 0;
+      });
     }
-    
+
     return this.quantity;
   }
 
   update() {
-    // console.log(this.getQuantity());
+    this.dropdown.close();
   }
 }
