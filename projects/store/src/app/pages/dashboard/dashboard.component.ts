@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
+import { FORMLY_FIELD_TYPE } from '../../shared/enums/formly-field-type.enum';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,7 +21,7 @@ export class DashboardComponent implements OnInit {
       type: 'input',
       props: {
         required: true,
-        type: 'text',
+        type: FORMLY_FIELD_TYPE.text,
         label: 'First Name',
       },
     },

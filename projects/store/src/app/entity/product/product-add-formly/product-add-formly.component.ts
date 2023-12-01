@@ -6,13 +6,16 @@ import { MetaData } from 'ng-event-bus/lib/meta-data';
 import { ToastrService } from 'ngx-toastr';
 import { IAttribute } from 'projects/store/src/app/shared/models/attributes/attribute';
 import { Observable, delay, finalize, tap } from 'rxjs';
+import { FORMLY_FIELD_TYPE } from '../../../shared/enums/formly-field-type.enum';
 import { IAttributeFamily } from '../../../shared/models/attributes/attribute-family';
-import { IAttributeGroup } from '../../../shared/models/attributes/attribute-group';
 import { IAttributeOption } from '../../../shared/models/attributes/attribute-option';
+import { Inventory } from '../../../shared/models/inventory';
+import { IInventorySource } from '../../../shared/models/inventory-source';
 import { HelperService } from '../../../shared/services/helper.service';
 import { AttributeFamilyService } from '../../attribute-family/services/attribute-family.service';
 import { AttributeService } from '../../attribute/attribute.service';
 import { ProductFormlyService } from '../services/product-formly.service';
+import { ProductValueService } from '../services/product-value.service';
 import { ProductService } from '../services/product.service';
 import { MessageBusConstant } from './../../../shared/constants/message-bus.constant';
 import { PRODUCT_TYPE } from './../../../shared/enums/product-type.enum';
@@ -21,9 +24,6 @@ import {
   IProductFindResponse,
 } from './../../../shared/models/product';
 import { MessageBusService } from './../../../shared/services/message-bus.service';
-import { IInventorySource } from '../../../shared/models/inventory-source';
-import { ProductValueService } from '../services/product-value.service';
-import { Inventory } from '../../../shared/models/inventory';
 
 @Component({
   selector: 'app-product-add-formly',
@@ -85,13 +85,10 @@ export class ProductAddFormlyComponent implements OnInit {
       this.attributeFamilies = data.attributeFamilies;
       this.inventorySources = data.inventorySources;
 
-      console.log(this.inventorySources);
-
       if (data.product) {
         this.product = data.product;
         this.variants = this.product.variants;
 
-        // console.log('this.variants ====> ', this.variants);
         this.selectedAttributeFamily = data.attributeFamily;
         setTimeout(() => {
           this.updateForm();
@@ -107,41 +104,6 @@ export class ProductAddFormlyComponent implements OnInit {
       .listen(MessageBusConstant.productVariantsChanged)
       .subscribe((payLoad: MetaData) => {
         this.selectedAttributeOptions = payLoad.data.selectedAttributeOptions;
-      });
-  }
-
-  productsVariantsChangeListener1() {
-    this.messageBus
-      .listen(MessageBusConstant.productVariantsChanged)
-      .subscribe((payLoad: MetaData) => {
-        const variants = payLoad.data.variants;
-
-        this.model['variants'] = [];
-
-        variants.forEach((variant: any) => {
-          // console.log('================', variant);
-          const variantOptions = Object.values(variant)
-            .map((option: any) => option.name.toLowerCase())
-            .join('-');
-
-          let variantValues: any = {
-            name: `${this.model.name}-${variantOptions}`,
-            sku: `${this.model.sku}-${variantOptions}`,
-          };
-
-          for (let key in variant) {
-            variantValues[key] = variant[key].id;
-          }
-
-          variantValues = {
-            ...variantValues,
-            quantity: 0,
-            price: 0,
-            status: 1,
-          };
-
-          this.model['variants'].push(variantValues);
-        });
       });
   }
 
@@ -164,19 +126,16 @@ export class ProductAddFormlyComponent implements OnInit {
         type: 'input',
         props: {
           required: true,
-          type: 'text',
+          type: FORMLY_FIELD_TYPE.text,
           label: 'Name',
         },
-        // expressionProperties: {
-        //   'model.sku': (model) => model.name,
-        // },
       },
       {
         key: 'sku',
         type: 'input',
         props: {
           required: true,
-          type: 'text',
+          type: FORMLY_FIELD_TYPE.text,
           label: 'SKU',
         },
       },
@@ -302,78 +261,18 @@ export class ProductAddFormlyComponent implements OnInit {
     this.setConfigurableAttribute();
   }
 
-  setConfigurableAttributeWithoutConfig() {
-    if (!this.product || !this.product['super_attributes']) return;
-
-    const supper_attributes = this.product['super_attributes'];
-
-    const supper_attribute_code: string[] = this.product[
-      'super_attributes'
-    ].map((attribute: IAttribute) => attribute.code);
-
-    // console.log('super_attributes code =====>', supper_attribute_code);
-
-    /**
-     * get selected attribute and groups
-     */
-    const groups: { [key: string]: IAttributeGroup } = {};
-
-    this.selectedAttributeFamily?.groups?.forEach((group) => {
-      group.attributes?.forEach((attribute) => {
-        if (attribute.code && supper_attribute_code.includes(attribute.code!)) {
-          groups[attribute.code] = group;
-        }
-      });
-    });
-
-    // console.log('attribute Groups with select attribute  ==> ', groups);
-
-    /**
-     * to get selected options from variable prouct using groups and attributes
-     */
-    const options: { [key: string]: any } = {};
-
-    for (let attributeCode in groups) {
-      const group = groups[attributeCode];
-      this.variants?.forEach((variant) => {
-        const value = variant[group.code!][attributeCode];
-        if (!options[attributeCode]) {
-          options[attributeCode] = [];
-        }
-
-        if (value && !options[attributeCode].includes(value)) {
-          options[attributeCode].push(value);
-        }
-      });
-    }
-
-    // console.log('options  ==> ', options);
-
-    supper_attribute_code.forEach((attrCode: string) => {
-      const attr = this.configurableAttributes.find((attribute: IAttribute) => {
-        return attribute.code === attrCode;
-      });
-
-      this.selectedAttributeOptions[attrCode] = attr?.options?.filter(
-        (option: any) => {
-          return options[attrCode].includes(option.id);
-        }
-      );
-    });
-  }
-
   setConfigurableAttribute() {
     if (!this.product || !this.product['super_attributes']) return;
     const superAttributes: { [key: number]: any[] } =
       this.product['super_attributes'];
 
-    const selectedaAttIds: any[] = Object.keys(
+    const selectedAttrIds: any[] = Object.keys(
       this.product['super_attributes']
     ).map((e) => +e);
 
     const selectedAttributes = this.configurableAttributes.filter(
       (attribute: IAttribute) => {
-        return selectedaAttIds.includes(attribute.id);
+        return selectedAttrIds.includes(attribute.id);
       }
     );
 
@@ -408,7 +307,6 @@ export class ProductAddFormlyComponent implements OnInit {
   // }
 
   appendForm() {
-    // console.log('append form called');
     let fields: FormlyFieldConfig[] = [];
 
     fields = [...this.intFormField()];
@@ -452,6 +350,11 @@ export class ProductAddFormlyComponent implements OnInit {
     this.router.navigate(['product']);
   }
 
+  /**
+   * Transform selected attribute to save in database
+   * 
+   * @returns 
+   */
   transformSelectedAttributeOption() {
     let selectedAttributeOptions = {};
     if (this.selectedAttributeOptions) {
@@ -476,6 +379,7 @@ export class ProductAddFormlyComponent implements OnInit {
     // this.isSaving = true;
     const params = this.model;
     console.log(this.model);
+    console.log(this.form.value);
 
     if (this.selectedAttributeOptions) {
       params['super_attributes'] = this.transformSelectedAttributeOption();
@@ -484,6 +388,7 @@ export class ProductAddFormlyComponent implements OnInit {
     if (params?.id) {
       this.subscribeToSaveResponse(this.productService.put(params.id, params));
     } else {
+      console.log(params, 'params');
       this.subscribeToSaveResponse(this.productService.post(params));
     }
   }
@@ -544,12 +449,19 @@ export class ProductAddFormlyComponent implements OnInit {
     }
   }
 
+  /**
+   * this method is fot testing purpose it sets the model value
+   */
   addDefaultValues() {
     const model1 =
       this.productDefaultValueService.getSimpleProductDefaultValue();
     this.model = { ...this.model, ...model1 };
   }
 
+  
+  /**
+   * this method is fot testing purpose it sets the model value
+   */
   addConfigProductDefaultValues() {
     const model1 =
       this.productDefaultValueService.getConfigurableProductDefaultValue();

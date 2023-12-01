@@ -16,6 +16,7 @@ import { MessageBusService } from './../../../../services/message-bus.service';
 import { IProduct } from 'projects/pos/src/app/shared/models/product';
 import { IInventorySource } from '../../../../models/inventory-source';
 import { IInventory, Inventory } from '../../../../models/inventory';
+import { FORMLY_FIELD_TYPE } from '../../../../enums/formly-field-type.enum';
 
 @Component({
   selector: 'app-configuration-wrapper',
@@ -109,7 +110,7 @@ export class ConfigurationWrapperComponent
         id: variantProduct ? variantProduct.id: 0,
         ...variantValues,
         // quantity: variantProduct ? variantProduct.quantity : 0,
-        inventories: variantProduct ? this.setupInventoriesModel(variantProduct) : this.getInventoriesField(),
+        inventories: variantProduct ? this.setupInventoriesModelFromVariants(variantProduct) : this.setupInventoriesModel(),
         price: variantProduct ? variantProduct.price : 0,
         status: 1,
       };
@@ -118,15 +119,23 @@ export class ConfigurationWrapperComponent
     });
   }
 
-  setupInventoriesModel(variantProduct: any) {
+  setupInventoriesModelFromVariants(variantProduct: any) {
     console.log("variantProduct ===>");
     const inventories: any = {};
     variantProduct.inventories.forEach((inventory: IInventory) => {
       inventories[`inventory-${inventory.inventory_source_id!}`] = inventory.quantity;
     })
-
     return inventories;
+  }
 
+  setupInventoriesModel() {
+    const inventory: { [key: string]: any} = {};
+    this.inventorySources.forEach((inventorySource) => {
+      inventory[`inventory-${inventorySource.id}`] = 0;
+      
+    });
+
+    inventory
   }
 
   getVariantProduct(variant: any) {
@@ -210,7 +219,7 @@ export class ConfigurationWrapperComponent
         key: 'id',
         className: 'col-sm-12',
         props: {
-          type: 'number',
+          type: FORMLY_FIELD_TYPE.number,
           readonly: true
         },
       },

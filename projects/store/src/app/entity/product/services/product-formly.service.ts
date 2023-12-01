@@ -51,7 +51,42 @@ export class ProductFormlyService {
       }
     });
 
+    fields.splice(2,0, this.generateMetaDataGroup())
+
     return fields;
+  }
+
+  generateMetaDataGroup() {
+    const metaData = this.attribute2formlyService.generateFormGroup(
+      'meta_data',
+      'Meta Data'
+    );
+
+    const keywordField = this.attribute2formlyService.generateField({
+      code: `keyword`,
+      name: 'keyword',
+      type: 'text',
+    } as IAttribute);
+
+    const title = this.attribute2formlyService.generateField({
+      code: `title`,
+      name: 'Title',
+      type: 'text',
+    } as IAttribute);
+
+    const description = this.attribute2formlyService.generateField({
+      code: `description`,
+      name: 'Meta Description',
+      type: 'text',
+    } as IAttribute);
+
+    metaData.fieldGroup = [
+      keywordField,
+      title,
+      description
+    ];
+    
+    return metaData;
   }
 
   generateInventoryGroup(inventorySources: IInventorySource[]): FormlyFieldConfig {

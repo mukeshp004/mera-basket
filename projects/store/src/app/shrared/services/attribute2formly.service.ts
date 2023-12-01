@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { IAttribute } from '../../shared/models/attributes/attribute';
+import { FORMLY_FIELD_TYPE } from '../../shared/enums/formly-field-type.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -58,7 +59,7 @@ export class Attribute2formlyService {
       type: 'input',
       props: {
         required: attribute.is_required || false,
-        type: 'text',
+        type: FORMLY_FIELD_TYPE.text,
         label: attribute.name,
       },
     } as FormlyFieldConfig;
@@ -85,7 +86,7 @@ export class Attribute2formlyService {
       type: 'input',
       props: {
         required: attribute.is_required || false,
-        type: 'number',
+        type: FORMLY_FIELD_TYPE.number,
         label: attribute.name,
       },
     } as FormlyFieldConfig;

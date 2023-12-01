@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FieldWrapper } from '@ngx-formly/core';
+import { FORMLY_FIELD_TYPE } from '../shared/enums/formly-field-type.enum';
 
 @Component({
   selector: 'app-panel-wrapper',
@@ -14,7 +15,7 @@ export class PanelWrapperComponent extends FieldWrapper {
       type: 'input',
       props: {
         required: true,
-        type: 'text',
+        type: FORMLY_FIELD_TYPE.text,
         label: 'Town',
       },
     });

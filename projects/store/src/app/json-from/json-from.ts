@@ -1,4 +1,5 @@
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import { FORMLY_FIELD_TYPE } from '../shared/enums/formly-field-type.enum';
 
 export const jsonFormFields: FormlyFieldConfig[] = [
   {
@@ -88,7 +89,7 @@ export const jsonFormFields: FormlyFieldConfig[] = [
         type: 'input',
         props: {
           required: true,
-          type: 'text',
+          type: FORMLY_FIELD_TYPE.text,
           label: 'Town',
         },
       },

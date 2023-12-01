@@ -92,7 +92,9 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
       serverLogLevel: NgxLoggerLevel.ERROR,
     }),
     HttpClientModule,
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot({
+      closeButton: true
+    }),
     ColorPickerModule,
     NgbDropdownModule
   ],
