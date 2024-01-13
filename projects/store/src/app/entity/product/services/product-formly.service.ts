@@ -51,7 +51,7 @@ export class ProductFormlyService {
       }
     });
 
-    fields.splice(2,0, this.generateMetaDataGroup())
+    fields.splice(2, 0, this.generateMetaDataGroup());
 
     return fields;
   }
@@ -80,39 +80,52 @@ export class ProductFormlyService {
       type: 'text',
     } as IAttribute);
 
-    metaData.fieldGroup = [
-      keywordField,
-      title,
-      description
-    ];
-    
+    metaData.fieldGroup = [keywordField, title, description];
+
     return metaData;
   }
 
-  generateInventoryGroup(inventorySources: IInventorySource[]): FormlyFieldConfig {
-    const inventoryGroup = this.attribute2formlyService.generateFormGroup(
+  generateImageUploadGroup() {
+    const formGroup = this.attribute2formlyService.generateFormGroup(
+      'images',
+      'Images'
+    );
+
+    formGroup['type'] = 'repeat'
+    formGroup.fieldGroup = [];
+
+    formGroup.fieldArray =  this.attribute2formlyService.generateField({
+        // code: `inventory-${inventorySource.id}`,
+        code: `image`,
+        name: 'image',
+        type: 'image',
+      } as IAttribute);
+
+    return formGroup;
+  }
+
+  generateInventoryGroup(
+    inventorySources: IInventorySource[]
+  ): FormlyFieldConfig {
+    const formGroup = this.attribute2formlyService.generateFormGroup(
       'inventories',
       'Inventory'
     );
 
-
-
-    inventoryGroup.fieldGroup = [];
+    formGroup.fieldGroup = [];
 
     inventorySources.forEach((inventorySource) => {
+      formGroup.fieldGroup?.push(
+        this.attribute2formlyService.generateField({
+          // code: `inventory-${inventorySource.id}`,
+          code: `inventory-${inventorySource.id}`,
+          name: inventorySource.name,
+          type: 'number',
+        } as IAttribute)
+      );
+    });
 
-
-      inventoryGroup.fieldGroup?.push(
-      this.attribute2formlyService.generateField({
-        // code: `inventory-${inventorySource.id}`,
-        code: `inventory-${inventorySource.id}`,
-        name: inventorySource.name,
-        type: 'number',
-      } as IAttribute))
-    
-    })
-
-    return inventoryGroup;
+    return formGroup;
   }
 
   generateConfigurableGroup(
@@ -135,7 +148,7 @@ export class ProductFormlyService {
           selectedAttributeOptions: selectedAttributeOptions,
           productModel: productModel,
           product: product,
-          inventorySources: inventorySources
+          inventorySources: inventorySources,
         },
       },
       fieldArray: {

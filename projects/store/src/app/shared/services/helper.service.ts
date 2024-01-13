@@ -15,4 +15,14 @@ export class HelperService {
     }
     return list;
   }
+
+  toFormData(params: any) {
+    const formData = new FormData();
+
+    Object.entries(params).forEach(([key, value]) => {
+      formData.append(key, (value as any));
+    });
+
+    return formData;
+  }
 }

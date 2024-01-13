@@ -107,10 +107,12 @@ export class ConfigurationWrapperComponent
       const variantProduct = this.getVariantProduct(variantValues);
 
       variantValues = {
-        id: variantProduct ? variantProduct.id: 0,
+        id: variantProduct ? variantProduct.id : 0,
         ...variantValues,
         // quantity: variantProduct ? variantProduct.quantity : 0,
-        inventories: variantProduct ? this.setupInventoriesModelFromVariants(variantProduct) : this.setupInventoriesModel(),
+        inventories: variantProduct
+          ? this.setupInventoriesModelFromVariants(variantProduct)
+          : this.setupInventoriesModel(),
         price: variantProduct ? variantProduct.price : 0,
         status: 1,
       };
@@ -120,22 +122,22 @@ export class ConfigurationWrapperComponent
   }
 
   setupInventoriesModelFromVariants(variantProduct: any) {
-    console.log("variantProduct ===>");
+    console.log('variantProduct ===>');
     const inventories: any = {};
     variantProduct.inventories.forEach((inventory: IInventory) => {
-      inventories[`inventory-${inventory.inventory_source_id!}`] = inventory.quantity;
-    })
+      inventories[`inventory-${inventory.inventory_source_id!}`] =
+        inventory.quantity;
+    });
     return inventories;
   }
 
   setupInventoriesModel() {
-    const inventory: { [key: string]: any} = {};
+    const inventory: { [key: string]: any } = {};
     this.inventorySources.forEach((inventorySource) => {
       inventory[`inventory-${inventorySource.id}`] = 0;
-      
     });
 
-    inventory
+    inventory;
   }
 
   getVariantProduct(variant: any) {
@@ -220,7 +222,7 @@ export class ConfigurationWrapperComponent
         className: 'col-sm-12',
         props: {
           type: FORMLY_FIELD_TYPE.number,
-          readonly: true
+          readonly: true,
         },
       },
       {
@@ -299,11 +301,14 @@ export class ConfigurationWrapperComponent
       console.log('inventorySource', inventorySource);
 
       fieldGroup?.push(
-        this.attribute2formlyService.generateField({
-          code: `inventory-${inventorySource.id}`,
-          name: inventorySource.name,
-          type: 'number',
-        } as IAttribute)
+        this.attribute2formlyService.generateField(
+          {
+            code: `inventory-${inventorySource.id}`,
+            name: inventorySource.name,
+            type: 'number',
+          } as IAttribute,
+          { wrappers: ['vertical-form-field'] }
+        )
       );
     });
 

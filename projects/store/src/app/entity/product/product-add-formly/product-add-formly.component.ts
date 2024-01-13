@@ -120,7 +120,7 @@ export class ProductAddFormlyComponent implements OnInit {
    * @returns FormlyFieldConfig[]
    */
   intFormField(): FormlyFieldConfig[] {
-    return [
+    const formField = [
       {
         key: 'name',
         type: 'input',
@@ -204,7 +204,11 @@ export class ProductAddFormlyComponent implements OnInit {
           },
         },
       },
+
+      this.productFormly.generateImageUploadGroup(),
     ];
+
+    return formField;
   }
 
   /**
@@ -352,8 +356,8 @@ export class ProductAddFormlyComponent implements OnInit {
 
   /**
    * Transform selected attribute to save in database
-   * 
-   * @returns 
+   *
+   * @returns
    */
   transformSelectedAttributeOption() {
     let selectedAttributeOptions = {};
@@ -386,10 +390,17 @@ export class ProductAddFormlyComponent implements OnInit {
     }
 
     if (params?.id) {
-      this.subscribeToSaveResponse(this.productService.put(params.id, params));
+      const formData = this.helperService.toFormData(params);;
+
+      this.subscribeToSaveResponse(
+        this.productService.putBlob(params.id, formData)
+      );
     } else {
+      
+      const formData = this.helperService.toFormData(params);;
+
       console.log(params, 'params');
-      this.subscribeToSaveResponse(this.productService.post(params));
+      this.subscribeToSaveResponse(this.productService.post(formData));
     }
   }
 
@@ -405,14 +416,14 @@ export class ProductAddFormlyComponent implements OnInit {
     const updatedMsg = 'Product updated Successfully';
 
     this.toastr.success(this.product?.id ? updatedMsg : createdMsg, 'Success');
-    if(this.navigateOnSuccess) {
+    if (this.navigateOnSuccess) {
       this.router.navigate(['/product']);
     }
-    this.navigateOnSuccess = true
+    this.navigateOnSuccess = true;
   }
 
   submitWithOutNav() {
-    this.navigateOnSuccess =false
+    this.navigateOnSuccess = false;
   }
 
   protected onSaveError(error: any): void {
@@ -458,7 +469,6 @@ export class ProductAddFormlyComponent implements OnInit {
     this.model = { ...this.model, ...model1 };
   }
 
-  
   /**
    * this method is fot testing purpose it sets the model value
    */

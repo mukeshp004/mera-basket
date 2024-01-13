@@ -1,19 +1,25 @@
 <div class="row g-2">
   <div class="col">
-    <div ngbDropdown class="d-inline-block"  #myDrop="ngbDropdown">
+    <div ngbDropdown class="d-inline-block" #myDrop="ngbDropdown">
       <button
         type="button"
         class="btn btn-outline-primary"
         id="dropdownForm1"
         ngbDropdownToggle
       >
-        {{ getQuantity()}}
+        {{ getQuantity() }}
       </button>
       <div ngbDropdownMenu aria-labelledby="dropdownForm1">
-        <ng-container #fieldComponent></ng-container>
+        <div class="px-2">
+          <ng-container #fieldComponent></ng-container>
+        </div>
 
         <div class="dropdown-divider"></div>
-        <button class="btn btn-secondary" type="button" (click)="update()">done</button>
+        <div class="px-2">
+          <button class="btn btn-secondary" type="button" (click)="update()">
+            done
+          </button>
+        </div>
       </div>
     </div>
   </div>

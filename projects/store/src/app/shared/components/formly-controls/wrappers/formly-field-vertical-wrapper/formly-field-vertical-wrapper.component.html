@@ -1,0 +1,14 @@
+<div class="mb-3">
+  <label [attr.for]="id" class="form-label" *ngIf="props.label">
+    {{ props.label }}
+    <ng-container *ngIf="props.required && props['hideRequiredMarker'] !== true"
+      >*</ng-container
+    >
+  </label>
+
+  <ng-template #fieldComponent></ng-template>
+
+  <div *ngIf="showError" class="col-sm-12 invalid-feedback d-block">
+    <formly-validation-message [field]="field"></formly-validation-message>
+  </div>
+</div>

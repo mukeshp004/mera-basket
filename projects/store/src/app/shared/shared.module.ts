@@ -29,6 +29,9 @@ import { RepeatTableTypeComponent } from './components/formly-controls/wrappers/
 import { PanelWrapperComponent } from '../panel-wrapper/panel-wrapper.component';
 import { InventoryWrapperComponent } from './components/formly-controls/wrappers/inventory-wrapper/inventory-wrapper.component';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormlyFieldVerticalWrapperComponent } from './components/formly-controls/wrappers/formly-field-vertical-wrapper/formly-field-vertical-wrapper.component';
+import { FormlyFieldImageUploadComponent } from './components/formly-controls/formly-field-image-upload/formly-field-image-upload.component';
+import { FileValueAccessor } from './directives/file-value-accessor';
 // import { InventoryInputComponent } from './components/formly-controls/inventory-input/inventory-input.component';
 
 @NgModule({
@@ -50,7 +53,10 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
     CheckListComponent,
     RepeatTableTypeComponent,
     InventoryWrapperComponent,
+    FormlyFieldVerticalWrapperComponent,
+    FormlyFieldImageUploadComponent,
     // InventoryInputComponent,
+    FileValueAccessor,
   ],
   imports: [
     CommonModule,
@@ -63,11 +69,16 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
         { name: 'repeat', component: RepeaterTypeComponent },
         { name: 'repeat-table', component: RepeatTableTypeComponent },
         // { name: 'inventory-type', component: InventoryInputComponent },
+        { name: 'image', component: FormlyFieldImageUploadComponent },
       ],
       wrappers: [
         {
           name: 'form-field',
           component: FormlyFieldHorizontalWrapperComponent,
+        },
+        {
+          name: 'vertical-form-field',
+          component: FormlyFieldVerticalWrapperComponent,
         },
         { name: 'panel', component: FormlyPanelWrapperComponent },
         { name: 'dpanel', component: PanelWrapperComponent },
@@ -93,15 +104,16 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
     }),
     HttpClientModule,
     ToastrModule.forRoot({
-      closeButton: true
+      closeButton: true,
     }),
     ColorPickerModule,
-    NgbDropdownModule
+    NgbDropdownModule,
   ],
   exports: [
     // Module
     CommonModule,
     FormsModule,
+    HttpClientModule,
     ReactiveFormsModule,
     FormlyModule,
     RouterModule,

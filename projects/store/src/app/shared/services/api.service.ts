@@ -53,6 +53,17 @@ export class ApiService<T> {
     );
   }
 
+  putBlob(id: number, params: any): Observable<T> {
+    return this.http.post<T>(
+      `${this.baseUrl}/${this.getRelativeUrl()}/${id}?_method=PUT`,
+      params, {
+        headers: {
+          '_method': 'PUT'
+        }
+      }
+    );
+  }
+
   delete(id: number) {
     return this.http.delete(`${this.baseUrl}/${this.getRelativeUrl()}/${id}`);
   }

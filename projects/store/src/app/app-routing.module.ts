@@ -24,6 +24,10 @@ const routes: Routes = [
         component: JsonFromComponent,
       },
       {
+        path: '',
+        loadChildren: () => import('./entity/entity.module').then((m) => m.EntityModule),
+      },
+      {
         path: 'page',
         loadChildren: () =>
           import('./pages/pages.module').then((m) => m.PagesModule),

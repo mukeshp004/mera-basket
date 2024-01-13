@@ -24,8 +24,12 @@ export class Attribute2formlyService {
     return formlyFieldConfig;
   }
 
-  generateField(attribute: IAttribute): FormlyFieldConfig {
+  generateField(attribute: IAttribute, fieldConfig?: FormlyFieldConfig): FormlyFieldConfig {
     switch (attribute.type) {
+      case 'image':
+        return this.generateImageField(attribute);
+        break;
+
       case 'select':
         return this.generateSelectField(attribute);
         break;
@@ -40,7 +44,7 @@ export class Attribute2formlyService {
 
       case 'number':
       case 'price':
-        return this.generateAmountField(attribute);
+        return this.generateAmountField(attribute,  fieldConfig);
         break;
 
       case 'boolean':
@@ -48,13 +52,13 @@ export class Attribute2formlyService {
         break;
 
       default:
-        return this.generateTextField(attribute);
+        return this.generateTextField(attribute, fieldConfig);
         break;
     }
   }
 
-  generateTextField(attribute: IAttribute): FormlyFieldConfig {
-    return {
+  generateTextField(attribute: IAttribute, fieldConfig?: FormlyFieldConfig): FormlyFieldConfig {
+    const field =  {
       key: attribute.code,
       type: 'input',
       props: {
@@ -63,6 +67,12 @@ export class Attribute2formlyService {
         label: attribute.name,
       },
     } as FormlyFieldConfig;
+
+    if(fieldConfig && fieldConfig.wrappers) {
+      field.wrappers= fieldConfig.wrappers
+    }
+
+    return field;
   }
 
   generateSelectField(attribute: IAttribute): FormlyFieldConfig {
@@ -80,8 +90,8 @@ export class Attribute2formlyService {
     } as FormlyFieldConfig;
   }
 
-  generateAmountField(attribute: IAttribute): FormlyFieldConfig {
-    return {
+  generateAmountField(attribute: IAttribute,  fieldConfig?: FormlyFieldConfig): FormlyFieldConfig {
+    const field = {
       key: attribute.code,
       type: 'input',
       props: {
@@ -90,6 +100,13 @@ export class Attribute2formlyService {
         label: attribute.name,
       },
     } as FormlyFieldConfig;
+
+    
+    if(fieldConfig && fieldConfig.wrappers) {
+      field.wrappers= fieldConfig.wrappers
+    }
+
+    return field;
   }
 
   /**
@@ -132,5 +149,23 @@ export class Attribute2formlyService {
         // rows: 10,
       },
     } as FormlyFieldConfig;
+  }
+
+  generateImageField(attribute: IAttribute,  fieldConfig?: FormlyFieldConfig): FormlyFieldConfig {
+    const field = {
+      key: attribute.code,
+      type: 'image',
+      props: {
+        required: attribute.is_required || false,
+        label: attribute.name,
+      },
+    } as FormlyFieldConfig;
+
+    
+    if(fieldConfig && fieldConfig.wrappers) {
+      field.wrappers= fieldConfig.wrappers
+    }
+
+    return field;
   }
 }

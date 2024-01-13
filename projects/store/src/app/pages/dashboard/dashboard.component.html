@@ -41,17 +41,23 @@
         </button>
       </div>
     </div>
-    <div class="card-body">
-      <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="card-body">
         <formly-form
           [model]="model"
           [fields]="fields"
           [form]="form"
         ></formly-form>
-        <button type="submit" class="btn btn-primary submit-button">
-          Submit
-        </button>
-      </form>
-    </div>
+
+        <pre> {{ form.value | json }}</pre>
+      </div>
+
+      <!--  end of card body -->
+      <div class="card-footer">
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+      <!-- card footer-->
+    </form>
   </div>
 </div>

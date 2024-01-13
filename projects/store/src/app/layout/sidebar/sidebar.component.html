@@ -64,10 +64,27 @@
           <span>User <i class="bg-primary"> 3 </i></span>
         </a>
       </li>
+
+      
       <li>
-        <a href="javascript:void(0)">
+        <a
+          [routerLink]="['/inventory-source']"
+          routerLinkActive="router-link-active"
+          href="javascript:void(0)"
+        >
           <i class="fas fa-user"></i>
-          <span>Product</span>
+          <span>Inventory Source</span>
+        </a>
+      </li>
+      
+      <li>
+        <a
+          [routerLink]="['/tax']"
+          routerLinkActive="router-link-active"
+          href="javascript:void(0)"
+        >
+          <i class="fas fa-user"></i>
+          <span>Taxes</span>
         </a>
       </li>
     </ul>
